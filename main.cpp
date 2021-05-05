@@ -1,12 +1,10 @@
-#include "newSIR.hpp"
 #include <cassert>
 #include <iostream>
 
-int main () {
+#include "newSIR.hpp"
 
-    epidemia::SIR mondo = epidemia::insert();
-    mondo.riempimento();
-    mondo.print();
-
+int main() {
+  epidemia::SIR mondo = epidemia::insert();
+  mondo.riempimento();
+  mondo.print();
 }
-
