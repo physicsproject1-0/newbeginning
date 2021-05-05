@@ -1,6 +1,3 @@
-#include <cassert>
-#include <iostream>
-
 #include "newSIR.hpp"
 
 int main() {
