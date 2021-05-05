@@ -14,7 +14,7 @@
 //  std::cout << bologna.size() <<'\n';   
 // }
 
-#include "NewSIR.hpp"
+#include "newSIR.hpp"
 #include <cassert>
 #include <iostream>
 
