@@ -4,6 +4,8 @@
 #include <vector>
 #include <cassert>
 
+//simone 
+
 namespace epidemia {
 
 struct State {
