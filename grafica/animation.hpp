@@ -1,4 +1,4 @@
-#include "SIR.hpp"
+#include "SIRgrafica.hpp"
 #include "finestra.hpp"
 
 #ifndef ANIMATION_HPP
@@ -16,7 +16,7 @@ class Animazione {
    public:
     Animazione();
     Animazione(epidemia::Popolazione& const
-                   popolo);  // deve inizializzare la parte grafica del vettore e spawnare la gente a random con il metodo di popolazione
+                   popolo);  // deve inizializzare la parte grafica del vettore e spawnare la gente a random con il metodo di popolazione, calcolando anche i raggi dei cerchi
     ~Animazione();
     void Updinput();  // prende gli input (vaccini o cambio di qualcosa)
     void Update();    // in base agli input
