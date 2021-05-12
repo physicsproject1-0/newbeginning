@@ -60,30 +60,8 @@ class SIR {
 
     simulazione_finale = simulazione;
   }
-
-  void print() {
-    std::cout << "   +-------------+-------------+-------------+-------------+ \n"
-                 "   |  T(giorni)  |      S      |      I      |      R      | \n"
-                 "   +-------------+-------------+-------------+-------------+ \n"
-              << std::fixed;
-
-    for (auto const& i : simulazione_finale) {
-      std::cout << std::right << "   |" << std::setw(13) << i.giorno << "|" << std::setw(13) << i.suscettibili << "|" << std::setw(13) << i.infetti
-                << "|" << std::setw(13) << i.rimossi << "|"
-                << "\n";
-    }
-
-    std::cout << "   +-------------+-------------+-------------+-------------+ \n";
-  }
-
-  void print_semplice() {
-    std::cout << std::setw(13) << "T" << std::setw(13) << "S" << std::setw(13) << "I" << std::setw(13) << "R" << '\n';
-
-    for (auto const& i : simulazione_finale) {
-      std::cout << std::right << std::setw(13) << i.giorno << std::setw(13) << i.suscettibili << std::setw(13) << i.infetti << std::setw(13)
-                << i.rimossi << "\n";
-    }
-  }
+  void SIR::print();
+  void SIR::print_semplice();
 };
 
 SIR insert();
