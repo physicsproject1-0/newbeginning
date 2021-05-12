@@ -1,7 +1,6 @@
 #ifndef NEWSIR_HPP
 #define NEWSIR_HPP
 
-#include <cassert>
 #include <iomanip>
 #include <iostream>
 #include <vector>
@@ -30,9 +29,6 @@ class SIR {
   double m_beta;
   double m_gamma;
 
-  // boh forse, problema n int? per tirarlo fuori
-  const int N = m_stato_iniziale.suscettibili + m_stato_iniziale.infetti + m_stato_iniziale.rimossi;
-
  public:
   SIR(State const& stato_iniziale, int durata_simulazione, double beta,
       double gamma)  // costruttore
@@ -41,6 +37,8 @@ class SIR {
   // SIR()=default;
 
   std::vector<State> riempimento();
+  State approx(State obj);
+  std::vector<State> convertitore (std::vector<State> vergine);
   void print(std::vector<State> vettore);
   void print_semplice(std::vector<State> vettore);
 };

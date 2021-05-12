@@ -22,6 +22,31 @@ std::vector<State> SIR::riempimento() {
   return simulazione;
 }
 
+// Approssima ad int 
+State SIR::approx(State obj) {
+  const int N = m_stato_iniziale.suscettibili + m_stato_iniziale.infetti + m_stato_iniziale.rimossi;
+  State stato;
+  stato.suscettibili = static_cast<int>(obj.suscettibili);
+  stato.infetti = static_cast<int>(obj.infetti);
+  stato.rimossi = static_cast<int>(obj.rimossi);
+
+  return stato;
+}
+
+std::vector<State> SIR::convertitore(std::vector<State> vergine) {
+  // metterci for each
+
+  std::vector<State> risultato;
+
+  // approssimare gli state del vettore
+  // verifica se la somma è N
+  // se la somma non è n ti modifica le persone
+  if (sum < N) {
+  }
+
+  return risultato;
+}
+
 void SIR::print(std::vector<State> vettore) {
   std::cout << "   +-------------+-------------+-------------+-------------+ \n"
                "   |  T(giorni)  |      S      |      I      |      R      | \n"
