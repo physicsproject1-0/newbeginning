@@ -87,7 +87,6 @@ class SIR {
 };
 
 // Funzione per stampare input e output
-// se c'è auto ritornare specificando il tipo
 SIR insert() {
   double beta;
   double gamma;
@@ -96,38 +95,46 @@ SIR insert() {
   int R_I;
   int giorni;
 
-  // CI VOGLIONO LE ECCEZIONI AL POSTO DEGLI ASSERT
-
   std::cout << "Buongiorno, inserisca i parametri beta e gamma del modello SIR \n";
-  std::cout << "beta >> ";
 
+  std::cout << "beta >> ";
   std::cin >> beta;
-  assert(!(beta < 0 || beta > 1));
+  if (beta < 0 || beta > 1) {
+    throw std::runtime_error{"Il parametro gamma deve essere compreso tra 0 e 1"};
+  }
 
   std::cout << "gamma >> ";
-
   std::cin >> gamma;
-  assert(!(gamma < 0 || gamma > 1));
+  if (gamma < 0 || gamma > 1) {
+    throw std::runtime_error{"Il parametro gamma deve essere compreso tra 0 e 1"};
+  }
 
   std::cout << "Ora inserisca il numero iniziale di persone suscettibili nel "
                "nostro campione \n";
   std::cin >> S_I;
-  assert(!(S_I < 0));
+  if (S_I < 0) {
+    throw std::runtime_error{"Il numero di soggetti suscettibili deve essere positivo"};
+  }
 
   std::cout << "Ora inserisca il numero iniziale di persone infetti nel nostro "
                "campione \n";
   std::cin >> I_I;
-  assert(!(I_I < 0));
+  if (I_I < 0) {
+    throw std::runtime_error{"Il numero di soggetti infetti deve essere positivo"};
+  }
 
   std::cout << "Ora inserisca il numero iniziale di persone rimossi nel nostro "
                "campione \n";
-
   std::cin >> R_I;
-  assert(!(R_I < 0));
+  if (R_I < 0) {
+    throw std::runtime_error{"Il numero di soggetti rimossi deve essere positivo"};
+  }
 
   std::cout << "Ora inserisca la durata del nostro esperimento \n";
   std::cin >> giorni;
-  assert(!(giorni < 0));
+  if (giorni < 0) {
+    throw std::runtime_error{"Il numero di soggetti suscettibili deve essere positivo"};
+  }
 
   epidemia::State s0;
 

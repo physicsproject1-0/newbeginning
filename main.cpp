@@ -4,17 +4,25 @@
 #include "newSIR.hpp"
 
 int main() {
-  epidemia::SIR mondo = epidemia::insert();
-  mondo.riempimento();
+  try {
+    epidemia::SIR mondo = epidemia::insert();
+    mondo.riempimento();
 
-  int x;
-  std::cout << "Preferisce una rappresentazione grafica a griglia oppure una visualizzazione minimale dei dati?\n"
-               "Per la rappresentazione a schermo di una griglia premere 1, in caso contrario premere 0 \n";
-  std::cin >> x;
-  assert(x == 0 || x == 1);         //Da mettere un'exception al posto dell'assert
-  if (x == 1) {
-    mondo.print();
-  } else if (x == 0) {
-    mondo.print_semplice();
+    int x;
+    std::cout << "Preferisce una rappresentazione grafica a griglia oppure una visualizzazione minimale dei dati?\n"
+                 "Per la rappresentazione a schermo di una griglia premere 1, in caso contrario premere 0 \n";
+
+    std::cin >> x;
+    if (x != 0 && x != 1) {
+      throw std::runtime_error{"Si può inserire solo 1 o 0 nella selezione del metodo di stampa"};
+    }
+
+    if (x == 1) {
+      mondo.print();
+    } else if (x == 0) {
+      mondo.print_semplice();
+    }
+  } catch (std::runtime_error const& e) {
+    std::cerr << e.what() << '\n';
   }
 }
