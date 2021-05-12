@@ -6,8 +6,6 @@
 int main() {
   try {
     epidemia::SIR mondo = epidemia::insert();
-    mondo.riempimento();
-
     int x;
     std::cout << "Preferisce una rappresentazione grafica a griglia oppure una visualizzazione minimale dei dati?\n"
                  "Per la rappresentazione a schermo di una griglia premere 1, in caso contrario premere 0 \n";
@@ -18,9 +16,9 @@ int main() {
     }
 
     if (x == 1) {
-      mondo.print();
+      mondo.print(mondo.riempimento());
     } else if (x == 0) {
-      mondo.print_semplice();
+      mondo.print_semplice(mondo.riempimento());
     }
   } catch (std::runtime_error const& e) {
     std::cerr << e.what() << '\n';

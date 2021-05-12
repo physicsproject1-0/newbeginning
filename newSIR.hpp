@@ -29,7 +29,6 @@ class SIR {
   int m_durata_simulazione;
   double m_beta;
   double m_gamma;
-  std::vector<State> simulazione_finale;
 
   // boh forse, problema n int? per tirarlo fuori
   const int N = m_stato_iniziale.suscettibili + m_stato_iniziale.infetti + m_stato_iniziale.rimossi;
@@ -41,27 +40,9 @@ class SIR {
 
   // SIR()=default;
 
-  void riempimento() {
-    std::vector<State> simulazione{m_stato_iniziale};
-
-    // durata simulazione non include anche il giorno di inizio
-
-    for (int i = 0; i < m_durata_simulazione; i++) {
-      State stato = simulazione.back();
-      State newState;  // non chiamare il costruttore con le tonde, è ambiguità
-
-      newState.suscettibili = stato.suscettibili - (m_beta * stato.suscettibili * stato.infetti) / N;
-      newState.infetti = stato.infetti + (m_beta * stato.suscettibili * stato.infetti) / N - m_gamma * stato.infetti;
-      newState.rimossi = stato.rimossi + m_gamma * stato.infetti;
-      newState.giorno = i + 1;
-
-      simulazione.push_back(newState);
-    }
-
-    simulazione_finale = simulazione;
-  }
-  void SIR::print();
-  void SIR::print_semplice();
+  std::vector<State> riempimento();
+  void print(std::vector<State> vettore);
+  void print_semplice(std::vector<State> vettore);
 };
 
 SIR insert();
