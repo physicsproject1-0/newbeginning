@@ -1,9 +1,13 @@
 #include "classe.hpp"
+#include <iostream>
 
 int main(){
     sf::RenderWindow window(sf::VideoMode(600, 600), "Tilemap");
-
-    Mondo map(10);
+    window.setFramerateLimit(60);
+    int n;
+    std::cin>>n;
+    Mondo map(n);
+    map.creagriglia();
     
     while (window.isOpen())
     {
@@ -17,7 +21,10 @@ int main(){
 
         // draw the map
         window.clear();
+
+        map.azzera();
         map.evolvi();
+        
         window.draw(map);
         window.display();
     }

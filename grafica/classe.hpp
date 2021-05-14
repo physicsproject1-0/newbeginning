@@ -4,66 +4,78 @@
 #ifndef DISA
 #define DISA
 
-class Persona {
+struct Persona {
   sf::Vector2f centro;
-  sf::Vector2f raggio;
-  sf::Vector2f vel;
-  sf::VertexArray triangolo;  //  perchè cazzo non funziona
-
- public:
-  Persona(sf::Vector2f const& center, float radius) {
-    centro = center;
-    raggio = radius;
-    vel = sf::Vector2f(rand() % 5 - 2.5f, rand() % 5 - 2.5f);
-    triangolo.setPrimitiveType(sf::Triangles);
-    triangolo.resize(3);
-    triangolo[0].position = sf::Vector2f(centro.x, centro.y - radius);  // strane coord
-    triangolo[1].position = sf::Vector2f(centro.x - radius * (1.7f / 2), centro.y + (radius / 2));
-    triangolo[2].position = sf::Vector2f(centro.x + radius * (1.7f / 2), centro.y + (radius / 2));
-    triangolo[0].color = sf::Color::Yellow;
-    triangolo[1].color = sf::Color::Yellow;
-    triangolo[2].color = sf::Color::Yellow;
-  }
-  sf::Vector2f get(int n) { return triangolo[n].position; }
-  sf::Vector2f getv() { return vel; }
+  float raggio;
+  sf::Vector2f vel ;
 };
 
 class Mondo : public sf::Drawable {
  private:  // la draw non va nel protected??
   sf::VertexArray Griglia;
-  
-  std::vector<Persona> Lista;
+  std::map<int, Persona> Lista;
+
+  sf::Clock timer;
+  sf::Time trascorso;
+
   virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const { target.draw(Griglia); }
+
   // perchè la devo mettere qua
   // virtual qua non ce lo devo mettere, giusto? tanto non creerò classi derivate da questa
   // poi come fa window.draw(entity) a chiamare internamente entity.draw se è nella parte privata?!
 
-  void invvel(int i) { velocita[i] = -velocita[i]; }
-
  public:
   Mondo(int persone) {
     Persona prova;
-    Lista=std::vector<Persona>(persone, prova);//appena aggiunto
-    Griglia.resize(persone * 3);
+    
+    for (int i = 0; i<persone;i++){
+    prova.centro = sf::Vector2f(rand() % 500, rand() % 500);
+    prova.raggio = 10.f;
+    prova.vel = sf::Vector2f(rand() % 50 - 25.f, rand() % 50 - 25.f);
+    Lista[i]=prova;
+    }
+    Griglia.resize(Lista.size() * 3);
     Griglia.setPrimitiveType(sf::Triangles);
-    for (int i = 0; i < persone; i++) {
-      Persona test(sf::Vector2f(rand() % 500, rand() % 500), 10);
+  }
+
+  void creagriglia() {
+    for (int i = 0; i < Lista.size(); i++) {
+      // sf::Vertex* iter = &Griglia[i * 3];
+      // iter[0].position = Lista[i].get(0);
+      // iter[1].position = Lista[i].get(1);
+      // iter[2].position = Lista[i].get(2);
+      // iter[0].color = sf::Color::Yellow;
+      // iter[1].color = sf::Color::Yellow;
+      // iter[2].color = sf::Color::Yellow;
       sf::Vertex* iter = &Griglia[i * 3];
-      iter[0].position = test.get(0);
-      iter[1].position = test.get(1);
-      iter[2].position = test.get(2);
-      velocita.push_back(test.getv());
+      iter[0].position = sf::Vector2f(Lista[i].centro.x, Lista[i].centro.y - Lista[i].raggio);  // strane coord
+      iter[1].position = sf::Vector2f(Lista[i].centro.x - Lista[i].raggio * (1.7f / 2), Lista[i].centro.y + (Lista[i].raggio / 2));
+      iter[2].position = sf::Vector2f(Lista[i].centro.x + Lista[i].raggio * (1.7f / 2), Lista[i].centro.y + (Lista[i].raggio / 2));
+      
     }
   }
-  void //modificare la classeeeeeeeeee
+
+  void evolvi_singolo(int indice){
+    
+    Lista[indice].centro += Lista[indice].vel*trascorso.asSeconds();
+
+    sf::Vertex* iter = &Griglia[indice * 3];
+      iter[0].position += sf::Vector2f(Lista[indice].vel*trascorso.asSeconds());  // strane coord
+      iter[1].position += sf::Vector2f(Lista[indice].vel*trascorso.asSeconds());
+      iter[2].position += sf::Vector2f(Lista[indice].vel*trascorso.asSeconds());
+
+  }
+
   void evolvi() {
-    for (int i = 0; i < personetotali * 3; i++) {
-      if (Griglia[i].position.x > 550 || Griglia[i].position.x < -50 || Griglia[i].position.y < -50 || Griglia[i].position.y > 550) {
-        invvel(i);
-      }
-      Griglia[i].position = sf::Vector2f(Griglia[i].position.x + velocita[(int)(i / 3)].x, Griglia[i].position.y + velocita[(int)(i / 3)].x);
+    for (int i = 0; i < Lista.size(); i++) {
+      // if (Griglia[i].position.x > 550 || Griglia[i].position.x < -50 || Griglia[i].position.y < -50 || Griglia[i].position.y > 550) {
+      //  invvel(i);
+      //}
+      evolvi_singolo(i);
     }
   }
+
+  void azzera() { trascorso = timer.restart(); }
 };
 
 #endif
