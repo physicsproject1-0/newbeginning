@@ -34,9 +34,10 @@ State SIR::approx(State obj) {
 }
 
 std::vector<State> SIR::convertitore(std::vector<State> vergine) {
-  std::vector<State> risultato;
-  for (int i = 0; i < vergine.size(); ++i) {
+  std::vector<State> risultato{vergine[0]};
+  for (unsigned int i = 1; i < vergine.size(); ++i) {
     State stato_approssimato = approx(vergine[i]);
+    State precedente = risultato.back();
 
     if (stato_approssimato.suscettibili + stato_approssimato.infetti + stato_approssimato.rimossi != N) {
       int a = N - (stato_approssimato.suscettibili + stato_approssimato.infetti + stato_approssimato.rimossi);
@@ -46,14 +47,14 @@ std::vector<State> SIR::convertitore(std::vector<State> vergine) {
       float r_rimossi = std::modf(vergine[i].rimossi, &stato_approssimato.rimossi);
 
       while (a != 0) {
-        if ((r_suscettibili > r_infetti) && (r_suscettibili > r_rimossi)) {
+        if ((r_suscettibili > r_infetti) && (r_suscettibili > r_rimossi) && (stato_approssimato.suscettibili < precedente.suscettibili)) {
           stato_approssimato.suscettibili += 1;
           r_suscettibili = 0;
-        } else if (r_infetti > r_rimossi) {
-          stato_approssimato.infetti += 1;
+        } else if ((r_infetti < r_rimossi) && (stato_approssimato.rimossi > precedente.rimossi)) {
+          stato_approssimato.rimossi += 1;
           r_infetti = 0;
         } else {
-          stato_approssimato.rimossi += 1;
+          stato_approssimato.infetti += 1;
           r_rimossi = 0;
         }
         a--;
