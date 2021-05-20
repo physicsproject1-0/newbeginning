@@ -1,7 +1,8 @@
 #include "newSIR.hpp"
 
-namespace epidemia {
+#include <cmath>
 
+namespace epidemia {
 std::vector<State> SIR::riempimento() {
   std::vector<State> simulazione{m_stato_iniziale};
 
@@ -22,26 +23,45 @@ std::vector<State> SIR::riempimento() {
   return simulazione;
 }
 
-// Approssima ad int 
+// Approssima ad int, passare by ref
 State SIR::approx(State obj) {
-  const int N = m_stato_iniziale.suscettibili + m_stato_iniziale.infetti + m_stato_iniziale.rimossi;
   State stato;
   stato.suscettibili = static_cast<int>(obj.suscettibili);
   stato.infetti = static_cast<int>(obj.infetti);
   stato.rimossi = static_cast<int>(obj.rimossi);
-
+  stato.giorno = obj.giorno;
   return stato;
 }
 
 std::vector<State> SIR::convertitore(std::vector<State> vergine) {
-  // metterci for each
-
   std::vector<State> risultato;
+  for (int i = 0; i < vergine.size(); ++i) {
+    State stato_approssimato = approx(vergine[i]);
 
-  // approssimare gli state del vettore
-  // verifica se la somma è N
-  // se la somma non è n ti modifica le persone
-  if (sum < N) {
+    if (stato_approssimato.suscettibili + stato_approssimato.infetti + stato_approssimato.rimossi != N) {
+      int a = N - (stato_approssimato.suscettibili + stato_approssimato.infetti + stato_approssimato.rimossi);
+      float r_suscettibili =
+          std::modf(vergine[i].suscettibili, &stato_approssimato.suscettibili);  // modf() mi dà la parte decimale di un numero double o float
+      float r_infetti = std::modf(vergine[i].infetti, &stato_approssimato.infetti);
+      float r_rimossi = std::modf(vergine[i].rimossi, &stato_approssimato.rimossi);
+
+      while (a != 0) {
+        if ((r_suscettibili > r_infetti) && (r_suscettibili > r_rimossi)) {
+          stato_approssimato.suscettibili += 1;
+          r_suscettibili = 0;
+        } else if (r_infetti > r_rimossi) {
+          stato_approssimato.infetti += 1;
+          r_infetti = 0;
+        } else {
+          stato_approssimato.rimossi += 1;
+          r_rimossi = 0;
+        }
+        a--;
+      }
+      risultato.push_back(stato_approssimato);
+    } else {
+      risultato.push_back(stato_approssimato);
+    }
   }
 
   return risultato;
@@ -126,7 +146,7 @@ SIR insert() {
   s0.suscettibili = S_I;
   s0.infetti = I_I;
   s0.rimossi = R_I;
-
-  return {s0, giorni, beta, gamma};
+  int NUMERO = S_I + I_I + R_I;  // testare anche l'altra
+  return {s0, giorni, beta, gamma, NUMERO};
 }
 }  // namespace epidemia

@@ -28,17 +28,18 @@ class SIR {
   int m_durata_simulazione;
   double m_beta;
   double m_gamma;
+  int const N;
 
  public:
-  SIR(State const& stato_iniziale, int durata_simulazione, double beta,
-      double gamma)  // costruttore
-  : m_stato_iniziale{stato_iniziale}, m_durata_simulazione{durata_simulazione}, m_beta{beta}, m_gamma{gamma} {}
+  SIR(State const& stato_iniziale, int durata_simulazione, double beta,  // costruttore
+      double gamma, int const m_N)
+      : m_stato_iniziale{stato_iniziale}, m_durata_simulazione{durata_simulazione}, m_beta{beta}, m_gamma{gamma}, N{m_N} {}
 
   // SIR()=default;
 
   std::vector<State> riempimento();
   State approx(State obj);
-  std::vector<State> convertitore (std::vector<State> vergine);
+  std::vector<State> convertitore(std::vector<State> vergine);
   void print(std::vector<State> vettore);
   void print_semplice(std::vector<State> vettore);
 };

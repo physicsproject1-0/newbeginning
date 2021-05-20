@@ -15,9 +15,9 @@ int main() {
     }
 
     if (x == 1) {
-      mondo.print(mondo.riempimento());
+      mondo.print(mondo.convertitore(mondo.riempimento()));
     } else if (x == 0) {
-      mondo.print_semplice(mondo.riempimento());
+      mondo.print_semplice(mondo.convertitore(mondo.riempimento()));
     }
   } catch (std::runtime_error const& e) {
     std::cerr << e.what() << '\n';
