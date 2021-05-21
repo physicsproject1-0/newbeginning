@@ -23,14 +23,11 @@ std::vector<State> SIR::riempimento() {
   return simulazione;
 }
 
-// Approssima ad int, passare by ref
-State SIR::approx(State obj) {
-  State stato;
-  stato.suscettibili = static_cast<int>(obj.suscettibili);
-  stato.infetti = static_cast<int>(obj.infetti);
-  stato.rimossi = static_cast<int>(obj.rimossi);
-  stato.giorno = obj.giorno;
-  return stato;
+// HO MODIFICATO IL PASSAGGIO DI APPROX A "BY REF"
+State SIR::approx(State& obj) {
+  obj.suscettibili = static_cast<int>(obj.suscettibili);
+  obj.infetti = static_cast<int>(obj.infetti);
+  obj.rimossi = static_cast<int>(obj.rimossi);
 }
 
 std::vector<State> SIR::convertitore(std::vector<State> vergine) {

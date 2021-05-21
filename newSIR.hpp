@@ -38,7 +38,7 @@ class SIR {
   // SIR()=default;
 
   std::vector<State> riempimento();
-  State approx(State obj);
+  State approx(State& obj);
   std::vector<State> convertitore(std::vector<State> vergine);
   void print(std::vector<State> vettore);
   void print_semplice(std::vector<State> vettore);
