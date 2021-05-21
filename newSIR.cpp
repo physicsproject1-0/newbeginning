@@ -24,10 +24,12 @@ std::vector<State> SIR::riempimento() {
 }
 
 // HO MODIFICATO IL PASSAGGIO DI APPROX A "BY REF"
-State SIR::approx(State& obj) {
-  obj.suscettibili = static_cast<int>(obj.suscettibili);
-  obj.infetti = static_cast<int>(obj.infetti);
-  obj.rimossi = static_cast<int>(obj.rimossi);
+State SIR::approx(State obj) {
+  State stato;
+  stato.suscettibili = static_cast<int>(obj.suscettibili);
+  stato.infetti = static_cast<int>(obj.infetti);
+  stato.rimossi = static_cast<int>(obj.rimossi);
+  return stato;
 }
 
 std::vector<State> SIR::convertitore(std::vector<State> vergine) {
@@ -36,12 +38,18 @@ std::vector<State> SIR::convertitore(std::vector<State> vergine) {
     State stato_approssimato = approx(vergine[i]);
     State precedente = risultato.back();
 
+
+
     if (stato_approssimato.suscettibili + stato_approssimato.infetti + stato_approssimato.rimossi != N) {
       int a = N - (stato_approssimato.suscettibili + stato_approssimato.infetti + stato_approssimato.rimossi);
+      
       float r_suscettibili =
           std::modf(vergine[i].suscettibili, &stato_approssimato.suscettibili);  // modf() mi dà la parte decimale di un numero double o float
       float r_infetti = std::modf(vergine[i].infetti, &stato_approssimato.infetti);
       float r_rimossi = std::modf(vergine[i].rimossi, &stato_approssimato.rimossi);
+
+      
+      std::array<float, 3> elenco = {r_suscettibili, r_infetti, r_rimossi};
 
       while (a != 0) {
         if ((r_suscettibili > r_infetti) && (r_suscettibili > r_rimossi) && (stato_approssimato.suscettibili < precedente.suscettibili)) {
@@ -56,6 +64,18 @@ std::vector<State> SIR::convertitore(std::vector<State> vergine) {
         }
         a--;
       }
+      /*
+      //end() ACCEDE ALLA CASELLA DOPO L'ULTIMA
+      while (a != 0){
+        auto elemento = std::max_element(elenco.begin(), elenco.end());
+        if (std::distance(elenco.begin(), elemento)!=1 && (stato_approssimato.suscettibili < precedente.suscettibili)){
+
+        }
+        a--;
+      }
+      */
+
+
       risultato.push_back(stato_approssimato);
     } else {
       risultato.push_back(stato_approssimato);
