@@ -75,7 +75,7 @@ void SIR::print(std::vector<State> vettore) {
             << std::fixed;
 
   for (auto const& i : vettore) {
-    std::cout << std::right << "   |" << std::setw(13) << i.giorno << "|" << std::setw(13) << i.suscettibili << "|" << std::setw(13) << i.infetti
+    std::cout << std::right << "   |" << std::setw(13) << std::setprecision(0) << i.giorno << "|" << std::setw(13) << i.suscettibili << "|" << std::setw(13) << i.infetti
               << "|" << std::setw(13) << i.rimossi << "|"
               << "\n";
   }
@@ -87,7 +87,7 @@ void SIR::print_semplice(std::vector<State> vettore) {
   std::cout << std::setw(13) << "T" << std::setw(13) << "S" << std::setw(13) << "I" << std::setw(13) << "R" << '\n';
 
   for (auto const& i : vettore) {
-    std::cout << std::right << std::setw(13) << i.giorno << std::setw(13) << i.suscettibili << std::setw(13) << i.infetti << std::setw(13)
+    std::cout << std::right << std::setw(13) << std::setprecision(0) << i.giorno << std::setw(13) << i.suscettibili << std::setw(13) << i.infetti << std::setw(13)
               << i.rimossi << "\n";
   }
 }
