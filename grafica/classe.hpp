@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include <SFML/Graphics.hpp>
 #include <cstdlib>
 
@@ -8,12 +10,14 @@ struct Persona {
   sf::Vector2f centro;
   float raggio;
   sf::Vector2f vel;
+  sf::Clock cambiovelocita;
+  
 };
 
 class Mondo : public sf::Drawable {
  private:  // la draw non va nel protected??
   sf::VertexArray Griglia;
-  std::map<int, Persona> Lista;
+  std::map<int, Persona> Lista;  // contiene solo le persone
 
   sf::Clock timer;
   sf::Time trascorso;
@@ -54,42 +58,60 @@ class Mondo : public sf::Drawable {
     }
   }
 
-  //sf::Vector2f estimate(Persona& persona) {
+  // sf::Vector2f estimate(Persona& persona) {
   //  return persona.centro + persona.vel * trascorso.asSeconds();
   //  // (estimated.x <50 || estimated.y<50 || estimated.y>500 || estimated.x>500){
   //}
 
-//pensare a modo con cambiare la posizione delle pallli ne che sbattono
+  // pensare a modo con cambiare la posizione delle pallli ne che sbattono
   void evolvi_singolo(int indice) {
-    //while (estimate(Lista[indice]) e altro) {
+    // while (estimate(Lista[indice]) e altro) {
     //}
-    if (Lista[indice].centro.x < 50 || Lista[indice].centro.x > 550 ){
+    float deltat = trascorso.asSeconds();  // metto qua perchè se lo chiamo in punti diversi magari sono leggemente diversi
+    if (Lista[indice].centro.x < 50 || Lista[indice].centro.x > 550) {
       Lista[indice].vel.x = -Lista[indice].vel.x;
     }
-    if (Lista[indice].centro.y < 50 || Lista[indice].centro.y > 550 ){
-      Lista[indice].vel.y= -Lista[indice].vel.y;
+    if (Lista[indice].centro.y < 50 || Lista[indice].centro.y > 550) {
+      Lista[indice].vel.y = -Lista[indice].vel.y;
     }
-    Lista[indice].centro += Lista[indice].vel * trascorso.asSeconds();
+    if ( Lista[indice].cambiovelocita.getElapsedTime().asSeconds() >0.5 ){ //per modificare il moto browniano
+    sf::Vector2f nuovavel(rand() % 50 - 25.f, rand() % 50 - 25.f);
+    Lista[indice].vel=nuovavel;
+      Lista[indice].cambiovelocita.restart();
+    }
+    Lista[indice].centro += Lista[indice].vel*deltat;    
 
     sf::Vertex* iter = &Griglia[indice * 3];
-    iter[0].position += sf::Vector2f(Lista[indice].vel * trascorso.asSeconds());  // strane coord
-    iter[1].position += sf::Vector2f(Lista[indice].vel * trascorso.asSeconds());
-    iter[2].position += sf::Vector2f(Lista[indice].vel * trascorso.asSeconds());
+    iter[0].position += Lista[indice].vel * deltat;  // strane coord
+    iter[1].position += Lista[indice].vel * deltat;
+    iter[2].position += Lista[indice].vel * deltat;
   }
-
 
   void evolvi() {
-  for (int i = 0; i < Lista.size(); i++) {
-    // if (Griglia[i].position.x > 550 || Griglia[i].position.x < -50 || Griglia[i].position.y < -50 || Griglia[i].position.y > 550) {
-    //  invvel(i);
-    //}
-    evolvi_singolo(i);
+    for (int i = 0; i < Lista.size(); i++) {
+      // if (Griglia[i].position.x > 550 || Griglia[i].position.x < -50 || Griglia[i].position.y < -50 || Griglia[i].position.y > 550) {
+      //  invvel(i);
+      //}
+      evolvi_singolo(i);
+    }
   }
-}
+
+  int check_occur(Persona const& persona, int raggio) {  // decidere un raggio accettabile
+    int occur = 0;
+    for (int i = 0; i < Lista.size(); i++) {
+      if (modulo(persona.centro - Lista[i].centro) <= raggio) {
+        occur++;
+      }
+    }
+    return occur;
+  } //in caso creare delle corone circolari con varie numerazioni
+  //introdurre dipendenza dal tempo
 
 
-void azzera() { trascorso = timer.restart(); }
-}
-;
+
+  double modulo(sf::Vector2f const& vettore) { return sqrt(pow(vettore.x, 2) + pow(vettore.y, 2)); }
+
+  void azzera() { trascorso = timer.restart(); }
+};
 
 #endif
