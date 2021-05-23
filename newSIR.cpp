@@ -32,24 +32,27 @@ State SIR::approx(State obj) {
   return stato;
 }
 
-std::vector<State> SIR::convertitore(std::vector<State> vergine) {
+std::vector<State> SIR::convertitore(std::vector<State> const& vergine) {
   std::vector<State> risultato{vergine[0]};
   for (unsigned int i = 1; i < vergine.size(); ++i) {
+    
     State stato_approssimato = approx(vergine[i]);
     State precedente = risultato.back();
 
+    int somma = stato_approssimato.suscettibili + stato_approssimato.infetti + stato_approssimato.rimossi;
 
 
-    if (stato_approssimato.suscettibili + stato_approssimato.infetti + stato_approssimato.rimossi != N) {
-      int a = N - (stato_approssimato.suscettibili + stato_approssimato.infetti + stato_approssimato.rimossi);
+    if (somma != N) {
+      int a = N - somma;
       
       float r_suscettibili =
           std::modf(vergine[i].suscettibili, &stato_approssimato.suscettibili);  // modf() mi dà la parte decimale di un numero double o float
       float r_infetti = std::modf(vergine[i].infetti, &stato_approssimato.infetti);
       float r_rimossi = std::modf(vergine[i].rimossi, &stato_approssimato.rimossi);
 
-      
-      std::array<float, 3> elenco = {r_suscettibili, r_infetti, r_rimossi};
+      //std::array<int, 3> prec = {precedente.rimossi, precedente.suscettibili, precedente.infetti }
+      //std::array<int, 3> stato = {&stato_approssimato.rimossi, &stato_approssimato.suscettibili, &stato_approssimato.infetti};
+      //std::array<float, 3> resti = { r_rimossi, r_suscettibili, r_infetti};
 
       while (a != 0) {
         if ((r_suscettibili > r_infetti) && (r_suscettibili > r_rimossi) && (stato_approssimato.suscettibili < precedente.suscettibili)) {
@@ -67,10 +70,19 @@ std::vector<State> SIR::convertitore(std::vector<State> vergine) {
       /*
       //end() ACCEDE ALLA CASELLA DOPO L'ULTIMA
       while (a != 0){
-        auto elemento = std::max_element(elenco.begin(), elenco.end());
-        if (std::distance(elenco.begin(), elemento)!=1 && (stato_approssimato.suscettibili < precedente.suscettibili)){
+        auto elemento = std::max_element(resti.begin(), resti.end());
+        int index = std::distance(resti.begin(), elemento);
+
+        if (index ==1 && index){
 
         }
+        if else (){
+
+        }
+        else{
+          
+        }
+        resti[index]=0;
         a--;
       }
       */

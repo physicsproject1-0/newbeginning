@@ -63,7 +63,12 @@ class Mondo : public sf::Drawable {
   void evolvi_singolo(int indice) {
     //while (estimate(Lista[indice]) e altro) {
     //}
-
+    if (Lista[indice].centro.x < 50 || Lista[indice].centro.x > 550 ){
+      Lista[indice].vel.x = -Lista[indice].vel.x;
+    }
+    if (Lista[indice].centro.y < 50 || Lista[indice].centro.y > 550 ){
+      Lista[indice].vel.y= -Lista[indice].vel.y;
+    }
     Lista[indice].centro += Lista[indice].vel * trascorso.asSeconds();
 
     sf::Vertex* iter = &Griglia[indice * 3];
@@ -81,6 +86,7 @@ class Mondo : public sf::Drawable {
     evolvi_singolo(i);
   }
 }
+
 
 void azzera() { trascorso = timer.restart(); }
 }

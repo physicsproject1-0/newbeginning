@@ -39,7 +39,7 @@ class SIR {
 
   std::vector<State> riempimento();
   State approx(State obj);
-  std::vector<State> convertitore(std::vector<State> vergine);
+  std::vector<State> convertitore(std::vector<State> const& vergine);
   void print(std::vector<State> vettore);
   void print_semplice(std::vector<State> vettore);
 };
