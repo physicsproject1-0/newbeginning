@@ -1,10 +1,40 @@
 #include <iostream>
 
+#include "lyra.hpp"
 #include "newSIR.hpp"
 
-int main() {
+int main(int argc, const char** argv) {
   try {
-    epidemia::SIR mondo = epidemia::insert();
+    std::string opzione;
+    bool mostra_aiuto = false;
+    auto list = lyra::help(mostra_aiuto) | lyra::opt(opzione, "opzione")["-f"]["--formato"](
+                                               "Permette di formattare in colonne separate da virgole con \"virgola\" e da spazi con \"spazio\"");
+    auto parser = list.parse({argc, argv});
+
+    if (!parser) {
+      throw std::runtime_error{"inserisci un'opzione valida"};
+      std::cerr << list << "\n";
+    }
+
+    if (mostra_aiuto) {
+      std::cout << list << "\n";
+      return 0;  // va bene qua?
+    }
+
+    if (opzione == "virgola") {
+      epidemia::SIR mondo = epidemia::insert();
+      mondo.print_semplice_virgola(mondo.convertitore(mondo.riempimento()));
+    } else if (opzione == "spazio") {
+      epidemia::SIR mondo = epidemia::insert();
+      mondo.print_semplice_spazio(mondo.convertitore(mondo.riempimento()));
+    } else if (opzione.empty()) {
+      epidemia::SIR mondo = epidemia::insert();
+      mondo.print(mondo.convertitore(mondo.riempimento()));
+    } else {
+      throw std::runtime_error{"inserisci un'opzione valida"};
+    }
+
+    /*
     int x;
     std::cout << "Preferisce una rappresentazione grafica a griglia oppure una visualizzazione minimale dei dati?\n"
                  "Per la rappresentazione a schermo di una griglia premere 1, in caso contrario premere 0 \n";
@@ -19,12 +49,15 @@ int main() {
     } else if (x == 0) {
       mondo.print_semplice(mondo.convertitore(mondo.riempimento()));
     }
+<<<<<<< HEAD
+    
+    */
     ///////////
     /////////// così lo vedete ahahah
     ///////////
     ///////////
     //plot() con dentro le tre componenti del vettore direi;
   } catch (std::runtime_error const& e) {
-    std::cerr << e.what() << '\n';
+    std::cerr << "ERRORE: " << e.what() << '\n';
   }
 }
