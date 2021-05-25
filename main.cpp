@@ -49,8 +49,14 @@ int main(int argc, const char** argv) {
     } else if (x == 0) {
       mondo.print_semplice(mondo.convertitore(mondo.riempimento()));
     }
+<<<<<<< HEAD
+    
     */
-
+    ///////////
+    /////////// così lo vedete ahahah
+    ///////////
+    ///////////
+    //plot() con dentro le tre componenti del vettore direi;
   } catch (std::runtime_error const& e) {
     std::cerr << "ERRORE: " << e.what() << '\n';
   }
