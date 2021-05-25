@@ -41,7 +41,8 @@ class SIR {
   State approx(State obj);
   std::vector<State> convertitore(std::vector<State> const& vergine);
   void print(std::vector<State> vettore);
-  void print_semplice(std::vector<State> vettore);
+  void print_semplice_virgola(std::vector<State> vettore);
+  void print_semplice_spazio(std::vector<State> vettore);
 };
 
 SIR insert();

@@ -29,6 +29,7 @@ State SIR::approx(State obj) {
   stato.suscettibili = static_cast<int>(obj.suscettibili);
   stato.infetti = static_cast<int>(obj.infetti);
   stato.rimossi = static_cast<int>(obj.rimossi);
+  stato.giorno = obj.giorno;
   return stato;
 }
 
@@ -112,11 +113,31 @@ void SIR::print(std::vector<State> vettore) {
   std::cout << "   +-------------+-------------+-------------+-------------+ \n";
 }
 
-void SIR::print_semplice(std::vector<State> vettore) {
+//qua deve printare i valori separati solo da uno spazio o una virgola, controllare che li stampa con la notazione scientifica
+void SIR::print_semplice_virgola(std::vector<State> vettore) {
+  std::cout << "T,S,I,R" << '\n';
+
+  for (auto const& i : vettore) {
+    std::cout << std::setprecision(0) << std::fixed << i.giorno << "," << i.suscettibili << "," << i.infetti << ","
+              << i.rimossi << "\n";
+  }
+}
+
+/*
+void SIR::print_semplice_spazio(std::vector<State> vettore) {
   std::cout << std::setw(13) << "T" << std::setw(13) << "S" << std::setw(13) << "I" << std::setw(13) << "R" << '\n';
 
   for (auto const& i : vettore) {
     std::cout << std::right << std::setw(13) << std::setprecision(0) << i.giorno << std::setw(13) << i.suscettibili << std::setw(13) << i.infetti << std::setw(13)
+              << i.rimossi << "\n";
+  }
+}
+*/
+void SIR::print_semplice_spazio(std::vector<State> vettore) {
+  std::cout << "T S I R" << '\n';
+
+  for (auto const& i : vettore) {
+    std::cout << std::setprecision(0) <<std::fixed<< i.giorno << " " << i.suscettibili <<  " "  << i.infetti << " " 
               << i.rimossi << "\n";
   }
 }
@@ -133,42 +154,37 @@ SIR insert() {
   std::cout << "Buongiorno, inserisca i parametri beta e gamma del modello SIR \n";
 
   std::cout << "beta >> ";
-  std::cin >> beta;
-  if (beta < 0 || beta > 1) {
-    throw std::runtime_error{"Il parametro gamma deve essere compreso tra 0 e 1"};
+  if (!(std::cin >> beta) || beta < 0 || beta > 1) {
+    throw std::runtime_error{"Il parametro gamma deve essere un decimale compreso tra 0 e 1"};
   }
+  //errore strano se provo ad inserire un carattere, va avanti fino alla fine della funzione
 
   std::cout << "gamma >> ";
-  std::cin >> gamma;
-  if (gamma < 0 || gamma > 1) {
-    throw std::runtime_error{"Il parametro gamma deve essere compreso tra 0 e 1"};
+  if (!(std::cin >> gamma) ||gamma < 0 || gamma > 1) {
+    throw std::runtime_error{"Il parametro gamma deve essere un decimale compreso tra 0 e 1"};
   }
 
   std::cout << "Ora inserisca il numero iniziale di persone suscettibili nel "
                "nostro campione \n";
-  std::cin >> S_I;
-  if (S_I < 0) {
-    throw std::runtime_error{"Il numero di soggetti suscettibili deve essere positivo"};
+  if (!(std::cin >> S_I) || S_I < 0) {
+    throw std::runtime_error{"Il numero di soggetti suscettibili deve essere un intero positivo"};
   }
 
   std::cout << "Ora inserisca il numero iniziale di persone infetti nel nostro "
                "campione \n";
-  std::cin >> I_I;
-  if (I_I < 0) {
-    throw std::runtime_error{"Il numero di soggetti infetti deve essere positivo"};
+  if (!(std::cin >> I_I) || I_I < 0) {
+    throw std::runtime_error{"Il numero di soggetti infetti deve essere un intero positivo"};
   }
 
   std::cout << "Ora inserisca il numero iniziale di persone rimossi nel nostro "
                "campione \n";
-  std::cin >> R_I;
-  if (R_I < 0) {
-    throw std::runtime_error{"Il numero di soggetti rimossi deve essere positivo"};
+  if (!(std::cin >> R_I) || R_I < 0) {
+    throw std::runtime_error{"Il numero di soggetti rimossi deve essere un intero positivo"};
   }
 
   std::cout << "Ora inserisca la durata del nostro esperimento \n";
-  std::cin >> giorni;
-  if (giorni < 0) {
-    throw std::runtime_error{"Il numero di soggetti suscettibili deve essere positivo"};
+  if (!(std::cin >> giorni) || giorni < 0) {
+    throw std::runtime_error{"Il numero di soggetti suscettibili deve essere un intero positivo"};
   }
 
   epidemia::State s0;
