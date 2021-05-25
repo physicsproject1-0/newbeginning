@@ -7,7 +7,6 @@ int main(){
     int n;
     std::cin>>n;
     Mondo map(n);
-    map.creagriglia();
     
     while (window.isOpen())
     {
@@ -24,7 +23,7 @@ int main(){
 
         map.azzera();
         map.evolvi();
-        
+        map.aggiornagriglia();
         window.draw(map);
         window.display();
     }
