@@ -74,20 +74,19 @@ class Mondo : public sf::Drawable {
     // while (estimate(Lista[indice]) e altro) {
     //}
     float deltat = trascorso.asSeconds();  // metto qua perchè se lo chiamo in punti diversi magari sono leggemente diversi
-    if (Lista[indice].centro.x < 50 || Lista[indice].centro.x > 550) {
-      Lista[indice].vel.x = -Lista[indice].vel.x;
-    }
-    if (Lista[indice].centro.y < 50 || Lista[indice].centro.y > 550) {
-      Lista[indice].vel.y = -Lista[indice].vel.y;
-    }
-    check_collisions(indice);
+    //if (Lista[indice].centro.x < 50 || Lista[indice].centro.x > 550) {
+    //  Lista[indice].vel.x = -Lista[indice].vel.x;
+    //}
+    //if (Lista[indice].centro.y < 50 || Lista[indice].centro.y > 550) {
+    //  Lista[indice].vel.y = -Lista[indice].vel.y;
+    //}
+    //check_collisions(indice);
     // if (Lista[indice].cambiovelocita.getElapsedTime().asSeconds() > 3) {  // per modificare il moto browniano
     //  sf::Vector2f nuovavel(rand() % 50 - 25.f, rand() % 50 - 25.f);
     //  Lista[indice].vel = nuovavel;
     //  Lista[indice].cambiovelocita.restart();
     //}
-    Lista[indice].centro += Lista[indice].vel * deltat;
-
+    Lista[indice].centro += Lista[indice].vel * deltat; 
     // sf::Vertex* iter = &Griglia[i* 4];
     // iter[0].position += Lista[i].vel * deltat;  // strane coord
     // iter[1].position += Lista[i].vel * deltat;
