@@ -43,9 +43,11 @@ class SIR {
   void print(std::vector<State> vettore);
   void print_semplice_virgola(std::vector<State> vettore);
   void print_semplice_spazio(std::vector<State> vettore);
+  void print_grafico(std::vector<State> vettore);
 };
 
 SIR insert();
+void grafico(std::vector<double> x, std::vector<double> y, std::vector<double> z);
 
 }  // namespace epidemia
 

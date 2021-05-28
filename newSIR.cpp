@@ -36,24 +36,22 @@ State SIR::approx(State obj) {
 std::vector<State> SIR::convertitore(std::vector<State> const& vergine) {
   std::vector<State> risultato{vergine[0]};
   for (unsigned int i = 1; i < vergine.size(); ++i) {
-    
     State stato_approssimato = approx(vergine[i]);
     State precedente = risultato.back();
 
     int somma = stato_approssimato.suscettibili + stato_approssimato.infetti + stato_approssimato.rimossi;
 
-
     if (somma != N) {
       int a = N - somma;
-      
+
       float r_suscettibili =
           std::modf(vergine[i].suscettibili, &stato_approssimato.suscettibili);  // modf() mi dà la parte decimale di un numero double o float
       float r_infetti = std::modf(vergine[i].infetti, &stato_approssimato.infetti);
       float r_rimossi = std::modf(vergine[i].rimossi, &stato_approssimato.rimossi);
 
-      //std::array<int, 3> prec = {precedente.rimossi, precedente.suscettibili, precedente.infetti }
-      //std::array<int, 3> stato = {&stato_approssimato.rimossi, &stato_approssimato.suscettibili, &stato_approssimato.infetti};
-      //std::array<float, 3> resti = { r_rimossi, r_suscettibili, r_infetti};
+      // std::array<int, 3> prec = {precedente.rimossi, precedente.suscettibili, precedente.infetti }
+      // std::array<int, 3> stato = {&stato_approssimato.rimossi, &stato_approssimato.suscettibili, &stato_approssimato.infetti};
+      // std::array<float, 3> resti = { r_rimossi, r_suscettibili, r_infetti};
 
       while (a != 0) {
         if ((r_suscettibili > r_infetti) && (r_suscettibili > r_rimossi) && (stato_approssimato.suscettibili < precedente.suscettibili)) {
@@ -81,13 +79,12 @@ std::vector<State> SIR::convertitore(std::vector<State> const& vergine) {
 
         }
         else{
-          
+
         }
         resti[index]=0;
         a--;
       }
       */
-
 
       risultato.push_back(stato_approssimato);
     } else {
@@ -105,40 +102,41 @@ void SIR::print(std::vector<State> vettore) {
             << std::fixed;
 
   for (auto const& i : vettore) {
-    std::cout << std::right << "   |" << std::setw(13) << std::setprecision(0) << i.giorno << "|" << std::setw(13) << i.suscettibili << "|" << std::setw(13) << i.infetti
-              << "|" << std::setw(13) << i.rimossi << "|"
+    std::cout << std::right << "   |" << std::setw(13) << std::setprecision(0) << i.giorno << "|" << std::setw(13) << i.suscettibili << "|"
+              << std::setw(13) << i.infetti << "|" << std::setw(13) << i.rimossi << "|"
               << "\n";
   }
 
   std::cout << "   +-------------+-------------+-------------+-------------+ \n";
 }
 
-//qua deve printare i valori separati solo da uno spazio o una virgola, controllare che li stampa con la notazione scientifica
+// qua deve printare i valori separati solo da uno spazio o una virgola, controllare che li stampa con la notazione scientifica
 void SIR::print_semplice_virgola(std::vector<State> vettore) {
   std::cout << "T,S,I,R" << '\n';
 
   for (auto const& i : vettore) {
-    std::cout << std::setprecision(0) << std::fixed << i.giorno << "," << i.suscettibili << "," << i.infetti << ","
-              << i.rimossi << "\n";
+    std::cout << std::setprecision(0) << std::fixed << i.giorno << "," << i.suscettibili << "," << i.infetti << "," << i.rimossi << "\n";
   }
 }
 
-/*
-void SIR::print_semplice_spazio(std::vector<State> vettore) {
-  std::cout << std::setw(13) << "T" << std::setw(13) << "S" << std::setw(13) << "I" << std::setw(13) << "R" << '\n';
-
-  for (auto const& i : vettore) {
-    std::cout << std::right << std::setw(13) << std::setprecision(0) << i.giorno << std::setw(13) << i.suscettibili << std::setw(13) << i.infetti << std::setw(13)
-              << i.rimossi << "\n";
-  }
-}
-*/
 void SIR::print_semplice_spazio(std::vector<State> vettore) {
   std::cout << "T S I R" << '\n';
 
   for (auto const& i : vettore) {
-    std::cout << std::setprecision(0) <<std::fixed<< i.giorno << " " << i.suscettibili <<  " "  << i.infetti << " " 
-              << i.rimossi << "\n";
+    std::cout << std::setprecision(0) << std::fixed << i.giorno << " " << i.suscettibili << " " << i.infetti << " " << i.rimossi << "\n";
+  }
+}
+
+std::vector<double> x;
+std::vector<double> y;
+std::vector<double> z;
+
+void SIR::print_grafico(std::vector<State> vettore) {
+  for (auto const& i : vettore) {
+    x.push_back(i.suscettibili);
+    y.push_back(i.infetti);
+    z.push_back(i.rimossi);
+    grafico(x, y, z);
   }
 }
 
@@ -157,10 +155,10 @@ SIR insert() {
   if (!(std::cin >> beta) || beta < 0 || beta > 1) {
     throw std::runtime_error{"Il parametro gamma deve essere un decimale compreso tra 0 e 1"};
   }
-  //errore strano se provo ad inserire un carattere, va avanti fino alla fine della funzione
+  // errore strano se provo ad inserire un carattere, va avanti fino alla fine della funzione
 
   std::cout << "gamma >> ";
-  if (!(std::cin >> gamma) ||gamma < 0 || gamma > 1) {
+  if (!(std::cin >> gamma) || gamma < 0 || gamma > 1) {
     throw std::runtime_error{"Il parametro gamma deve essere un decimale compreso tra 0 e 1"};
   }
 

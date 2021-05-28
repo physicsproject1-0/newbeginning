@@ -27,9 +27,13 @@ int main(int argc, const char** argv) {
     } else if (opzione == "spazio") {
       epidemia::SIR mondo = epidemia::insert();
       mondo.print_semplice_spazio(mondo.convertitore(mondo.riempimento()));
+    } else if (opzione == "grafico") {
+      epidemia::SIR mondo = epidemia::insert();
+      mondo.print_grafico(mondo.convertitore(mondo.riempimento()));
     } else if (opzione.empty()) {
       epidemia::SIR mondo = epidemia::insert();
       mondo.print(mondo.convertitore(mondo.riempimento()));
+      mondo.print_grafico(mondo.convertitore(mondo.riempimento()));
     } else {
       throw std::runtime_error{"inserisci un'opzione valida"};
     }
@@ -49,15 +53,9 @@ int main(int argc, const char** argv) {
     } else if (x == 0) {
       mondo.print_semplice(mondo.convertitore(mondo.riempimento()));
     }
-<<<<<<< HEAD
-    
-    */
-    ///////////
-    /////////// così lo vedete ahahah
-    ///////////
-    ///////////
-    //plot() con dentro le tre componenti del vettore direi;
-  } catch (std::runtime_error const& e) {
+*/
+
+    } catch (std::runtime_error const& e) {
     std::cerr << "ERRORE: " << e.what() << '\n';
   }
 }
