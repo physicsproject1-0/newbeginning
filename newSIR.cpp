@@ -112,19 +112,22 @@ void SIR::print(std::vector<State> vettore) {
 
 // qua deve printare i valori separati solo da uno spazio o una virgola, controllare che li stampa con la notazione scientifica
 void SIR::print_semplice_virgola(std::vector<State> vettore) {
-  std::cout << "T,S,I,R" << '\n';
+  std::cout << "      T(giorni)         S             I             R        \n" << std::fixed;
 
   for (auto const& i : vettore) {
-    std::cout << std::setprecision(0) << std::fixed << i.giorno << "," << i.suscettibili << "," << i.infetti << "," << i.rimossi << "\n";
+    std::cout << std::right << std::setw(13) << std::setprecision(0) << i.giorno << "," << std::setw(13) << i.suscettibili << "," << std::setw(13)
+              << i.infetti << "," << std::setw(13) << i.rimossi << "\n";
   }
 }
 
 void SIR::print_semplice_spazio(std::vector<State> vettore) {
-  std::cout << "T S I R" << '\n';
+  std::cout << "      T(giorni)         S             I             R        \n" << std::fixed;
 
   for (auto const& i : vettore) {
-    std::cout << std::setprecision(0) << std::fixed << i.giorno << " " << i.suscettibili << " " << i.infetti << " " << i.rimossi << "\n";
+    std::cout << std::right << std::setw(13) << std::setprecision(0) << i.giorno << " " << std::setw(13) << i.suscettibili << " " << std::setw(13)
+              << i.infetti << " " << std::setw(13) << i.rimossi << "\n";
   }
+  
 }
 
 std::vector<double> x;
