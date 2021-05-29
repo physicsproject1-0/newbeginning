@@ -4,12 +4,15 @@
 //#include <SFML/OpenGL.hpp>
 
 int main() {
-  sf::RenderWindow window(sf::VideoMode(600, 600), "Tilemap");
-  window.setFramerateLimit(60);
   
+  
+  sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+  sf::RenderWindow window(sf::VideoMode(600, 600, desktop.bitsPerPixel), "Tilemap");
+  window.setFramerateLimit(60);
   int n;
   std::cin >> n;
   Mondo map(n);
+  map.settexture();
 
   while (window.isOpen()) {
     // handle events

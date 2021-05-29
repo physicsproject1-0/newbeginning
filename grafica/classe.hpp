@@ -11,6 +11,7 @@ struct Persona {
   float raggio;
   sf::Vector2f vel;
   sf::Clock cambiovelocita;
+  sf::FloatRect scia;
   // float metalato;
 };
 
@@ -25,7 +26,7 @@ class Mondo : public sf::Drawable {
   sf::Texture ominoprova;
   virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.texture = &ominoprova;
-    //capire che madonna succede qui dentro!!!
+    // capire che madonna succede qui dentro!!!
     target.draw(Griglia, states);
   }
 
@@ -35,7 +36,7 @@ class Mondo : public sf::Drawable {
 
  public:
   Mondo(int persone) {
-    if (!ominoprova.loadFromFile("uomotest.png")) {
+    if (!ominoprova.loadFromFile("uomoverde.png")) {
       throw std::runtime_error{"texture loading failed"};
     }
 
@@ -54,6 +55,18 @@ class Mondo : public sf::Drawable {
     Griglia.setPrimitiveType(sf::Triangles);
   }
 
+  void settexture() {
+    for (int i = 0; i < Lista.size(); i++) {
+      sf::Vertex* iter = &Griglia[i * 3];
+      //iter[0].color = sf::Color::Transparent;
+      //iter[1].color = sf::Color::Transparent;
+      //iter[2].color = sf::Color::Transparent;
+      iter[0].texCoords = sf::Vector2f(430.f, 0.f);  // strane coord
+      iter[1].texCoords = sf::Vector2f(0.f, 1681.f);
+      iter[2].texCoords = sf::Vector2f(860.f, 1681.f);
+    }
+  }
+
   void aggiornagriglia() {
     for (int i = 0; i < Lista.size(); i++) {
       // sf::Vertex* iter = &Griglia[i * 3];
@@ -65,9 +78,7 @@ class Mondo : public sf::Drawable {
       iter[0].position = sf::Vector2f(Lista[i].centro.x, Lista[i].centro.y - Lista[i].raggio);  // strane coord
       iter[1].position = sf::Vector2f(Lista[i].centro.x - Lista[i].raggio * (1.7f / 2), Lista[i].centro.y + (Lista[i].raggio / 2));
       iter[2].position = sf::Vector2f(Lista[i].centro.x + Lista[i].raggio * (1.7f / 2), Lista[i].centro.y + (Lista[i].raggio / 2));
-      iter[0].texCoords = sf::Vector2f(430.f, 0.f);  // strane coord
-      iter[1].texCoords = sf::Vector2f(0.f, 1681.f);
-      iter[2].texCoords = sf::Vector2f(860.f, 1681.f);
+
       // sf::Vertex* iter = &Griglia[i * 4];
       // iter[0].position = sf::Vector2f(Lista[i].centro.x - Lista[i].metalato, Lista[i].centro.y - Lista[i].metalato);  // strane coord
       // iter[1].position = sf::Vector2f(Lista[i].centro.x + Lista[i].metalato, Lista[i].centro.y - Lista[i].metalato);
@@ -81,7 +92,19 @@ class Mondo : public sf::Drawable {
   //  // (estimated.x <50 || estimated.y<50 || estimated.y>500 || estimated.x>500){
   //}
 
-  // pensare a modo con cambiare la posizione delle pallli ne che sbattono
+  // pensare a modo con cambiare la posizione delle pallline che sbattono
+  void create_sweptvolume(Persona& persona) {
+    sf::Vector2f spostamento= persona.vel * trascorso.asSeconds();
+    sf::Vector2f posiz_finale= persona.centro + spostamento;
+    
+    persona.scia.top = fmin(persona.centro.y, posiz_finale.y ) - persona.raggio;
+    persona.scia.left = fmin(persona.centro.x, posiz_finale.x ) - persona.raggio;
+    persona.scia.height = abs(persona.centro.y- posiz_finale.y) + 2*persona.raggio;
+    persona.scia.width = abs(persona.centro.x- posiz_finale.x) + 2*persona.raggio;
+    
+  }
+  
+  
   void evolvi_singolo(int indice) {
     // while (estimate(Lista[indice]) e altro) {
     //}
@@ -100,7 +123,7 @@ class Mondo : public sf::Drawable {
     //  Lista[indice].vel = nuovavel;
     //  Lista[indice].cambiovelocita.restart();
     //}
-    Lista[indice].centro += Lista[indice].vel * deltat; 
+    Lista[indice].centro += Lista[indice].vel * deltat;
     // sf::Vertex* iter = &Griglia[i* 4];
     // iter[0].position += Lista[i].vel * deltat;  // strane coord
     // iter[1].position += Lista[i].vel * deltat;
