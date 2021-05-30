@@ -8,7 +8,7 @@ int main(int argc, const char** argv) {
     std::string opzione;
     bool mostra_aiuto = false;
     auto list = lyra::help(mostra_aiuto) | lyra::opt(opzione, "opzione")["-f"]["--formato"](
-                                               "Permette di formattare in colonne separate da virgole con \"virgola\" e da spazi con \"spazio\"");
+                                               "Permette di formattare in colonne separate da virgole con \"virgola\"; da spazi con \"spazio\"; permette di creare solo il grafico con \"grafico\"");
     auto parser = list.parse({argc, argv});
 
     if (!parser) {

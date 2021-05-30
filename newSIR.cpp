@@ -23,7 +23,6 @@ std::vector<State> SIR::riempimento() {
   return simulazione;
 }
 
-// HO MODIFICATO IL PASSAGGIO DI APPROX A "BY REF"
 State SIR::approx(State obj) {
   State stato;
   stato.suscettibili = static_cast<int>(obj.suscettibili);
@@ -127,14 +126,17 @@ void SIR::print_semplice_spazio(std::vector<State> vettore) {
     std::cout << std::right << std::setw(13) << std::setprecision(0) << i.giorno << " " << std::setw(13) << i.suscettibili << " " << std::setw(13)
               << i.infetti << " " << std::setw(13) << i.rimossi << "\n";
   }
-  
 }
 
-std::vector<double> x;
-std::vector<double> y;
-std::vector<double> z;
+// std::vector<double> x;
+// std::vector<double> y;
+// std::vector<double> z;
 
 void SIR::print_grafico(std::vector<State> vettore) {
+  std::vector<double> x;
+  std::vector<double> y;
+  std::vector<double> z;
+
   for (auto const& i : vettore) {
     x.push_back(i.suscettibili);
     y.push_back(i.infetti);
