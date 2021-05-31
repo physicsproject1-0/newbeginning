@@ -11,11 +11,13 @@ int main() {
   std::cin >> n;
   Mondo map(n);
 
-  while (map.prendi_finestra()->Isclosed()) {
+  while (!map.prendi_finestra()->Isclosed()) {
     // handle events
+    
     map.Gestisci_input();
     map.Aggiorna();
     map.Disegna();
+    map.azzera();
     // glFinish();
   }
 }
