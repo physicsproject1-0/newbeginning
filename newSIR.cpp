@@ -128,10 +128,6 @@ void SIR::print_semplice_spazio(std::vector<State> vettore) {
   }
 }
 
-// std::vector<double> x;
-// std::vector<double> y;
-// std::vector<double> z;
-
 void SIR::print_grafico(std::vector<State> vettore) {
   std::vector<double> x;
   std::vector<double> y;
@@ -141,8 +137,8 @@ void SIR::print_grafico(std::vector<State> vettore) {
     x.push_back(i.suscettibili);
     y.push_back(i.infetti);
     z.push_back(i.rimossi);
-    grafico(x, y, z);
   }
+  grafico(x, y, z);
 }
 
 // Funzione per stampare input e output
