@@ -88,6 +88,12 @@ void Mondo::evolvi_singolo(int indice) {
   }
   // check_collisions(indice);
 
+  if (Lista[indice].getGlobalBounds().intersects(Lista[indice].getGlobalBounds()));
+  {
+    Lista[indice].vel.x = -Lista[indice].vel.x;
+    Lista[indice].vel.y = -Lista[indice].vel.y;
+  }
+
   // if (Lista[indice].cambiovelocita.getElapsedTime().asSeconds() > 3) {  // per modificare il moto browniano
   //  sf::Vector2f nuovavel(rand() % 50 - 25.f, rand() % 50 - 25.f);
   //  Lista[indice].vel = nuovavel;

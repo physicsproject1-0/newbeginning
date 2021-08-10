@@ -15,6 +15,8 @@ struct Persona {
   sf::Clock cambiovelocita;
   sf::FloatRect scia;
   // float metalato;
+  Persona getGlobalBounds();   // ?
+  bool intersects();           // ?
 };
 
 class Mondo : public sf::Drawable {
@@ -63,7 +65,7 @@ class Mondo : public sf::Drawable {
   Finestra* prendi_finestra() { return &a_window; }
 
   void Gestisci_input() {
-    a_window.Update(); //gestisce gli eventi
+    a_window.Update();  // gestisce gli eventi
     if (a_window.Isclosed()) {
       a_window.~Finestra();
     }
