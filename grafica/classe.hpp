@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <cstdlib>
+#include <iostream>
 
 #include "finestra.hpp"
 
@@ -15,8 +16,8 @@ struct Persona {
   sf::Clock cambiovelocita;
   sf::FloatRect scia;
   // float metalato;
-  Persona getGlobalBounds();   // ?
-  bool intersects();           // ?
+  Persona getGlobalBounds();  // ?
+  bool intersects();          // ?
 };
 
 class Mondo : public sf::Drawable {
@@ -28,6 +29,23 @@ class Mondo : public sf::Drawable {
   sf::Clock timer;
   sf::Time trascorso;
   sf::Texture ominoprova;
+
+  /*
+    enum Texture { red, green, white };
+
+      Texture T;                                                              // Qualcosa di questo genere per le diverse texture
+
+      switch (T) {
+        case (red) : // Carichiamo la red texture...
+          break;
+
+        case (white) : //carichiamo la white texture
+          break;
+
+        default : //carichiamo la green texture
+      }
+
+    */
 
   Finestra a_window;
 

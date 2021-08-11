@@ -2,7 +2,7 @@
 
 #include "finestra.hpp"
 
-Mondo::Mondo(int persone) : a_window("test", sf::Vector2u(500,500)) {
+Mondo::Mondo(int persone) : a_window("test", sf::Vector2u(500, 500)) {
   if (!ominoprova.loadFromFile("uomoverde.png")) {
     throw std::runtime_error{"texture loading failed"};
   }
@@ -23,8 +23,6 @@ Mondo::Mondo(int persone) : a_window("test", sf::Vector2u(500,500)) {
   // facciamo partire la finestra
 
   settexture();
-  
-  
 }
 
 void Mondo::settexture() {
@@ -86,13 +84,20 @@ void Mondo::evolvi_singolo(int indice) {
   if (Lista[indice].centro.y < 50 || Lista[indice].centro.y > 550) {
     Lista[indice].vel.y = -Lista[indice].vel.y;
   }
+
   // check_collisions(indice);
 
-  if (Lista[indice].getGlobalBounds().intersects(Lista[indice].getGlobalBounds()));
-  {
-    Lista[indice].vel.x = -Lista[indice].vel.x;
-    Lista[indice].vel.y = -Lista[indice].vel.y;
-  }
+  /*
+    for (int indice = 0; indice < Lista.size(); indice++) {                                  // Forse il problema sta in map che ha due argomenti
+      if (Lista[indice].getGlobalBounds().intersects(Lista[indice].getGlobalBounds()) == 1)  // non so come applicare la funzione alle singole persone
+      {                                                                                      // intersects() va bene solo se usiamo rettangoli
+        Lista[indice].vel.x = -Lista[indice].vel.x;
+        Lista[indice].vel.y = -Lista[indice].vel.y;
+
+        if (!ominoprova.loadFromFile("uomoverde.png"))      // capire come cavolo associare la texture alla singola persona
+      }
+    }
+  */
 
   // if (Lista[indice].cambiovelocita.getElapsedTime().asSeconds() > 3) {  // per modificare il moto browniano
   //  sf::Vector2f nuovavel(rand() % 50 - 25.f, rand() % 50 - 25.f);
