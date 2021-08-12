@@ -18,6 +18,8 @@ struct Persona {
   // float metalato;
   Persona getGlobalBounds();  // ?
   bool intersects();          // ?
+  bool infect();
+  bool try_infect();  // ?
 };
 
 class Mondo : public sf::Drawable {
@@ -31,15 +33,15 @@ class Mondo : public sf::Drawable {
   sf::Texture ominoprova;
 
   /*
-    enum Texture { red, green, white };
+    enum Status { VULNERABLE, INFECTED, IMMUNE };
 
-      Texture T;                                                              // Qualcosa di questo genere per le diverse texture
+      Status S;                                                              // Qualcosa di questo genere per le diverse texture
 
-      switch (T) {
-        case (red) : // Carichiamo la red texture...
+      switch (S) {
+        case (INFECTED) : // Carichiamo la red texture...
           break;
 
-        case (white) : //carichiamo la white texture
+        case (IMMUNE) : //carichiamo la white texture
           break;
 
         default : //carichiamo la green texture
@@ -69,6 +71,8 @@ class Mondo : public sf::Drawable {
   void create_sweptvolume(Persona& persona);
 
   void evolvi_singolo(int indice);
+
+  // void change_status();      // Fa cambiare la texture nel momento in cui le due particelle si scontrano
 
   void evolvi();
 

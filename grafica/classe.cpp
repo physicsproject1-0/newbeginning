@@ -94,7 +94,7 @@ void Mondo::evolvi_singolo(int indice) {
         Lista[indice].vel.x = -Lista[indice].vel.x;
         Lista[indice].vel.y = -Lista[indice].vel.y;
 
-        if (!ominoprova.loadFromFile("uomoverde.png"))      // capire come cavolo associare la texture alla singola persona
+
       }
     }
   */
@@ -110,6 +110,14 @@ void Mondo::evolvi_singolo(int indice) {
   // iter[1].position += Lista[i].vel * deltat;
   // iter[2].position += Lista[i].vel * deltat;
 }
+
+/*
+void Mondo::change_status() {
+
+  quando le due palline entrano a contatto in base a regole che decidiamo cambiano il loro status da vulnerabile a infetto e cosi via
+
+}
+*/
 
 void Mondo::evolvi() {
   for (int i = 0; i < Lista.size(); i++) {
@@ -145,3 +153,20 @@ int Mondo::check_occur(Persona const& persona, int raggio) {  // decidere un rag
 double Mondo::modulo(sf::Vector2f const& vettore) { return sqrt(pow(vettore.x, 2) + pow(vettore.y, 2)); }
 
 void Mondo::azzera() { trascorso = timer.restart(); }
+
+/*
+bool Persona::infect() {
+  if (status == VULNERABLE) {
+    status = INFECTED;
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool Persona::try_infect() {
+
+  // se vogliamo mettere una probabilita con cui le due palline a contatto si infettano
+
+}
+*/
