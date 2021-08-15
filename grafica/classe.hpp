@@ -15,7 +15,7 @@ struct Persona {
   sf::Vector2f vel;
   sf::Clock cambiovelocita;
   sf::FloatRect scia;
-  // float metalato;
+  float metalato;
   Persona getGlobalBounds();  // ?
   bool intersects();          // ?
   bool infect();
@@ -31,25 +31,32 @@ class Mondo : public sf::Drawable {
   sf::Clock timer;
   sf::Time trascorso;
   sf::Texture ominoprova;
+  Finestra a_window;
+
+  enum Status { VULNERABLE, INFECTED, REMOVED };  // Lo status e' qualcosa della persona non del mondo, forse va spostato
+
+  Status S;  // Qualcosa di questo genere per le diverse texture
 
   /*
-    enum Status { VULNERABLE, INFECTED, IMMUNE };
+    switch (S) {                                                            // Qualcosa non funziona
+      case (INFECTED):  // Carichiamo la red texture...
+        if (!ominoprova.loadFromFile("uomorosso.png")) {
+          throw std::runtime_error{"texture loading failed"};
+        }
+        break;
 
-      Status S;                                                              // Qualcosa di questo genere per le diverse texture
+      case (REMOVED):  // carichiamo la white texture
+        if (!ominoprova.loadFromFile("uomogrigio.png")) {
+          throw std::runtime_error{"texture loading failed"};
+        }
+        break;
 
-      switch (S) {
-        case (INFECTED) : // Carichiamo la red texture...
-          break;
-
-        case (IMMUNE) : //carichiamo la white texture
-          break;
-
-        default : //carichiamo la green texture
-      }
-
-    */
-
-  Finestra a_window;
+      default:  // carichiamo la green texture
+        if (!ominoprova.loadFromFile("uomoverde.png")) {
+          throw std::runtime_error{"texture loading failed"};
+        }
+    }
+  */
 
   virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.texture = &ominoprova;
@@ -72,7 +79,11 @@ class Mondo : public sf::Drawable {
 
   void evolvi_singolo(int indice);
 
-  // void change_status();      // Fa cambiare la texture nel momento in cui le due particelle si scontrano
+  bool check_collisions();
+
+  void change_status();  // Fa cambiare la texture nel momento in cui le due particelle si scontrano
+
+  void change_vel();
 
   void evolvi();
 

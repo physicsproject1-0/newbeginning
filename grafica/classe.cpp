@@ -85,8 +85,6 @@ void Mondo::evolvi_singolo(int indice) {
     Lista[indice].vel.y = -Lista[indice].vel.y;
   }
 
-  // check_collisions(indice);
-
   /*
     for (int indice = 0; indice < Lista.size(); indice++) {                                  // Forse il problema sta in map che ha due argomenti
       if (Lista[indice].getGlobalBounds().intersects(Lista[indice].getGlobalBounds()) == 1)  // non so come applicare la funzione alle singole persone
@@ -111,14 +109,6 @@ void Mondo::evolvi_singolo(int indice) {
   // iter[2].position += Lista[i].vel * deltat;
 }
 
-/*
-void Mondo::change_status() {
-
-  quando le due palline entrano a contatto in base a regole che decidiamo cambiano il loro status da vulnerabile a infetto e cosi via
-
-}
-*/
-
 void Mondo::evolvi() {
   for (int i = 0; i < Lista.size(); i++) {
     // if (Griglia[i].position.x > 550 || Griglia[i].position.x < -50 || Griglia[i].position.y < -50 || Griglia[i].position.y > 550) {
@@ -139,34 +129,41 @@ int Mondo::check_occur(Persona const& persona, int raggio) {  // decidere un rag
 }  // in caso creare delle corone circolari con varie numerazioni
 // introdurre dipendenza dal tempo
 
-// void check_collisions(int j) {
-//  for (int i = 0; i < Lista.size(); i++) {
-//    if (((abs(Lista[i].centro.x - Lista[j].centro.x) <= 2 * Lista[j].metalato)) &&
-//        (abs(Lista[i].centro.y - Lista[j].centro.y) <= 2 * Lista[j].metalato) && (i != j)) {
-//      std::swap(Lista[j].vel , Lista[i].vel);
-//
-//
-//    }
-//  }
-//}
+bool Mondo::check_collisions() {  // Non so cosa passare a questa funzione e se cosi' va bene, l 'idea c e'
+  for (int i = 0; i < Lista.size(); i++) {
+    for (int j = 0; j < Lista.size(); j++) {
+      if (((abs(Lista[i].centro.x - Lista[j].centro.x) <= 2 * Lista[j].metalato)) &&
+          (abs(Lista[i].centro.y - Lista[j].centro.y) <= 2 * Lista[j].metalato) && (i != j)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+}
+
+/*
+void Mondo::change_status() {
+  for (int i = 0; i < Lista.size(); i++) {          //col ciclo controlla ogni singola persona della Lista, penso
+    if ((Mondo::check_collisions(qualcosa che non so) == true) && (status == VULNERABLE)) {       // Non tiene conto del fatto che almeno una delle
+      status = INFECTED;                                                                          // due che si scontrano deve essere gia' rossa
+    } else if ((Mondo::check_collisions(qualcosa che non so) == true) && (status == INFECTED)) {  // da fixare questa cosa
+      status = REMOVED;
+    }
+  }
+}
+*/
+
+/*
+void Mondo::change_vel() {
+  for (int i = 0; i < Lista.size(); i++) {
+    if ((Mondo::check_collisions(qualcosa che non so) == true) {
+      std::swap(Lista[j].vel, Lista[i].vel);
+    }
+  }
+}
+*/
 
 double Mondo::modulo(sf::Vector2f const& vettore) { return sqrt(pow(vettore.x, 2) + pow(vettore.y, 2)); }
 
 void Mondo::azzera() { trascorso = timer.restart(); }
-
-/*
-bool Persona::infect() {
-  if (status == VULNERABLE) {
-    status = INFECTED;
-    return true;
-  } else {
-    return false;
-  }
-}
-
-bool Persona::try_infect() {
-
-  // se vogliamo mettere una probabilita con cui le due palline a contatto si infettano
-
-}
-*/
