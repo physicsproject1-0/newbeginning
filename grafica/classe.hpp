@@ -14,7 +14,8 @@ struct Persona {
   float raggio;
   sf::Vector2f vel;
   sf::Clock cambiovelocita;
-  sf::FloatRect scia;
+
+  bool checked = false;
   float metalato;
   Persona getGlobalBounds();  // ?
   bool intersects();          // ?
@@ -75,17 +76,13 @@ class Mondo : public sf::Drawable {
 
   void aggiornagriglia();
 
-  void create_sweptvolume(Persona& persona);
+  void check_collisions();
 
-  void evolvi_singolo(int indice);
-
-  bool check_collisions();
+  void check_external_bounds(Persona& test);
 
   void change_status();  // Fa cambiare la texture nel momento in cui le due particelle si scontrano
 
   void change_vel();
-
-  void evolvi();
 
   int check_occur(Persona const& persona, int raggio);
 
@@ -105,7 +102,7 @@ class Mondo : public sf::Drawable {
   }
 
   void Aggiorna() {
-    evolvi();
+    check_collisions();
     aggiornagriglia();
   }
 

@@ -1,5 +1,7 @@
 #include "classe.hpp"
 
+#include <algorithm>
+
 #include "finestra.hpp"
 
 Mondo::Mondo(int persone) : a_window("test", sf::Vector2u(500, 500)) {
@@ -63,17 +65,8 @@ void Mondo::aggiornagriglia() {
 //}
 
 // pensare a modo con cambiare la posizione delle pallline che sbattono
-void Mondo::create_sweptvolume(Persona& persona) {
-  sf::Vector2f spostamento = persona.vel * trascorso.asSeconds();
-  sf::Vector2f posiz_finale = persona.centro + spostamento;
 
-  persona.scia.top = fmin(persona.centro.y, posiz_finale.y) - persona.raggio;
-  persona.scia.left = fmin(persona.centro.x, posiz_finale.x) - persona.raggio;
-  persona.scia.height = abs(persona.centro.y - posiz_finale.y) + 2 * persona.raggio;
-  persona.scia.width = abs(persona.centro.x - posiz_finale.x) + 2 * persona.raggio;
-}
-
-void Mondo::evolvi_singolo(int indice) {
+/* void Mondo::evolvi_singolo(int indice) {
   // while (estimate(Lista[indice]) e altro) {
   //}
   float deltat = trascorso.asSeconds();  // metto qua perchè se lo chiamo in punti diversi magari sono leggemente diversi
@@ -85,7 +78,7 @@ void Mondo::evolvi_singolo(int indice) {
     Lista[indice].vel.y = -Lista[indice].vel.y;
   }
 
-  /*
+
     for (int indice = 0; indice < Lista.size(); indice++) {                                  // Forse il problema sta in map che ha due argomenti
       if (Lista[indice].getGlobalBounds().intersects(Lista[indice].getGlobalBounds()) == 1)  // non so come applicare la funzione alle singole persone
       {                                                                                      // intersects() va bene solo se usiamo rettangoli
@@ -95,7 +88,7 @@ void Mondo::evolvi_singolo(int indice) {
 
       }
     }
-  */
+ 
 
   // if (Lista[indice].cambiovelocita.getElapsedTime().asSeconds() > 3) {  // per modificare il moto browniano
   //  sf::Vector2f nuovavel(rand() % 50 - 25.f, rand() % 50 - 25.f);
@@ -109,15 +102,7 @@ void Mondo::evolvi_singolo(int indice) {
   // iter[2].position += Lista[i].vel * deltat;
 }
 
-void Mondo::evolvi() {
-  for (int i = 0; i < Lista.size(); i++) {
-    // if (Griglia[i].position.x > 550 || Griglia[i].position.x < -50 || Griglia[i].position.y < -50 || Griglia[i].position.y > 550) {
-    //  invvel(i);
-    //}
-    evolvi_singolo(i);
-  }
-}
-
+ */
 int Mondo::check_occur(Persona const& persona, int raggio) {  // decidere un raggio accettabile
   int occur = 0;
   for (int i = 0; i < Lista.size(); i++) {
@@ -129,16 +114,47 @@ int Mondo::check_occur(Persona const& persona, int raggio) {  // decidere un rag
 }  // in caso creare delle corone circolari con varie numerazioni
 // introdurre dipendenza dal tempo
 
-bool Mondo::check_collisions() {  // Non so cosa passare a questa funzione e se cosi' va bene, l 'idea c e'
+void Mondo::check_external_bounds( Persona& test){   //da mettere con il rettangolo passato come ref
+  if (test.centro.x < 50 || test.centro.x > 550) {
+        test.vel.x = -test.vel.x;
+        test.checked = true;
+      }
+      if (test.centro.y < 50 || test.centro.y > 550) {
+        test.vel.y = -test.vel.y;
+        test.checked = true;
+      }
+}
+
+
+
+
+
+
+void Mondo::check_collisions() {  // Non so cosa passare a questa funzione e se cosi' va bene, l 'idea c e'
   for (int i = 0; i < Lista.size(); i++) {
+    Persona& PallinaA = Lista[i];
     for (int j = 0; j < Lista.size(); j++) {
-      if (((abs(Lista[i].centro.x - Lista[j].centro.x) <= 2 * Lista[j].metalato)) &&
-          (abs(Lista[i].centro.y - Lista[j].centro.y) <= 2 * Lista[j].metalato) && (i != j)) {
-        return true;
-      } else {
-        return false;
+      
+      Persona& PallinaB = Lista[j];
+      
+      check_external_bounds(PallinaB);
+      if ((!(PallinaA.checked || PallinaB.checked)) && (i != j)) {
+        if (modulo(PallinaA.centro - PallinaB.centro) <= 1.5 * PallinaB.raggio) {
+          PallinaA.checked = true;
+          PallinaB.checked = true;
+          std::swap(PallinaA.vel.x, PallinaB.vel.x);
+          std::swap(PallinaA.vel.y, PallinaB.vel.y);
+          // collisione elementare, controllare solo le palline che si buggano su se stesse
+        }
       }
     }
+    
+      float deltat = trascorso.asSeconds();  // metto qua perchè se lo chiamo in punti diversi magari sono leggemente diversi
+      PallinaA.centro += PallinaA.vel * deltat;
+    
+  }
+  for (int i = 0; i < Lista.size(); i++) {
+    Lista[i].checked = false;
   }
 }
 
