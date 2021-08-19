@@ -4,30 +4,28 @@
 
 #include "finestra.hpp"
 
-Mondo::Mondo(int persone) : a_window("test", sf::Vector2u(500, 500)) {
-  if (!ominoprova.loadFromFile("uomoverde.png")) {
+Mondo::Mondo(int persone) : a_window("test", sf::Vector2u(800, 600)) , limiti(sf::Vector2f(600, 400)){
+/*   if (!ominoprova.loadFromFile("uomoverde.png")) {
     throw std::runtime_error{"texture loading failed"};
   }
-
+ */
   Persona prova;
 
   for (int i = 0; i < persone; i++) {
-    prova.centro = sf::Vector2f(rand() % 450 + 50, rand() % 450 + 50);
     prova.raggio = 10.f;
-    // prova.metalato = 5.f;
+    
+    prova.centro = sf::Vector2f(rand() % static_cast<int>(limiti.getlimiti().width - 2* prova.raggio) + limiti.getlimiti().left + prova.raggio, rand() % static_cast<int>(limiti.getlimiti().height-2*prova.raggio)+ limiti.getlimiti().top + prova.raggio);
+  
     prova.vel = sf::Vector2f(rand() % 50 - 25.f, rand() % 50 - 25.f);
+    
     Lista[i] = prova;
-  }
-  Griglia.resize(Lista.size() * 3);
-  // Griglia.resize(Lista.size() * 4);
-  // Griglia.setPrimitiveType(sf::Quads);
-  Griglia.setPrimitiveType(sf::Triangles);
-  // facciamo partire la finestra
 
-  settexture();
+  }
+ 
+  uomini.begin(Lista);
 }
 
-void Mondo::settexture() {
+/* void Mondo::settexture() {
   for (int i = 0; i < Lista.size(); i++) {
     sf::Vertex* iter = &Griglia[i * 3];
     // iter[0].color = sf::Color::Transparent;
@@ -37,9 +35,11 @@ void Mondo::settexture() {
     iter[1].texCoords = sf::Vector2f(0.f, 1681.f);
     iter[2].texCoords = sf::Vector2f(860.f, 1681.f);
   }
+} */
+void Mondo::aggiornagriglia(){
+  uomini.aggiorna(Lista);
 }
-
-void Mondo::aggiornagriglia() {
+/* void Mondo::aggiornagriglia() {
   for (int i = 0; i < Lista.size(); i++) {
     // sf::Vertex* iter = &Griglia[i * 3];
 
@@ -57,7 +57,7 @@ void Mondo::aggiornagriglia() {
     // iter[2].position = sf::Vector2f(Lista[i].centro.x + Lista[i].metalato, Lista[i].centro.y + Lista[i].metalato);
     // iter[3].position = sf::Vector2f(Lista[i].centro.x - Lista[i].metalato, Lista[i].centro.y + Lista[i].metalato);
   }
-}
+} */
 
 // sf::Vector2f estimate(Persona& persona) {
 //  return persona.centro + persona.vel * trascorso.asSeconds();
@@ -114,21 +114,6 @@ int Mondo::check_occur(Persona const& persona, int raggio) {  // decidere un rag
 }  // in caso creare delle corone circolari con varie numerazioni
 // introdurre dipendenza dal tempo
 
-void Mondo::check_external_bounds( Persona& test){   //da mettere con il rettangolo passato come ref
-  if (test.centro.x < 50 || test.centro.x > 550) {
-        test.vel.x = -test.vel.x;
-        test.checked = true;
-      }
-      if (test.centro.y < 50 || test.centro.y > 550) {
-        test.vel.y = -test.vel.y;
-        test.checked = true;
-      }
-}
-
-
-
-
-
 
 void Mondo::check_collisions() {  // Non so cosa passare a questa funzione e se cosi' va bene, l 'idea c e'
   for (int i = 0; i < Lista.size(); i++) {
@@ -137,7 +122,7 @@ void Mondo::check_collisions() {  // Non so cosa passare a questa funzione e se 
       
       Persona& PallinaB = Lista[j];
       
-      check_external_bounds(PallinaB);
+      
       if ((!(PallinaA.checked || PallinaB.checked)) && (i != j)) {
         if (modulo(PallinaA.centro - PallinaB.centro) <= 1.5 * PallinaB.raggio) {
           PallinaA.checked = true;

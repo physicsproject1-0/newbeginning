@@ -1,5 +1,5 @@
 #include "finestra.hpp"
-
+#include <iostream>
 #include <SFML/Window.hpp>
 
 void Finestra::Setup(const std::string& temptitolo, const sf::Vector2u& tempdimensione) {
@@ -31,7 +31,24 @@ void Finestra::Update() {
         } else if (evento.type == sf::Event::KeyPressed && evento.key.code == sf::Keyboard::F5) {
             Fullscreen();  // perchè ci va l'else if?
         }
+        if (evento.type == sf::Event::Resized){
+            
+           
+
+           sf::Vector2u dimensioni_nuove = v_mainfinestra.getSize();
+
+            sf::Vector2f NuovoCentro(dimensioni_nuove.x, dimensioni_nuove.y);
+
+            sf::View view2(sf::Vector2f(400,300),NuovoCentro);
+        
+        
+            SetVista(view2);
+        }
     }
+}
+
+void Finestra::SetVista(sf::View vista){
+    v_mainfinestra.setView(vista);
 }
 
 void Finestra::Fullscreen() {
@@ -45,5 +62,6 @@ void Finestra::Disegna(sf::Drawable& cosadadisegnare) { v_mainfinestra.draw(cosa
 void Finestra::Mostra() { v_mainfinestra.display(); }
 
 sf::Vector2u Finestra::Getdimensions() { return v_dimensioni; }
+
 bool Finestra::Isclosed() { return v_Isclosed; }
 bool Finestra::Isfullscreen() { return v_Isfullscreen; }

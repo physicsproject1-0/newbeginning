@@ -28,8 +28,13 @@ class Finestra {
     void Mostra();
 
     sf::Vector2u Getdimensions();
+    
+    sf::Vector2u Getoriginaldimensions();
+
     bool Isclosed();
     bool Isfullscreen();
+
+    void SetVista(sf::View vista);
 };
 
 #endif 
