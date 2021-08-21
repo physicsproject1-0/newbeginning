@@ -39,6 +39,9 @@ class Griglia : public sf::Drawable {
       iter[0].texCoords = sf::Vector2f(430.f, 0.f);  // strane coord
       iter[1].texCoords = sf::Vector2f(0.f, 1681.f);
       iter[2].texCoords = sf::Vector2f(860.f, 1681.f);
+
+      //  C'è UN MEMORY LEAK
+      
     }
   }
 
@@ -79,10 +82,10 @@ class Bordi : public sf::Drawable {
   sf::CircleShape cerchio;
   sf::FloatRect bordo_collisioni;
 
-
-  virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const { target.draw(rettangolo);
-  target.draw(cerchio); 
-  } //metterci anche states altrimenti rompe il casso
+  virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
+    target.draw(rettangolo);
+    target.draw(cerchio);
+  }  // metterci anche states altrimenti rompe il casso
 
  public:
   Bordi(sf::Vector2f dimensione) {
@@ -90,9 +93,9 @@ class Bordi : public sf::Drawable {
     rettangolo.setFillColor(sf::Color::Transparent);
     rettangolo.setOutlineColor(sf::Color::White);
     rettangolo.setOutlineThickness(3);
-    rettangolo.setPosition(100,100);
+    rettangolo.setPosition(100, 100);
 
-    cerchio.setPosition(0,0);
+    cerchio.setPosition(0, 0);
     cerchio.setRadius(10);
     cerchio.setFillColor(sf::Color::Transparent);
     cerchio.setOutlineColor(sf::Color::White);
@@ -102,12 +105,75 @@ class Bordi : public sf::Drawable {
     bordo_collisioni.top = 100;
     bordo_collisioni.width = dimensione.x;
     bordo_collisioni.height = dimensione.y;
-
   }
 
-  sf::FloatRect getlimiti(){
-    return bordo_collisioni;
+  sf::FloatRect getlimiti() { return bordo_collisioni; };
+};
+
+enum class Status { VULNERABLE, INFECTED, REMOVED };
+
+class Automa : public sf::Drawable {
+  class Cellula : public sf::Drawable {  // se è una struct non funziona l'inheritance?
+    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
+      target.draw(rettangolo);
+    }  // metterci anche states altrimenti rompe il casso
+    void aggiorna_colore() {
+      switch (S) {                // Qualcosa non funziona
+        case (Status::INFECTED):  // Carichiamo la red texture...
+          rettangolo.setFillColor(sf::Color::Red);
+          break;
+
+        case (Status::REMOVED):  // carichiamo la white texture
+          rettangolo.setFillColor(sf::Color::White);
+          break;
+
+        case (Status::VULNERABLE):  // carichiamo la green texture
+
+          rettangolo.setFillColor(sf::Color::Green);
+          break;
+      }
+    }
+
+   public:
+    Status S = Status::VULNERABLE;
+    sf::RectangleShape rettangolo;
+
+    Cellula(sf::Vector2f posizione, sf::Vector2f dimensione) {
+      rettangolo.setPosition(posizione);
+      rettangolo.setSize(dimensione);
+      aggiorna_colore();
+    }
   };
+  // mettere errori per dimensioni minori di 0?
+  std::vector<std::vector<Cellula>> grid;
+
+  sf::Vector2f dimensioni;
+  sf::Vector2f posizione;
+  int numero_lato;
+
+  virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
+    for (int i = 0; i < numero_lato; i++) {
+      for (int j = 0; j < numero_lato; j++) {
+        target.draw(grid[i][j]);
+      }
+    }
+  }
+
+ public:
+  Automa(sf::Vector2f t_dimensione, sf::Vector2f t_posizione, int t_numero)
+      : dimensioni{t_dimensione}, posizione{t_posizione}, numero_lato{t_numero} {
+    float t_lunghezza_x = dimensioni.x / numero_lato;
+    float t_lunghezza_y = dimensioni.y / numero_lato;
+
+    for (int i = 0; i < numero_lato; i++) {
+      for (int j = 0; j < numero_lato; j++) {
+        sf::Vector2f posizionemovente(posizione.x + j * t_lunghezza_x, posizione.y + i * t_lunghezza_y);
+        Cellula riempi(posizionemovente, sf::Vector2f(t_lunghezza_x, t_lunghezza_y));
+        grid[i][j] = riempi;
+        // i per le colonne, j per le righe
+      }
+    }
+  }
 };
 
 class Mondo /* : public sf::Drawable  */ {
@@ -117,9 +183,9 @@ class Mondo /* : public sf::Drawable  */ {
 
   std::map<int, Persona> Lista;  // contiene solo le persone
 
-  Griglia uomini;
+  Griglia uomini; //fare altra classe che contiene sia griglia sia bordi, gestire tutto lì
 
-  Bordi limiti; //non ho capito perhcè qui dentro non ci posso mettere il costruttore;
+  Bordi limiti;  // non ho capito perhcè qui dentro non ci posso mettere il costruttore;
 
   sf::Clock timer;
   sf::Time trascorso;
@@ -168,12 +234,14 @@ class Mondo /* : public sf::Drawable  */ {
 
   void check_collisions();
 
-  void check_borders(){
-    for(int i = 0; i<Lista.size(); i++){
-      if (Lista[i].centro.x<limiti.getlimiti().left + Lista[i].raggio || Lista[i].centro.x>limiti.getlimiti().left+limiti.getlimiti().width -Lista[i].raggio){
+  void check_borders() {
+    for (int i = 0; i < Lista.size(); i++) {
+      if (Lista[i].centro.x < limiti.getlimiti().left + Lista[i].raggio ||
+          Lista[i].centro.x > limiti.getlimiti().left + limiti.getlimiti().width - Lista[i].raggio) {
         Lista[i].vel.x = -Lista[i].vel.x;
       }
-      if (Lista[i].centro.y<limiti.getlimiti().top + Lista[i].raggio|| Lista[i].centro.y>limiti.getlimiti().top+limiti.getlimiti().height-Lista[i].raggio){
+      if (Lista[i].centro.y < limiti.getlimiti().top + Lista[i].raggio ||
+          Lista[i].centro.y > limiti.getlimiti().top + limiti.getlimiti().height - Lista[i].raggio) {
         Lista[i].vel.y = -Lista[i].vel.y;
       }
     }

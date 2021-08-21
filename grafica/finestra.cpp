@@ -31,6 +31,7 @@ void Finestra::Update() {
         } else if (evento.type == sf::Event::KeyPressed && evento.key.code == sf::Keyboard::F5) {
             Fullscreen();  // perchè ci va l'else if?
         }
+        if (evento.type == sf::Event::KeyPressed && evento.key.code == sf::Keyboard::F5){}
         if (evento.type == sf::Event::Resized){
             
            
