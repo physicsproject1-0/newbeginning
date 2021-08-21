@@ -112,7 +112,7 @@ class Bordi : public sf::Drawable {
 
 enum class Status { VULNERABLE, INFECTED, REMOVED };
 
-class Automa : public sf::Drawable {
+/* class Automa : public sf::Drawable {
   class Cellula : public sf::Drawable {  // se è una struct non funziona l'inheritance?
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
       target.draw(rettangolo);
@@ -124,7 +124,7 @@ class Automa : public sf::Drawable {
           break;
 
         case (Status::REMOVED):  // carichiamo la white texture
-          rettangolo.setFillColor(sf::Color::White);
+          rettangolo.setFillColor(sf::Color::Cyan);
           break;
 
         case (Status::VULNERABLE):  // carichiamo la green texture
@@ -141,6 +141,8 @@ class Automa : public sf::Drawable {
     Cellula(sf::Vector2f posizione, sf::Vector2f dimensione) {
       rettangolo.setPosition(posizione);
       rettangolo.setSize(dimensione);
+      rettangolo.setOutlineColor(sf::Color::White);
+      rettangolo.setOutlineThickness(2.f);
       aggiorna_colore();
     }
   };
@@ -175,7 +177,7 @@ class Automa : public sf::Drawable {
     }
   }
 };
-
+ */
 class Mondo /* : public sf::Drawable  */ {
  private:  // la draw non va nel protected??
   /* sf::VertexArray Griglia; */
@@ -194,6 +196,7 @@ class Mondo /* : public sf::Drawable  */ {
 
   Status S;  // Qualcosa di questo genere per le diverse texture
 
+  /* Automa rappresentazione; */
   /*
     switch (S) {                                                            // Qualcosa non funziona
       case (INFECTED):  // Carichiamo la red texture...
@@ -278,6 +281,9 @@ class Mondo /* : public sf::Drawable  */ {
 
   void Disegna() {
     a_window.Pulisci();
+    
+    /* a_window.Disegna(rappresentazione); */
+    
     a_window.Disegna(limiti);
 
     a_window.Disegna(uomini);
