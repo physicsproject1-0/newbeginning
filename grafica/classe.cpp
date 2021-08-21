@@ -4,7 +4,7 @@
 
 #include "finestra.hpp"
 
-Mondo::Mondo(int persone) : a_window("test", sf::Vector2u(800, 600)) , limiti(sf::Vector2f(600, 400)) /*,  rappresentazione(sf::Vector2f(1800,1800), sf::Vector2f(500,500), 5) */ {
+Mondo::Mondo(int persone) : a_window("test", sf::Vector2u(800, 600)) , limiti(sf::Vector2f(600, 400)) ,  rappresentazione(sf::Vector2f(1800,1800), sf::Vector2f(500,500), 5, 0.5) {
 /*   if (!ominoprova.loadFromFile("uomoverde.png")) {
     throw std::runtime_error{"texture loading failed"};
   }

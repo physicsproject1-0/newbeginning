@@ -41,7 +41,6 @@ class Griglia : public sf::Drawable {
       iter[2].texCoords = sf::Vector2f(860.f, 1681.f);
 
       //  C'è UN MEMORY LEAK
-      
     }
   }
 
@@ -112,11 +111,13 @@ class Bordi : public sf::Drawable {
 
 enum class Status { VULNERABLE, INFECTED, REMOVED };
 
-/* class Automa : public sf::Drawable {
+class Automa : public sf::Drawable {
   class Cellula : public sf::Drawable {  // se è una struct non funziona l'inheritance?
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
       target.draw(rettangolo);
     }  // metterci anche states altrimenti rompe il casso
+
+   public:
     void aggiorna_colore() {
       switch (S) {                // Qualcosa non funziona
         case (Status::INFECTED):  // Carichiamo la red texture...
@@ -134,7 +135,10 @@ enum class Status { VULNERABLE, INFECTED, REMOVED };
       }
     }
 
-   public:
+    int counter;
+
+    int infection_days;
+
     Status S = Status::VULNERABLE;
     sf::RectangleShape rettangolo;
 
@@ -153,6 +157,10 @@ enum class Status { VULNERABLE, INFECTED, REMOVED };
   sf::Vector2f posizione;
   int numero_lato;
 
+  float probabilita_contagio;
+
+  int giorni = 0;
+
   virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
     for (int i = 0; i < numero_lato; i++) {
       for (int j = 0; j < numero_lato; j++) {
@@ -162,22 +170,58 @@ enum class Status { VULNERABLE, INFECTED, REMOVED };
   }
 
  public:
-  Automa(sf::Vector2f t_dimensione, sf::Vector2f t_posizione, int t_numero)
-      : dimensioni{t_dimensione}, posizione{t_posizione}, numero_lato{t_numero} {
+  Automa(sf::Vector2f t_posizione, sf::Vector2f t_dimensione, int t_numero, float t_probabilita_contagio)
+      : posizione{t_posizione}, dimensioni{t_dimensione}, numero_lato{t_numero}, probabilita_contagio{t_probabilita_contagio} {
     float t_lunghezza_x = dimensioni.x / numero_lato;
     float t_lunghezza_y = dimensioni.y / numero_lato;
 
     for (int i = 0; i < numero_lato; i++) {
+      std::vector<Cellula> riga;
       for (int j = 0; j < numero_lato; j++) {
         sf::Vector2f posizionemovente(posizione.x + j * t_lunghezza_x, posizione.y + i * t_lunghezza_y);
         Cellula riempi(posizionemovente, sf::Vector2f(t_lunghezza_x, t_lunghezza_y));
-        grid[i][j] = riempi;
-        // i per le colonne, j per le righe
+
+        riga.push_back(riempi);
+
+        // i per le righe, j per le colonne
+      }
+      grid.push_back(riga);
+    }
+  }
+
+  void aggiorna_counter(int i, int j) {
+    Cellula& cell = grid[i][j];
+    for (int a = 0; a < 2; a++) {
+      if (grid[i - 1][j - 1 + a].S == Status::INFECTED) {
+        cell.counter++;
+      }
+      if (grid[i + 1][j - 1 + a].S == Status::INFECTED) {
+        cell.counter++;
+      }
+      if (grid[i][j - 1].S == Status::INFECTED) {
+        cell.counter++;
+      }
+      if (grid[i][j + 1].S == Status::INFECTED) {
+        cell.counter++;
       }
     }
   }
+  /* void aggiorna() {
+    giorni++;
+    for (int i = 0; i < numero_lato; i++) {
+      for (int j = 0; j < numero_lato; j++) {
+      if (grid[i][j].counter == 0){
+        continue;
+      }
+      if 
+
+
+      grid[i][j].counter = 0;
+      }
+    }
+  } */
 };
- */
+
 class Mondo /* : public sf::Drawable  */ {
  private:  // la draw non va nel protected??
   /* sf::VertexArray Griglia; */
@@ -185,7 +229,7 @@ class Mondo /* : public sf::Drawable  */ {
 
   std::map<int, Persona> Lista;  // contiene solo le persone
 
-  Griglia uomini; //fare altra classe che contiene sia griglia sia bordi, gestire tutto lì
+  Griglia uomini;  // fare altra classe che contiene sia griglia sia bordi, gestire tutto lì
 
   Bordi limiti;  // non ho capito perhcè qui dentro non ci posso mettere il costruttore;
 
@@ -196,7 +240,7 @@ class Mondo /* : public sf::Drawable  */ {
 
   Status S;  // Qualcosa di questo genere per le diverse texture
 
-  /* Automa rappresentazione; */
+  Automa rappresentazione;
   /*
     switch (S) {                                                            // Qualcosa non funziona
       case (INFECTED):  // Carichiamo la red texture...
@@ -281,9 +325,9 @@ class Mondo /* : public sf::Drawable  */ {
 
   void Disegna() {
     a_window.Pulisci();
-    
-    /* a_window.Disegna(rappresentazione); */
-    
+
+    a_window.Disegna(rappresentazione);
+
     a_window.Disegna(limiti);
 
     a_window.Disegna(uomini);
