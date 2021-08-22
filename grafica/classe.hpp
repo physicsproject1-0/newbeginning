@@ -1,8 +1,10 @@
+#include <assert.h>
 #include <math.h>
 
 #include <SFML/Graphics.hpp>
 #include <cstdlib>
 #include <iostream>
+#include <stdexcept>
 
 #include "finestra.hpp"
 
@@ -24,8 +26,8 @@ struct Persona {
 };
 
 // per disegnare altre cose oltre il vertex array
-
-class Griglia : public sf::Drawable {
+/* class Rappresentazione : public sf::Drawable{ */
+class Animazione : public sf::Drawable {
   sf::Texture ominoprova;
   sf::VertexArray struttura;
   int numeropersone;
@@ -40,7 +42,6 @@ class Griglia : public sf::Drawable {
       iter[1].texCoords = sf::Vector2f(0.f, 1681.f);
       iter[2].texCoords = sf::Vector2f(860.f, 1681.f);
 
-      //  C'è UN MEMORY LEAK
     }
   }
 
@@ -109,6 +110,8 @@ class Bordi : public sf::Drawable {
   sf::FloatRect getlimiti() { return bordo_collisioni; };
 };
 
+/* }; */
+
 enum class Status { VULNERABLE, INFECTED, REMOVED };
 
 class Automa : public sf::Drawable {
@@ -142,7 +145,7 @@ class Automa : public sf::Drawable {
     Status S = Status::VULNERABLE;
     sf::RectangleShape rettangolo;
 
-    Cellula(sf::Vector2f posizione, sf::Vector2f dimensione) {
+    Cellula(sf::Vector2f posizione, sf::Vector2f dimensione) : counter(0), infection_days(0) {  // funzionerà
       rettangolo.setPosition(posizione);
       rettangolo.setSize(dimensione);
       rettangolo.setOutlineColor(sf::Color::White);
@@ -155,9 +158,14 @@ class Automa : public sf::Drawable {
 
   sf::Vector2f dimensioni;
   sf::Vector2f posizione;
+
+  sf::Clock orologio;
+
   int numero_lato;
 
   float probabilita_contagio;
+
+  float probabilita_guarigione;
 
   int giorni = 0;
 
@@ -170,8 +178,15 @@ class Automa : public sf::Drawable {
   }
 
  public:
-  Automa(sf::Vector2f t_posizione, sf::Vector2f t_dimensione, int t_numero, float t_probabilita_contagio)
-      : posizione{t_posizione}, dimensioni{t_dimensione}, numero_lato{t_numero}, probabilita_contagio{t_probabilita_contagio} {
+  Automa(sf::Vector2f t_posizione, sf::Vector2f t_dimensione, int t_numero, float t_probabilita_contagio, float t_probabilita_guarigione, int infetti,
+         int rimossi)
+      : posizione{t_posizione},
+        dimensioni{t_dimensione},
+        numero_lato{t_numero},
+        probabilita_contagio{t_probabilita_contagio},
+        probabilita_guarigione{t_probabilita_guarigione} {
+    assert(probabilita_contagio <= 1 && probabilita_contagio >= 0);  // mettere except
+
     float t_lunghezza_x = dimensioni.x / numero_lato;
     float t_lunghezza_y = dimensioni.y / numero_lato;
 
@@ -187,39 +202,114 @@ class Automa : public sf::Drawable {
       }
       grid.push_back(riga);
     }
+    genera(infetti, rimossi);
+  }
+
+  void genera(int infette, int rimosse) {
+    assert(infette + rimosse < numero_lato * numero_lato);
+
+    for (int a = 0; a < infette; a++) {
+      int riga = rand() % numero_lato;
+      int colonna = rand() % numero_lato;
+      if (grid[riga][colonna].S != Status::VULNERABLE) {
+        a--;
+        continue;
+      }
+      grid[riga][colonna].S = Status::INFECTED;
+      grid[riga][colonna].aggiorna_colore();
+    }
+
+    for (int a = 0; a < rimosse; a++) {
+      int riga = rand() % numero_lato;
+      int colonna = rand() % numero_lato;
+      if (grid[riga][colonna].S != Status::VULNERABLE) {
+        a--;
+        continue;
+      }
+      grid[riga][colonna].S = Status::REMOVED;
+      grid[riga][colonna].aggiorna_colore();
+    }
+  }
+
+  bool esiste(int i, int j) {
+    if (i < 0 || i >= numero_lato || j < 0 || j >= numero_lato) {
+      return false;
+    }
+    return true;
   }
 
   void aggiorna_counter(int i, int j) {
     Cellula& cell = grid[i][j];
+    /* if (i == 0 || j == 0 || i == (numero_lato - 1) ||) {
+    }
+ */
     for (int a = 0; a < 2; a++) {
-      if (grid[i - 1][j - 1 + a].S == Status::INFECTED) {
-        cell.counter++;
+      if (esiste(i - 1, j - 1 + a)) {
+        if (grid[i - 1][j - 1 + a].S == Status::INFECTED) {
+          cell.counter++;
+        }
       }
-      if (grid[i + 1][j - 1 + a].S == Status::INFECTED) {
-        cell.counter++;
+      if (esiste(i + 1, j - 1 + a)) {
+        if (grid[i + 1][j - 1 + a].S == Status::INFECTED) {
+          cell.counter++;
+        }
       }
+    }
+    if (esiste(i, j - 1)) {
       if (grid[i][j - 1].S == Status::INFECTED) {
         cell.counter++;
       }
+    }
+    if (esiste(i, j + 1)) {
       if (grid[i][j + 1].S == Status::INFECTED) {
         cell.counter++;
       }
     }
   }
-  /* void aggiorna() {
+
+  void aggiorna() {
     giorni++;
     for (int i = 0; i < numero_lato; i++) {
       for (int j = 0; j < numero_lato; j++) {
-      if (grid[i][j].counter == 0){
-        continue;
-      }
-      if 
+        Cellula& cell = grid[i][j];
+        if (cell.S == Status::VULNERABLE) {
+          int esponente = cell.counter;
 
+          if (esponente == 0) {
+            continue;
+          } else {
+            float prob_sano = pow(1 - probabilita_contagio, esponente);  // beta o gamma?
 
-      grid[i][j].counter = 0;
+            if ((rand() % 101) / 100 > prob_sano) {
+              // aggiungere i seed randomici
+              cell.S == Status::INFECTED;
+              cell.aggiorna_colore();
+            }
+          }
+        }
+
+        if (cell.S == Status::INFECTED) {
+          cell.infection_days++;
+          if ((rand() % 100) / 100 < probabilita_guarigione) {
+            cell.S = Status::REMOVED;
+            cell.aggiorna_colore();
+            // qua forse ci sta fare così
+          }
+        }
+
+        cell.counter = 0;
       }
     }
-  } */
+  }
+
+  void avanza() {
+    for (int i = 0; i < numero_lato; i++) {
+      for (int j = 0; j < numero_lato; j++) {
+        aggiorna_counter(i,j);
+      }
+    }
+    aggiorna();
+  }
 };
 
 class Mondo /* : public sf::Drawable  */ {
@@ -229,7 +319,7 @@ class Mondo /* : public sf::Drawable  */ {
 
   std::map<int, Persona> Lista;  // contiene solo le persone
 
-  Griglia uomini;  // fare altra classe che contiene sia griglia sia bordi, gestire tutto lì
+  Animazione uomini;  // fare altra classe che contiene sia griglia sia bordi, gestire tutto lì
 
   Bordi limiti;  // non ho capito perhcè qui dentro non ci posso mettere il costruttore;
 
@@ -275,6 +365,7 @@ class Mondo /* : public sf::Drawable  */ {
   // poi come fa window.draw(entity) a chiamare internamente entity.draw se è nella parte privata?!
 
  public:
+  
   Mondo(int persone);
 
   void aggiornagriglia();
