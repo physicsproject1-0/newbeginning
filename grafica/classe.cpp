@@ -4,7 +4,7 @@
 
 #include "finestra.hpp"
 
-Mondo::Mondo() : a_window("test", sf::Vector2u(800, 600))  ,  statica(sf::Vector2f(1800,1800), sf::Vector2f(500,500), 5, 0.5, 0.5, 4,3), dinamica(300, &timer) {
+Mondo::Mondo() : a_window("test", sf::Vector2u(800, 600))  ,  statica(sf::Vector2f(1800,1800), sf::Vector2f(500,500), 5, 0.5, 0.5, 4,3), dinamica(6, &timer) {
 /*   if (!ominoprova.loadFromFile("uomoverde.png")) {
     throw std::runtime_error{"texture loading failed"};
   }
