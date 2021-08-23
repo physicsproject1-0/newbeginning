@@ -4,7 +4,7 @@
 
 #include "finestra.hpp"
 
-Mondo::Mondo() : a_window("test", sf::Vector2u(800, 600))  ,  statica(sf::Vector2f(1800,1800), sf::Vector2f(500,500), 5, 0.5, 0.5, 4,3), dinamica(10, &timer) {
+Mondo::Mondo() : a_window("test", sf::Vector2u(800, 600))  ,  statica(sf::Vector2f(1800,1800), sf::Vector2f(500,500), 5, 0.5, 0.5, 4,3), dinamica(300, &timer) {
 /*   if (!ominoprova.loadFromFile("uomoverde.png")) {
     throw std::runtime_error{"texture loading failed"};
   }
@@ -59,8 +59,8 @@ Mondo::Mondo() : a_window("test", sf::Vector2u(800, 600))  ,  statica(sf::Vector
  */
 int Animazione::check_occur(Persona const& persona, int raggio) {  // decidere un raggio accettabile
   int occur = 0;
-  for (int i = 0; i < Lista.size(); i++) {
-    if (modulo(persona.centro - Lista[i].centro) <= raggio) {
+  for (int i = 0; i < popolazione.size(); i++) {
+    if (modulo(persona.centro - popolazione[i].centro) <= raggio) {
       occur++;
     }
   }
@@ -69,12 +69,12 @@ int Animazione::check_occur(Persona const& persona, int raggio) {  // decidere u
 // introdurre dipendenza dal tempo
 
 
-void Animazione::check_collisions() {  // Non so cosa passare a questa funzione e se cosi' va bene, l 'idea c e'
-  for (int i = 0; i < Lista.size(); i++) {
-    Persona& PallinaA = Lista[i];
-    for (int j = 0; j < Lista.size(); j++) {
+/* void Animazione::check_collisions() {  // Non so cosa passare a questa funzione e se cosi' va bene, l 'idea c e'
+  for (int i = 0; i < popolazione.size(); i++) {
+    Persona& PallinaA = popolazione[i];
+    for (int j = 0; j < popolazione.size(); j++) {
       
-      Persona& PallinaB = Lista[j];
+      Persona& PallinaB = popolazione[j];
       
       
       if ((!(PallinaA.checked || PallinaB.checked)) && (i != j)) {
@@ -88,14 +88,13 @@ void Animazione::check_collisions() {  // Non so cosa passare a questa funzione 
       }
     }
     
-      float deltat = orologio->restart().asSeconds();  // metto qua perchè se lo chiamo in punti diversi magari sono leggemente diversi
-      PallinaA.centro += PallinaA.vel * deltat;
+      
     
   }
-  for (int i = 0; i < Lista.size(); i++) {
-    Lista[i].checked = false;
+  for (int i = 0; i < popolazione.size(); i++) {
+    popolazione[i].checked = false;
   }
-}
+} */
 
 /*
 void Mondo::change_status() {

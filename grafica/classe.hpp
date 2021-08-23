@@ -11,6 +11,10 @@
 #ifndef DISA
 #define DISA
 
+enum class StatoPupino { VULNERABILE, INFETTO, RIMOSSO };
+
+
+
 // per disegnare altre cose oltre il vertex array
 /* class Rappresentazione : public sf::Drawable { */
 class Animazione : public sf::Drawable {
@@ -25,12 +29,10 @@ class Animazione : public sf::Drawable {
 
   class Bordi : public sf::Drawable {
     sf::RectangleShape rettangolo;
-    sf::CircleShape cerchio;
     sf::FloatRect bordo_collisioni;
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
       target.draw(rettangolo);
-      target.draw(cerchio);
     }  // metterci anche states altrimenti rompe il casso
 
    public:
@@ -40,12 +42,6 @@ class Animazione : public sf::Drawable {
       rettangolo.setOutlineColor(sf::Color::White);
       rettangolo.setOutlineThickness(3);
       rettangolo.setPosition(100, 100);
-
-      cerchio.setPosition(0, 0);
-      cerchio.setRadius(10);
-      cerchio.setFillColor(sf::Color::Transparent);
-      cerchio.setOutlineColor(sf::Color::White);
-      cerchio.setOutlineThickness(-2);
 
       bordo_collisioni.left = 100;
       bordo_collisioni.top = 100;
@@ -58,15 +54,32 @@ class Animazione : public sf::Drawable {
 
   sf::Clock* orologio;
 
+  sf::Clock orologio2;
   sf::Texture ominoprova;
   sf::VertexArray struttura;
-  std::map<int, Persona> Lista;
-  int numeropersone;
+  std::map<int, Persona> popolazione;  // vedere se meglio vector
 
   Bordi limiti;
 
+  void aggiorna_colore() {
+      switch (S) {                // Qualcosa non funziona
+        case (Status::INFECTED):  // Carichiamo la red texture...
+          rettangolo.setFillColor(sf::Color::Red);
+          break;
+
+        case (Status::REMOVED):  // carichiamo la white texture
+          rettangolo.setFillColor(sf::Color::Cyan);
+          break;
+
+        case (Status::VULNERABLE):  // carichiamo la green texture
+
+          rettangolo.setFillColor(sf::Color::Green);
+          break;
+      }
+    }
+
   void settexturecoords() {
-    for (int i = 0; i < numeropersone; i++) {
+    for (int i = 0; i < popolazione.size(); i++) {
       sf::Vertex* iter = &struttura[i * 3];
       // iter[0].color = sf::Color::Transparent;
       // iter[1].color = sf::Color::Transparent;
@@ -81,13 +94,13 @@ class Animazione : public sf::Drawable {
     states.texture = &ominoprova;
     // capire che madonna succede qui dentro!!!
     target.draw(struttura, states);
+    target.draw(limiti);
   }
 
  public:
-
   Animazione(int n, sf::Clock* t_orologio) : limiti(sf::Vector2f(600, 400)), orologio{t_orologio} {
     if (!ominoprova.loadFromFile("uomoverde.png")) {
-      throw std::runtime_error{"texture loading failed"};
+      throw std::runtime_error{"texture loading failed"};  // catcharlo
     }
 
     Persona prova;
@@ -97,41 +110,52 @@ class Animazione : public sf::Drawable {
       prova.centro = sf::Vector2f(rand() % static_cast<int>(limiti.getlimiti().width - 2 * prova.raggio) + limiti.getlimiti().left + prova.raggio,
                                   rand() % static_cast<int>(limiti.getlimiti().height - 2 * prova.raggio) + limiti.getlimiti().top + prova.raggio);
       prova.vel = sf::Vector2f(rand() % 50 - 25.f, rand() % 50 - 25.f);
-      Lista[i] = prova;
+      popolazione[i] = prova;
     }
-    numeropersone = Lista.size();
-    struttura.resize(Lista.size() * 3);
+    struttura.resize(popolazione.size() * 3);
 
     struttura.setPrimitiveType(sf::Triangles);
 
     settexturecoords();
   }
 
-  void aggiorna(const std::map<int, Persona>& list) {
-    for (int i = 0; i < numeropersone; i++) {
+  void aggiorna_griglia() {
+    for (int i = 0; i < popolazione.size(); i++) {
       sf::Vertex* iter = &struttura[i * 3];
-      iter[0].position = sf::Vector2f(list.at(i).centro.x, list.at(i).centro.y - list.at(i).raggio);  // strane coord
-      iter[1].position = sf::Vector2f(list.at(i).centro.x - list.at(i).raggio * (1.7f / 2), list.at(i).centro.y + (list.at(i).raggio / 2));
-      iter[2].position = sf::Vector2f(list.at(i).centro.x + list.at(i).raggio * (1.7f / 2), list.at(i).centro.y + (list.at(i).raggio / 2));
+      iter[0].position = sf::Vector2f(popolazione.at(i).centro.x, popolazione.at(i).centro.y - popolazione.at(i).raggio);  // strane coord
+      iter[1].position = sf::Vector2f(popolazione.at(i).centro.x - popolazione.at(i).raggio * (1.7f / 2),
+                                      popolazione.at(i).centro.y + (popolazione.at(i).raggio / 2));
+      iter[2].position = sf::Vector2f(popolazione.at(i).centro.x + popolazione.at(i).raggio * (1.7f / 2),
+                                      popolazione.at(i).centro.y + (popolazione.at(i).raggio / 2));
       // bisognerà cancellare il puntatore?
 
       // non posso usare [] perchè mi dice che non funziona per le robe const
     }
   }
 
-  void aggiornagriglia();
+  // void check_collisions();  // devo passare un puntatore all'orologio per averne solo uno  //pensarci
 
-  void check_collisions();  // devo passare un puntatore all'orologio per averne solo uno
+  void aggiorna_lista() {
+    float deltat = /* orologio2.restart().asSeconds(); */ orologio->restart().asSeconds();
+    // metto qua perchè se lo chiamo in punti diversi magari sono leggemente diversi
+    float deltat2 = orologio2.restart().asSeconds();
+
+    // std::cout << "tempo1 " << deltat << '\n';
+    // std::cout << "tempo2 " << deltat2 << '\n';
+    for (int i = 0; i < popolazione.size(); i++) {
+      popolazione[i].centro += popolazione[i].vel * deltat2;
+    }
+  }
 
   void check_borders() {
-    for (int i = 0; i < Lista.size(); i++) {
-      if (Lista[i].centro.x < limiti.getlimiti().left + Lista[i].raggio ||
-          Lista[i].centro.x > limiti.getlimiti().left + limiti.getlimiti().width - Lista[i].raggio) {
-        Lista[i].vel.x = -Lista[i].vel.x;
+    for (int i = 0; i < popolazione.size(); i++) {
+      if (popolazione[i].centro.x < limiti.getlimiti().left + popolazione[i].raggio ||
+          popolazione[i].centro.x > limiti.getlimiti().left + limiti.getlimiti().width - popolazione[i].raggio) {
+        popolazione[i].vel.x = -popolazione[i].vel.x;
       }
-      if (Lista[i].centro.y < limiti.getlimiti().top + Lista[i].raggio ||
-          Lista[i].centro.y > limiti.getlimiti().top + limiti.getlimiti().height - Lista[i].raggio) {
-        Lista[i].vel.y = -Lista[i].vel.y;
+      if (popolazione[i].centro.y < limiti.getlimiti().top + popolazione[i].raggio ||
+          popolazione[i].centro.y > limiti.getlimiti().top + limiti.getlimiti().height - popolazione[i].raggio) {
+        popolazione[i].vel.y = -popolazione[i].vel.y;
       }
     }
   };
@@ -145,6 +169,16 @@ class Animazione : public sf::Drawable {
   int check_occur(Persona const& persona, int raggio);
 
   double modulo(sf::Vector2f const& vettore);
+
+  void aggiorna_generale() {
+    check_borders();
+
+    // check_collisions();
+
+    aggiorna_lista();
+
+    aggiorna_griglia();
+  }
 };
 
 /* }; */
@@ -311,7 +345,7 @@ class Automa : public sf::Drawable {
         Cellula& cell = grid[i][j];
         if (cell.S == Status::VULNERABLE) {
           int esponente = cell.counter;
-
+          
           if (esponente == 0) {
             continue;
           } else {
@@ -340,12 +374,15 @@ class Automa : public sf::Drawable {
   }
 
   void avanza() {
-    for (int i = 0; i < numero_lato; i++) {
-      for (int j = 0; j < numero_lato; j++) {
-        aggiorna_counter(i, j);
+    if (orologio.getElapsedTime().asSeconds() > 3) {
+      for (int i = 0; i < numero_lato; i++) {
+        for (int j = 0; j < numero_lato; j++) {
+          aggiorna_counter(i, j);
+        }
       }
+      aggiorna();
+      orologio.restart();
     }
-    aggiorna();
   }
 };
 
@@ -412,11 +449,10 @@ class Mondo /* : public sf::Drawable  */ {
   }
 
   void Aggiorna() {
-/*     check_collisions();
-    check_borders();
-    aggiornagriglia(); */
+    dinamica.aggiorna_generale();
+    statica.avanza();
   }
- 
+
   void Disegna() {
     a_window.Pulisci();
 

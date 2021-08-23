@@ -45,7 +45,7 @@ void Finestra::Update() {
         
             SetVista(view2);
         }
-        if (evento.type == sf::Event::KeyPressed && evento.key.code == sf::Keyboard::F6){
+        if (evento.type == sf::Event::KeyPressed && evento.key.code == sf::Keyboard::P){
             sf::Vector2u dimensioni_nuove = v_mainfinestra.getSize();
             sf::Vector2f NuovoCentro(dimensioni_nuove.x, dimensioni_nuove.y);
             sf::View view3(sf::Vector2f(2000,2000),NuovoCentro);
