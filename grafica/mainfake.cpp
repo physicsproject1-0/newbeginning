@@ -5,11 +5,7 @@
 
 int main() {
   
-  
-  
-  int n;
-  std::cin >> n;
-  Mondo map(n);
+  Mondo map;
 
   while (!map.prendi_finestra()->Isclosed()) {
     // handle events

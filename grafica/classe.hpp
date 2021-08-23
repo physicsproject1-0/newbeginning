@@ -11,26 +11,59 @@
 #ifndef DISA
 #define DISA
 
-struct Persona {
-  sf::Vector2f centro;
-  float raggio;
-  sf::Vector2f vel;
-  sf::Clock cambiovelocita;
-
-  bool checked = false;
-  float metalato;
-  Persona getGlobalBounds();  // ?
-  bool intersects();          // ?
-  bool infect();
-  bool try_infect();  // ?
-};
-
 // per disegnare altre cose oltre il vertex array
-/* class Rappresentazione : public sf::Drawable{ */
+/* class Rappresentazione : public sf::Drawable { */
 class Animazione : public sf::Drawable {
+  struct Persona {
+    sf::Vector2f centro;
+    float raggio;
+    sf::Vector2f vel;
+    sf::Clock cambiovelocita;
+
+    bool checked = false;
+  };
+
+  class Bordi : public sf::Drawable {
+    sf::RectangleShape rettangolo;
+    sf::CircleShape cerchio;
+    sf::FloatRect bordo_collisioni;
+
+    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
+      target.draw(rettangolo);
+      target.draw(cerchio);
+    }  // metterci anche states altrimenti rompe il casso
+
+   public:
+    Bordi(sf::Vector2f dimensione) {
+      rettangolo.setSize(dimensione);
+      rettangolo.setFillColor(sf::Color::Transparent);
+      rettangolo.setOutlineColor(sf::Color::White);
+      rettangolo.setOutlineThickness(3);
+      rettangolo.setPosition(100, 100);
+
+      cerchio.setPosition(0, 0);
+      cerchio.setRadius(10);
+      cerchio.setFillColor(sf::Color::Transparent);
+      cerchio.setOutlineColor(sf::Color::White);
+      cerchio.setOutlineThickness(-2);
+
+      bordo_collisioni.left = 100;
+      bordo_collisioni.top = 100;
+      bordo_collisioni.width = dimensione.x;
+      bordo_collisioni.height = dimensione.y;
+    }
+
+    sf::FloatRect getlimiti() { return bordo_collisioni; };
+  };
+
+  sf::Clock* orologio;
+
   sf::Texture ominoprova;
   sf::VertexArray struttura;
+  std::map<int, Persona> Lista;
   int numeropersone;
+
+  Bordi limiti;
 
   void settexturecoords() {
     for (int i = 0; i < numeropersone; i++) {
@@ -41,7 +74,6 @@ class Animazione : public sf::Drawable {
       iter[0].texCoords = sf::Vector2f(430.f, 0.f);  // strane coord
       iter[1].texCoords = sf::Vector2f(0.f, 1681.f);
       iter[2].texCoords = sf::Vector2f(860.f, 1681.f);
-
     }
   }
 
@@ -52,12 +84,23 @@ class Animazione : public sf::Drawable {
   }
 
  public:
-  void begin(const std::map<int, Persona>& list) {
+
+  Animazione(int n, sf::Clock* t_orologio) : limiti(sf::Vector2f(600, 400)), orologio{t_orologio} {
     if (!ominoprova.loadFromFile("uomoverde.png")) {
       throw std::runtime_error{"texture loading failed"};
     }
-    numeropersone = list.size();
-    struttura.resize(list.size() * 3);
+
+    Persona prova;
+
+    for (int i = 0; i < n; i++) {
+      prova.raggio = 10.f;
+      prova.centro = sf::Vector2f(rand() % static_cast<int>(limiti.getlimiti().width - 2 * prova.raggio) + limiti.getlimiti().left + prova.raggio,
+                                  rand() % static_cast<int>(limiti.getlimiti().height - 2 * prova.raggio) + limiti.getlimiti().top + prova.raggio);
+      prova.vel = sf::Vector2f(rand() % 50 - 25.f, rand() % 50 - 25.f);
+      Lista[i] = prova;
+    }
+    numeropersone = Lista.size();
+    struttura.resize(Lista.size() * 3);
 
     struttura.setPrimitiveType(sf::Triangles);
 
@@ -75,39 +118,33 @@ class Animazione : public sf::Drawable {
       // non posso usare [] perchè mi dice che non funziona per le robe const
     }
   }
-};
 
-class Bordi : public sf::Drawable {
-  sf::RectangleShape rettangolo;
-  sf::CircleShape cerchio;
-  sf::FloatRect bordo_collisioni;
+  void aggiornagriglia();
 
-  virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    target.draw(rettangolo);
-    target.draw(cerchio);
-  }  // metterci anche states altrimenti rompe il casso
+  void check_collisions();  // devo passare un puntatore all'orologio per averne solo uno
 
- public:
-  Bordi(sf::Vector2f dimensione) {
-    rettangolo.setSize(dimensione);
-    rettangolo.setFillColor(sf::Color::Transparent);
-    rettangolo.setOutlineColor(sf::Color::White);
-    rettangolo.setOutlineThickness(3);
-    rettangolo.setPosition(100, 100);
+  void check_borders() {
+    for (int i = 0; i < Lista.size(); i++) {
+      if (Lista[i].centro.x < limiti.getlimiti().left + Lista[i].raggio ||
+          Lista[i].centro.x > limiti.getlimiti().left + limiti.getlimiti().width - Lista[i].raggio) {
+        Lista[i].vel.x = -Lista[i].vel.x;
+      }
+      if (Lista[i].centro.y < limiti.getlimiti().top + Lista[i].raggio ||
+          Lista[i].centro.y > limiti.getlimiti().top + limiti.getlimiti().height - Lista[i].raggio) {
+        Lista[i].vel.y = -Lista[i].vel.y;
+      }
+    }
+  };
 
-    cerchio.setPosition(0, 0);
-    cerchio.setRadius(10);
-    cerchio.setFillColor(sf::Color::Transparent);
-    cerchio.setOutlineColor(sf::Color::White);
-    cerchio.setOutlineThickness(-2);
+  void check_external_bounds(Persona& test);
 
-    bordo_collisioni.left = 100;
-    bordo_collisioni.top = 100;
-    bordo_collisioni.width = dimensione.x;
-    bordo_collisioni.height = dimensione.y;
-  }
+  void change_status();  // Fa cambiare la texture nel momento in cui le due particelle si scontrano
 
-  sf::FloatRect getlimiti() { return bordo_collisioni; };
+  void change_vel();
+
+  int check_occur(Persona const& persona, int raggio);
+
+  double modulo(sf::Vector2f const& vettore);
 };
 
 /* }; */
@@ -305,7 +342,7 @@ class Automa : public sf::Drawable {
   void avanza() {
     for (int i = 0; i < numero_lato; i++) {
       for (int j = 0; j < numero_lato; j++) {
-        aggiorna_counter(i,j);
+        aggiorna_counter(i, j);
       }
     }
     aggiorna();
@@ -317,20 +354,14 @@ class Mondo /* : public sf::Drawable  */ {
   /* sf::VertexArray Griglia; */
   Finestra a_window;
 
-  std::map<int, Persona> Lista;  // contiene solo le persone
+  Animazione dinamica;  // fare altra classe che contiene sia griglia sia bordi, gestire tutto lì
 
-  Animazione uomini;  // fare altra classe che contiene sia griglia sia bordi, gestire tutto lì
-
-  Bordi limiti;  // non ho capito perhcè qui dentro non ci posso mettere il costruttore;
+  // non ho capito perhcè qui dentro non ci posso mettere il costruttore;
 
   sf::Clock timer;
   sf::Time trascorso;
 
-  enum Status { VULNERABLE, INFECTED, REMOVED };  // Lo status e' qualcosa della persona non del mondo, forse va spostato
-
-  Status S;  // Qualcosa di questo genere per le diverse texture
-
-  Automa rappresentazione;
+  Automa statica;
   /*
     switch (S) {                                                            // Qualcosa non funziona
       case (INFECTED):  // Carichiamo la red texture...
@@ -365,35 +396,7 @@ class Mondo /* : public sf::Drawable  */ {
   // poi come fa window.draw(entity) a chiamare internamente entity.draw se è nella parte privata?!
 
  public:
-  
-  Mondo(int persone);
-
-  void aggiornagriglia();
-
-  void check_collisions();
-
-  void check_borders() {
-    for (int i = 0; i < Lista.size(); i++) {
-      if (Lista[i].centro.x < limiti.getlimiti().left + Lista[i].raggio ||
-          Lista[i].centro.x > limiti.getlimiti().left + limiti.getlimiti().width - Lista[i].raggio) {
-        Lista[i].vel.x = -Lista[i].vel.x;
-      }
-      if (Lista[i].centro.y < limiti.getlimiti().top + Lista[i].raggio ||
-          Lista[i].centro.y > limiti.getlimiti().top + limiti.getlimiti().height - Lista[i].raggio) {
-        Lista[i].vel.y = -Lista[i].vel.y;
-      }
-    }
-  };
-
-  void check_external_bounds(Persona& test);
-
-  void change_status();  // Fa cambiare la texture nel momento in cui le due particelle si scontrano
-
-  void change_vel();
-
-  int check_occur(Persona const& persona, int raggio);
-
-  double modulo(sf::Vector2f const& vettore);
+  Mondo();
 
   // funzioni da usare nel main
 
@@ -409,19 +412,17 @@ class Mondo /* : public sf::Drawable  */ {
   }
 
   void Aggiorna() {
-    check_collisions();
+/*     check_collisions();
     check_borders();
-    aggiornagriglia();
+    aggiornagriglia(); */
   }
-
+ 
   void Disegna() {
     a_window.Pulisci();
 
-    a_window.Disegna(rappresentazione);
+    a_window.Disegna(dinamica);
 
-    a_window.Disegna(limiti);
-
-    a_window.Disegna(uomini);
+    a_window.Disegna(statica);
 
     a_window.Mostra();
   }
