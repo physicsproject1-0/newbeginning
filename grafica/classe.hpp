@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <math.h>
+#include <stdlib.h>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -7,7 +8,6 @@
 #include <algorithm>
 #include <cassert>
 #include <cstdlib>
-#include<stdlib.h>
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -80,29 +80,28 @@ class Animazione : public sf::Drawable {
               aggiorna_texture();
             }
           } else {
-            break;
+            continue;
           }
         }
       } else {
-        break;
+        continue;
       }
     }
   }
   void aggiorna_texture() {
     for (int i = 0; i < popolazione.size(); i++) {
-      sf::Vertex* iter = &struttura[i * 3];
       if (popolazione[i].P == StatoPupino::INFETTO) {
         ominoprova.loadFromFile("uomorosso.png");
+      } else if (popolazione[i].P == StatoPupino::RIMOSSO) {
+        ominoprova.loadFromFile("uomogrigio.png");
       } else {
-        ominoprova.loadFromFile("uomoverde.png");
+        break;
       }
 
       /* switch (P) {
          case (StatoPupino::INFETTO):  // Carichiamo la red texture...
 
-           iter[0].color = sf::Color::Red;
-           iter[1].color = sf::Color::Red;
-           iter[2].color = sf::Color::Red;
+           ominoprova.loadFromFile("uomorosso.png");
 
          case (StatoPupino::RIMOSSO):  // carichiamo la white texture
            iter[0].color = sf::Color::White;
@@ -119,6 +118,18 @@ class Animazione : public sf::Drawable {
     }
   }
 
+  // Faccio morire/guarire la persona dopo 8 secondi che e' infetta
+  void morte_persona() {
+    for (int i = 0; i < popolazione.size(); i++) {
+      if ((popolazione[i].P == StatoPupino::INFETTO) && (orologio2.getElapsedTime().asSeconds() > 8)) {
+        popolazione[i].P = StatoPupino::RIMOSSO;
+        orologio2.restart();
+      } else {
+        break;
+      }
+    }
+  }
+
   void settexturecoords() {
     for (int i = 0; i < popolazione.size(); i++) {
       sf::Vertex* iter = &struttura[i * 3];
@@ -126,13 +137,12 @@ class Animazione : public sf::Drawable {
       iter[0].texCoords = sf::Vector2f(430.f, 0.f);  // strane coord
       iter[1].texCoords = sf::Vector2f(0.f, 1681.f);
       iter[2].texCoords = sf::Vector2f(860.f, 1681.f);
-
-      sf::Vertex* iter2 = &struttura[0];  // tentativo di metterne una rossa
-
-      iter2[0].color = sf::Color::Red;
-      iter2[1].color = sf::Color::Red;
-      iter2[2].color = sf::Color::Red;
     }
+
+    // sf::Vertex* iter2 = &struttura[0];  // tentativo di metterne una rossa
+    // iter2[0].color = sf::Color::Red;
+    // iter2[1].color = sf::Color::Red;
+    // iter2[2].color = sf::Color::Red;
   }
 
   virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -150,7 +160,12 @@ class Animazione : public sf::Drawable {
 
     Persona prova;
 
-    for (int i = 0; i < n; i++) {
+    // bool test (int h) {
+      // if (popolazione[h].P == StatoPupino::INFETTO) {return false;}
+      // return true;
+    // }
+
+    for (int i = 1; i < n; i++) {
       prova.raggio = 10.f;
       prova.centro = sf::Vector2f(rand() % static_cast<int>(limiti.getlimiti().width - 2 * prova.raggio) + limiti.getlimiti().left + prova.raggio,
                                   rand() % static_cast<int>(limiti.getlimiti().height - 2 * prova.raggio) + limiti.getlimiti().top + prova.raggio);
@@ -158,7 +173,8 @@ class Animazione : public sf::Drawable {
       prova.P = StatoPupino::VULNERABILE;
       popolazione[i] = prova;
     }
-
+    popolazione[n - 1].P = StatoPupino::INFETTO;  // Se metto popolazione[0] vengono tutti rossi
+                                                  // Se metto tipo popolazione[7] vengono tutti verdi
     struttura.resize(popolazione.size() * 3);
 
     struttura.setPrimitiveType(sf::Triangles);
@@ -223,35 +239,49 @@ class Animazione : public sf::Drawable {
 
     collisione();
 
+    morte_persona();
+
     aggiorna_lista();
 
     aggiorna_griglia();
   }
 };
 
-/* }; */
+// QUI INIZIA LA PARTE AUTOMA   ################################################
+
+// QUI INIZIA LA PARTE AUTOMA   ################################################
+
+// QUI INIZIA LA PARTE AUTOMA   ################################################
+
+// QUI INIZIA LA PARTE AUTOMA   ################################################
+
+// QUI INIZIA LA PARTE AUTOMA   ################################################
+
+// QUI INIZIA LA PARTE AUTOMA   ################################################
+
+// QUI INIZIA LA PARTE AUTOMA   ################################################
 
 enum class Status { VULNERABLE, INFECTED, REMOVED };
 
-class Automa : public sf::Drawable {  //ESTRARRE LE CLASSI NESTATE E DISTINGUERE I MORTI DAI GUARITI
+class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUERE I MORTI DAI GUARITI
   sf::Font font;
-  
+
   class Cellula : public sf::Drawable {  // se è una struct non funziona l'inheritance?
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
       target.draw(rettangolo);
       target.draw(numero);
     }  // metterci anche states altrimenti rompe il casso
-    //non posso loadare un font qui dentro direttamente
+       // non posso loadare un font qui dentro direttamente
 
    public:
     // wtf
 
     void aggiorna_colore() {
-      switch (S) {                // Qualcosa non funziona
+      switch (S) {
         case (Status::INFECTED):  // Carichiamo la red texture...
           rettangolo.setFillColor(sf::Color::Red);
-          std::cout << "sto aggiornando il rosso"<<'\n';
-          
+          std::cout << "sto aggiornando il rosso" << '\n';
+
           break;
 
         case (Status::REMOVED):  // carichiamo la white texture
@@ -266,7 +296,7 @@ class Automa : public sf::Drawable {  //ESTRARRE LE CLASSI NESTATE E DISTINGUERE
     }
 
     sf::Font* p_font;
-    
+
     int counter;
 
     int infection_days;
@@ -276,13 +306,13 @@ class Automa : public sf::Drawable {  //ESTRARRE LE CLASSI NESTATE E DISTINGUERE
 
     sf::Text numero;
 
-    Cellula(sf::Vector2f posizione, sf::Vector2f dimensione, sf::Font* t_font) : counter(0), infection_days(0) , p_font{t_font} {  // funzionerà
+    Cellula(sf::Vector2f posizione, sf::Vector2f dimensione, sf::Font* t_font) : counter(0), infection_days(0), p_font{t_font} {  // funzionerà
       rettangolo.setPosition(posizione);
       rettangolo.setSize(dimensione);
       rettangolo.setOutlineColor(sf::Color::White);
       rettangolo.setOutlineThickness(2.f);
       aggiorna_colore();
-      
+
       numero.setFont(*p_font);
       numero.setPosition(posizione);
       numero.setFillColor(sf::Color::White);
@@ -327,12 +357,12 @@ class Automa : public sf::Drawable {  //ESTRARRE LE CLASSI NESTATE E DISTINGUERE
       throw std::runtime_error{"texture loading failed"};
     } */
     try {
-        if (!font.loadFromFile("Arial.ttf")) {
-          throw std::runtime_error{"denominator is zero"};
-        }
-      } catch (std::runtime_error const& e) {
-        std::cerr << e.what() << '\n';  // 
+      if (!font.loadFromFile("Arial.ttf")) {
+        throw std::runtime_error{"denominator is zero"};
       }
+    } catch (std::runtime_error const& e) {
+      std::cerr << e.what() << '\n';  //
+    }
 
     float t_lunghezza_x = dimensioni.x / numero_lato;
 
@@ -391,38 +421,47 @@ class Automa : public sf::Drawable {  //ESTRARRE LE CLASSI NESTATE E DISTINGUERE
     /* if (i == 0 || j == 0 || i == (numero_lato - 1) ||) {
     }
  */
-    std::cout << "controllo la cellula in posizione"<<" riga " << i << " colonna "<<j<<'\n';
+    std::cout << "controllo la cellula in posizione"
+              << " riga " << i << " colonna " << j << '\n';
     for (int a = 0; a <= 2; a++) {
       if (esiste(i - 1, j - 1 + a)) {
-        std::cout << "esiste " << "in posizione"<<" riga " << i - 1 << " colonna "<<j - 1 + a<<'\n';
+        std::cout << "esiste "
+                  << "in posizione"
+                  << " riga " << i - 1 << " colonna " << j - 1 + a << '\n';
         if (grid[i - 1][j - 1 + a].S == Status::INFECTED) {
-          std::cout <<"c'è infetto"<<'\n';
+          std::cout << "c'è infetto" << '\n';
           cell.counter++;
         }
       }
       if (esiste(i + 1, j - 1 + a)) {
-                std::cout << "esiste " << "in posizione"<<" riga " << i + 1 << " colonna "<<j - 1 + a<<'\n';
+        std::cout << "esiste "
+                  << "in posizione"
+                  << " riga " << i + 1 << " colonna " << j - 1 + a << '\n';
 
         if (grid[i + 1][j - 1 + a].S == Status::INFECTED) {
-          std::cout <<"c'è infetto"<<'\n';
+          std::cout << "c'è infetto" << '\n';
           cell.counter++;
         }
       }
     }
     if (esiste(i, j - 1)) {
-                      std::cout << "esiste " << "in posizione"<<" riga " << i << " colonna "<<j - 1 <<'\n';
+      std::cout << "esiste "
+                << "in posizione"
+                << " riga " << i << " colonna " << j - 1 << '\n';
 
       if (grid[i][j - 1].S == Status::INFECTED) {
-          std::cout <<"c'è infetto"<<'\n';
+        std::cout << "c'è infetto" << '\n';
 
         cell.counter++;
       }
     }
     if (esiste(i, j + 1)) {
-                      std::cout << "esiste " << "in posizione"<<" riga " << i << " colonna "<<j + 1 <<'\n';
+      std::cout << "esiste "
+                << "in posizione"
+                << " riga " << i << " colonna " << j + 1 << '\n';
 
       if (grid[i][j + 1].S == Status::INFECTED) {
-          std::cout <<"c'è infetto"<<'\n';
+        std::cout << "c'è infetto" << '\n';
         cell.counter++;
       }
     }
@@ -433,30 +472,30 @@ class Automa : public sf::Drawable {  //ESTRARRE LE CLASSI NESTATE E DISTINGUERE
     for (int i = 0; i < numero_lato; i++) {
       for (int j = 0; j < numero_lato; j++) {
         Cellula& cell = grid[i][j];
-        std::cout << "riga " << i << " colonna "<<j<<'\n';
+        std::cout << "riga " << i << " colonna " << j << '\n';
         if (cell.S == Status::VULNERABLE) {
-          std::cout<<"sono vulnerabile"<<'\n';
+          std::cout << "sono vulnerabile" << '\n';
           int esponente = cell.counter;
-          //cell.numero.setString(std::to_string(esponente));
+          // cell.numero.setString(std::to_string(esponente));
           if (esponente == 0) {
             continue;
           } else {
             float prob_sano = pow(1 - probabilita_contagio, esponente);  // beta o gamma?
-            std::cout << "prob sano"<<prob_sano <<'\n';
-            float estrazione= (rand() % 101) / 100.f;  //IL .F è FONDAMENTALE
-            std::cout << "estrazione "<<estrazione <<'\n';
+            std::cout << "prob sano" << prob_sano << '\n';
+            float estrazione = (rand() % 101) / 100.f;  // IL .F è FONDAMENTALE
+            std::cout << "estrazione " << estrazione << '\n';
             if (estrazione > prob_sano) {
               // aggiungere i seed randomici
-              
-              cell.S = Status::INFECTED;  //PORCO DIO AVEVO MESSO DUE UGUALI
-              std::cout<<"ora sono infetto"<<'\n';
+
+              cell.S = Status::INFECTED;  // PORCO DIO AVEVO MESSO DUE UGUALI
+              std::cout << "ora sono infetto" << '\n';
               cell.aggiorna_colore();
             }
           }
         }
 
-        else if(cell.S == Status::INFECTED) {
-          std::cout<<"sono arrivato qua"<<'\n';
+        else if (cell.S == Status::INFECTED) {
+          std::cout << "sono arrivato qua" << '\n';
           cell.infection_days++;
           if ((rand() % 100) / 100.f < probabilita_guarigione) {
             cell.S = Status::REMOVED;
@@ -471,9 +510,6 @@ class Automa : public sf::Drawable {  //ESTRARRE LE CLASSI NESTATE E DISTINGUERE
   }
 
   void avanza() {
-    
-    
-    
     if (orologio.getElapsedTime().asSeconds() > 3) {
       for (int i = 0; i < numero_lato; i++) {
         for (int j = 0; j < numero_lato; j++) {
@@ -499,26 +535,6 @@ class Mondo /* : public sf::Drawable  */ {
   sf::Time trascorso;
 
   Automa statica;
-  /*
-    switch (S) {                                                            // Qualcosa non funziona
-      case (INFECTED):  // Carichiamo la red texture...
-        if (!ominoprova.loadFromFile("uomorosso.png")) {
-          throw std::runtime_error{"texture loading failed"};
-        }
-        break;
-
-      case (REMOVED):  // carichiamo la white texture
-        if (!ominoprova.loadFromFile("uomogrigio.png")) {
-          throw std::runtime_error{"texture loading failed"};
-        }
-        break;
-
-      default:  // carichiamo la green texture
-        if (!ominoprova.loadFromFile("uomoverde.png")) {
-          throw std::runtime_error{"texture loading failed"};
-        }
-    }
-  */
 
   /* virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.texture = &ominoprova;

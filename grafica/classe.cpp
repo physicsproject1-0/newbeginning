@@ -4,13 +4,12 @@
 
 #include "finestra.hpp"
 
-Mondo::Mondo() : a_window("test", sf::Vector2u(800, 600))  ,  statica(sf::Vector2f(1800,1800), sf::Vector2f(500,500), 10, 0.3, 0.5, 3,0), dinamica(6, &timer) {
-/*   if (!ominoprova.loadFromFile("uomoverde.png")) {
-    throw std::runtime_error{"texture loading failed"};
-  }
- */
-  
- 
+Mondo::Mondo()
+    : a_window("test", sf::Vector2u(800, 600)), statica(sf::Vector2f(1800, 1800), sf::Vector2f(500, 500), 10, 0.3, 0.5, 3, 0), dinamica(20, &timer) {
+  /*   if (!ominoprova.loadFromFile("uomoverde.png")) {
+      throw std::runtime_error{"texture loading failed"};
+    }
+   */
 }
 
 // sf::Vector2f estimate(Persona& persona) {
@@ -42,7 +41,7 @@ Mondo::Mondo() : a_window("test", sf::Vector2u(800, 600))  ,  statica(sf::Vector
 
       }
     }
- 
+
 
   // if (Lista[indice].cambiovelocita.getElapsedTime().asSeconds() > 3) {  // per modificare il moto browniano
   //  sf::Vector2f nuovavel(rand() % 50 - 25.f, rand() % 50 - 25.f);
@@ -68,15 +67,14 @@ int Animazione::check_occur(Persona const& persona, int raggio) {  // decidere u
 }  // in caso creare delle corone circolari con varie numerazioni
 // introdurre dipendenza dal tempo
 
-
 /* void Animazione::check_collisions() {  // Non so cosa passare a questa funzione e se cosi' va bene, l 'idea c e'
   for (int i = 0; i < popolazione.size(); i++) {
     Persona& PallinaA = popolazione[i];
     for (int j = 0; j < popolazione.size(); j++) {
-      
+
       Persona& PallinaB = popolazione[j];
-      
-      
+
+
       if ((!(PallinaA.checked || PallinaB.checked)) && (i != j)) {
         if (modulo(PallinaA.centro - PallinaB.centro) <= 1.5 * PallinaB.raggio) {
           PallinaA.checked = true;
@@ -87,9 +85,9 @@ int Animazione::check_occur(Persona const& persona, int raggio) {  // decidere u
         }
       }
     }
-    
-      
-    
+
+
+
   }
   for (int i = 0; i < popolazione.size(); i++) {
     popolazione[i].checked = false;
