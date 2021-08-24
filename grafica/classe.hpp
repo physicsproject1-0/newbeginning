@@ -160,12 +160,7 @@ class Animazione : public sf::Drawable {
 
     Persona prova;
 
-    // bool test (int h) {
-      // if (popolazione[h].P == StatoPupino::INFETTO) {return false;}
-      // return true;
-    // }
-
-    for (int i = 1; i < n; i++) {
+      for (int i = 1; i < n; i++) {
       prova.raggio = 10.f;
       prova.centro = sf::Vector2f(rand() % static_cast<int>(limiti.getlimiti().width - 2 * prova.raggio) + limiti.getlimiti().left + prova.raggio,
                                   rand() % static_cast<int>(limiti.getlimiti().height - 2 * prova.raggio) + limiti.getlimiti().top + prova.raggio);
