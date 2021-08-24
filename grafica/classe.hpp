@@ -2,11 +2,13 @@
 #include <math.h>
 
 #include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+#include <cassert>
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 #include <string>
-#include <cassert>
 
 #include "finestra.hpp"
 
@@ -60,35 +62,6 @@ class Animazione : public sf::Drawable {
   std::map<int, Persona> popolazione;  // vedere se meglio vector
 
   Bordi limiti;
-
-  StatoPupino P;
-
-  void collisione() {
-    for (int i = 0; i < popolazione.size(); i++) {
-      assert (popolazione[i].StatoPupino == VULNERABILE)
-      for (int j = 0; j < popolazione.size(); j++) {
-        if (popolazione[i].centro - popolazione[j].centro < popolazione[i].raggio) {
-          
-        }
-      }
-    }
-  }
-
-  void aggiorna_texture() {
-    switch (P) {
-      case (StatoPupino::INFETTO):  // Carichiamo la red texture...
-
-        break;
-
-      case (StatoPupino::RIMOSSO):  // carichiamo la white texture
-
-        break;
-
-      case (StatoPupino::VULNERABILE):  // carichiamo la green texture
-
-        break;
-    }
-  }
 
   void settexturecoords() {
     for (int i = 0; i < popolazione.size(); i++) {
@@ -198,13 +171,18 @@ class Animazione : public sf::Drawable {
 enum class Status { VULNERABLE, INFECTED, REMOVED };
 
 class Automa : public sf::Drawable {
+  sf::Font font;
+  
   class Cellula : public sf::Drawable {  // se è una struct non funziona l'inheritance?
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
       target.draw(rettangolo);
       target.draw(numero);
     }  // metterci anche states altrimenti rompe il casso
+    //non posso loadare un font qui dentro direttamente
 
    public:
+    // wtf
+
     void aggiorna_colore() {
       switch (S) {                // Qualcosa non funziona
         case (Status::INFECTED):  // Carichiamo la red texture...
@@ -222,6 +200,8 @@ class Automa : public sf::Drawable {
       }
     }
 
+    sf::Font* p_font;
+    
     int counter;
 
     int infection_days;
@@ -231,15 +211,17 @@ class Automa : public sf::Drawable {
 
     sf::Text numero;
 
-    Cellula(sf::Vector2f posizione, sf::Vector2f dimensione) : counter(0), infection_days(0) {  // funzionerà
+    Cellula(sf::Vector2f posizione, sf::Vector2f dimensione, sf::Font* t_font) : counter(0), infection_days(0) , p_font{t_font} {  // funzionerà
       rettangolo.setPosition(posizione);
       rettangolo.setSize(dimensione);
       rettangolo.setOutlineColor(sf::Color::White);
       rettangolo.setOutlineThickness(2.f);
       aggiorna_colore();
-
+      
+      numero.setFont(*p_font);
       numero.setPosition(posizione);
-      numero.setColor(sf::Color::White);
+      numero.setFillColor(sf::Color::White);
+      numero.setCharacterSize(50);
     }
   };
   // mettere errori per dimensioni minori di 0?
@@ -249,8 +231,6 @@ class Automa : public sf::Drawable {
   sf::Vector2f posizione;
 
   sf::Clock orologio;
-
-  sf::Font font;
 
   int numero_lato;
 
@@ -278,9 +258,16 @@ class Automa : public sf::Drawable {
         probabilita_guarigione{t_probabilita_guarigione} {
     assert(probabilita_contagio <= 1 && probabilita_contagio >= 0);  // mettere except
 
-    if (!font.loadFromFile("Arial.ttf")) {
-      // error...
-    }
+    /* if (!font.loadFromFile("Arial.ttf")) {
+      throw std::runtime_error{"texture loading failed"};
+    } */
+    try {
+        if (!font.loadFromFile("Arial.ttf")) {
+          throw std::runtime_error{"denominator is zero"};
+        }
+      } catch (std::runtime_error const& e) {
+        std::cerr << e.what() << '\n';  // 
+      }
 
     float t_lunghezza_x = dimensioni.x / numero_lato;
 
@@ -290,7 +277,7 @@ class Automa : public sf::Drawable {
       std::vector<Cellula> riga;
       for (int j = 0; j < numero_lato; j++) {
         sf::Vector2f posizionemovente(posizione.x + j * t_lunghezza_x, posizione.y + i * t_lunghezza_y);
-        Cellula riempi(posizionemovente, sf::Vector2f(t_lunghezza_x, t_lunghezza_y));
+        Cellula riempi(posizionemovente, sf::Vector2f(t_lunghezza_x, t_lunghezza_y), &font);
 
         riga.push_back(riempi);
 
@@ -371,9 +358,9 @@ class Automa : public sf::Drawable {
 
         if (cell.S == Status::VULNERABLE) {
           int esponente = cell.counter;
-          cell.numero.setString( std::to_string(esponente));
-          if (esponente == 0) { continue; }
-          else {
+          cell.numero.setString(std::to_string(esponente));
+          if (esponente == 0) {
+          } else {
             float prob_sano = pow(1 - probabilita_contagio, esponente);  // beta o gamma?
 
             if ((rand() % 101) / 100 > prob_sano) {
