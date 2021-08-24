@@ -160,10 +160,7 @@ class Animazione : public sf::Drawable {
 
     Persona prova;
 
-    // bool test (int h) {
-      // if (popolazione[h].P == StatoPupino::INFETTO) {return false;}
-      // return true;
-    // }
+    
 
     for (int i = 1; i < n; i++) {
       prova.raggio = 10.f;
@@ -178,10 +175,20 @@ class Animazione : public sf::Drawable {
     struttura.resize(popolazione.size() * 3);
 
     struttura.setPrimitiveType(sf::Triangles);
+   int h;
+    std::cin >> h;
+    std::cout << proviamo(h);
+    
 
     settexturecoords();
     aggiorna_texture();
   }
+
+  bool proviamo(int h) {
+     if (popolazione[h].P == StatoPupino::INFETTO) {return true;}
+     else {return false;}
+    }
+  
 
   void aggiorna_griglia() {
     for (int i = 0; i < popolazione.size(); i++) {
