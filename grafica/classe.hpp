@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cstdlib>
+#include<stdlib.h>
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -232,7 +233,7 @@ class Animazione : public sf::Drawable {
 
 enum class Status { VULNERABLE, INFECTED, REMOVED };
 
-class Automa : public sf::Drawable {
+class Automa : public sf::Drawable {  //ESTRARRE LE CLASSI NESTATE E DISTINGUERE I MORTI DAI GUARITI
   sf::Font font;
   
   class Cellula : public sf::Drawable {  // se è una struct non funziona l'inheritance?
@@ -249,6 +250,8 @@ class Automa : public sf::Drawable {
       switch (S) {                // Qualcosa non funziona
         case (Status::INFECTED):  // Carichiamo la red texture...
           rettangolo.setFillColor(sf::Color::Red);
+          std::cout << "sto aggiornando il rosso"<<'\n';
+          
           break;
 
         case (Status::REMOVED):  // carichiamo la white texture
@@ -388,25 +391,38 @@ class Automa : public sf::Drawable {
     /* if (i == 0 || j == 0 || i == (numero_lato - 1) ||) {
     }
  */
-    for (int a = 0; a < 2; a++) {
+    std::cout << "controllo la cellula in posizione"<<" riga " << i << " colonna "<<j<<'\n';
+    for (int a = 0; a <= 2; a++) {
       if (esiste(i - 1, j - 1 + a)) {
+        std::cout << "esiste " << "in posizione"<<" riga " << i - 1 << " colonna "<<j - 1 + a<<'\n';
         if (grid[i - 1][j - 1 + a].S == Status::INFECTED) {
+          std::cout <<"c'è infetto"<<'\n';
           cell.counter++;
         }
       }
       if (esiste(i + 1, j - 1 + a)) {
+                std::cout << "esiste " << "in posizione"<<" riga " << i + 1 << " colonna "<<j - 1 + a<<'\n';
+
         if (grid[i + 1][j - 1 + a].S == Status::INFECTED) {
+          std::cout <<"c'è infetto"<<'\n';
           cell.counter++;
         }
       }
     }
     if (esiste(i, j - 1)) {
+                      std::cout << "esiste " << "in posizione"<<" riga " << i << " colonna "<<j - 1 <<'\n';
+
       if (grid[i][j - 1].S == Status::INFECTED) {
+          std::cout <<"c'è infetto"<<'\n';
+
         cell.counter++;
       }
     }
     if (esiste(i, j + 1)) {
+                      std::cout << "esiste " << "in posizione"<<" riga " << i << " colonna "<<j + 1 <<'\n';
+
       if (grid[i][j + 1].S == Status::INFECTED) {
+          std::cout <<"c'è infetto"<<'\n';
         cell.counter++;
       }
     }
@@ -417,26 +433,32 @@ class Automa : public sf::Drawable {
     for (int i = 0; i < numero_lato; i++) {
       for (int j = 0; j < numero_lato; j++) {
         Cellula& cell = grid[i][j];
-
+        std::cout << "riga " << i << " colonna "<<j<<'\n';
         if (cell.S == Status::VULNERABLE) {
+          std::cout<<"sono vulnerabile"<<'\n';
           int esponente = cell.counter;
-          cell.numero.setString(std::to_string(esponente));
+          //cell.numero.setString(std::to_string(esponente));
           if (esponente == 0) {
             continue;
           } else {
             float prob_sano = pow(1 - probabilita_contagio, esponente);  // beta o gamma?
-
-            if ((rand() % 101) / 100 > prob_sano) {
+            std::cout << "prob sano"<<prob_sano <<'\n';
+            float estrazione= (rand() % 101) / 100.f;  //IL .F è FONDAMENTALE
+            std::cout << "estrazione "<<estrazione <<'\n';
+            if (estrazione > prob_sano) {
               // aggiungere i seed randomici
-              cell.S == Status::INFECTED;
+              
+              cell.S = Status::INFECTED;  //PORCO DIO AVEVO MESSO DUE UGUALI
+              std::cout<<"ora sono infetto"<<'\n';
               cell.aggiorna_colore();
             }
           }
         }
 
-        if (cell.S == Status::INFECTED) {
+        else if(cell.S == Status::INFECTED) {
+          std::cout<<"sono arrivato qua"<<'\n';
           cell.infection_days++;
-          if ((rand() % 100) / 100 < probabilita_guarigione) {
+          if ((rand() % 100) / 100.f < probabilita_guarigione) {
             cell.S = Status::REMOVED;
             cell.aggiorna_colore();
             // qua forse ci sta fare così
@@ -449,6 +471,9 @@ class Automa : public sf::Drawable {
   }
 
   void avanza() {
+    
+    
+    
     if (orologio.getElapsedTime().asSeconds() > 3) {
       for (int i = 0; i < numero_lato; i++) {
         for (int j = 0; j < numero_lato; j++) {
@@ -525,6 +550,7 @@ class Mondo /* : public sf::Drawable  */ {
 
   void Aggiorna() {
     dinamica.aggiorna_generale();
+
     statica.avanza();
   }
 
