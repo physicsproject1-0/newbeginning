@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
+#include <algorithm>
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
@@ -25,7 +26,7 @@ class Animazione : public sf::Drawable {
     float raggio;
     sf::Vector2f vel;
     sf::Clock cambiovelocita;
-
+    StatoPupino P;
     bool checked = false;
   };
 
@@ -63,15 +64,73 @@ class Animazione : public sf::Drawable {
 
   Bordi limiti;
 
+  StatoPupino P;
+
+  void collisione() {
+    for (int i = 0; i < popolazione.size(); i++) {
+      Persona& PallinaA = popolazione[i];
+      if (PallinaA.P == StatoPupino::VULNERABILE) {
+        for (int j = 0; j < popolazione.size(); j++) {
+          Persona& PallinaB = popolazione[j];
+
+          if ((i != j) && (PallinaB.P == StatoPupino::INFETTO)) {
+            if (modulo(PallinaA.centro - PallinaB.centro) <= 1.5 * PallinaB.raggio) {
+              PallinaA.P = StatoPupino::INFETTO;
+              aggiorna_texture();
+            }
+          } else {
+            break;
+          }
+        }
+      } else {
+        break;
+      }
+    }
+  }
+  void aggiorna_texture() {
+    for (int i = 0; i < popolazione.size(); i++) {
+      sf::Vertex* iter = &struttura[i * 3];
+      if (popolazione[i].P == StatoPupino::INFETTO) {
+        ominoprova.loadFromFile("uomorosso.png");
+      } else {
+        ominoprova.loadFromFile("uomoverde.png");
+      }
+
+      /* switch (P) {
+         case (StatoPupino::INFETTO):  // Carichiamo la red texture...
+
+           iter[0].color = sf::Color::Red;
+           iter[1].color = sf::Color::Red;
+           iter[2].color = sf::Color::Red;
+
+         case (StatoPupino::RIMOSSO):  // carichiamo la white texture
+           iter[0].color = sf::Color::White;
+           iter[1].color = sf::Color::White;
+           iter[2].color = sf::Color::White;
+           break;
+
+         case (StatoPupino::VULNERABILE):  // carichiamo la green texture
+           iter[0].color = sf::Color::Green;
+           iter[1].color = sf::Color::Green;
+           iter[2].color = sf::Color::Green;
+           break;
+       } */
+    }
+  }
+
   void settexturecoords() {
     for (int i = 0; i < popolazione.size(); i++) {
       sf::Vertex* iter = &struttura[i * 3];
-      // iter[0].color = sf::Color::Transparent;
-      // iter[1].color = sf::Color::Transparent;
-      // iter[2].color = sf::Color::Transparent;
+
       iter[0].texCoords = sf::Vector2f(430.f, 0.f);  // strane coord
       iter[1].texCoords = sf::Vector2f(0.f, 1681.f);
       iter[2].texCoords = sf::Vector2f(860.f, 1681.f);
+
+      sf::Vertex* iter2 = &struttura[0];  // tentativo di metterne una rossa
+
+      iter2[0].color = sf::Color::Red;
+      iter2[1].color = sf::Color::Red;
+      iter2[2].color = sf::Color::Red;
     }
   }
 
@@ -95,13 +154,16 @@ class Animazione : public sf::Drawable {
       prova.centro = sf::Vector2f(rand() % static_cast<int>(limiti.getlimiti().width - 2 * prova.raggio) + limiti.getlimiti().left + prova.raggio,
                                   rand() % static_cast<int>(limiti.getlimiti().height - 2 * prova.raggio) + limiti.getlimiti().top + prova.raggio);
       prova.vel = sf::Vector2f(rand() % 50 - 25.f, rand() % 50 - 25.f);
+      prova.P = StatoPupino::VULNERABILE;
       popolazione[i] = prova;
     }
+
     struttura.resize(popolazione.size() * 3);
 
     struttura.setPrimitiveType(sf::Triangles);
 
     settexturecoords();
+    aggiorna_texture();
   }
 
   void aggiorna_griglia() {
@@ -158,7 +220,7 @@ class Animazione : public sf::Drawable {
   void aggiorna_generale() {
     check_borders();
 
-    // check_collisions();
+    collisione();
 
     aggiorna_lista();
 
@@ -360,6 +422,7 @@ class Automa : public sf::Drawable {
           int esponente = cell.counter;
           cell.numero.setString(std::to_string(esponente));
           if (esponente == 0) {
+            continue;
           } else {
             float prob_sano = pow(1 - probabilita_contagio, esponente);  // beta o gamma?
 
