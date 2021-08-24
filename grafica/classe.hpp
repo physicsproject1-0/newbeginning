@@ -160,9 +160,7 @@ class Animazione : public sf::Drawable {
 
     Persona prova;
 
-    
-
-    for (int i = 1; i < n; i++) {
+      for (int i = 1; i < n; i++) {
       prova.raggio = 10.f;
       prova.centro = sf::Vector2f(rand() % static_cast<int>(limiti.getlimiti().width - 2 * prova.raggio) + limiti.getlimiti().left + prova.raggio,
                                   rand() % static_cast<int>(limiti.getlimiti().height - 2 * prova.raggio) + limiti.getlimiti().top + prova.raggio);
@@ -175,20 +173,10 @@ class Animazione : public sf::Drawable {
     struttura.resize(popolazione.size() * 3);
 
     struttura.setPrimitiveType(sf::Triangles);
-   int h;
-    std::cin >> h;
-    std::cout << proviamo(h);
-    
 
     settexturecoords();
     aggiorna_texture();
   }
-
-  bool proviamo(int h) {
-     if (popolazione[h].P == StatoPupino::INFETTO) {return true;}
-     else {return false;}
-    }
-  
 
   void aggiorna_griglia() {
     for (int i = 0; i < popolazione.size(); i++) {
