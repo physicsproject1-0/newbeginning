@@ -62,7 +62,7 @@ class Animazione : public sf::Drawable {
       }
     }
   }
- /*  void aggiorna_texture() {
+   void aggiorna_texture() {
     for (int i = 0; i < popolazione.size(); i++) {
       if (popolazione[i].P == Stato::INFETTO) {
         ominoprova.loadFromFile("uomorosso.png");
@@ -71,7 +71,7 @@ class Animazione : public sf::Drawable {
       } else {
         break;
       }
- */
+ 
       /* switch (P) {
          case (Stato::INFETTO):  // Carichiamo la red texture...
 
@@ -89,9 +89,9 @@ class Animazione : public sf::Drawable {
            iter[2].color = sf::Color::Green;
            break;
        } */
- /*    }
+     }
   }
- */
+ 
   // Faccio morire/guarire la persona dopo 8 secondi che e' infetta
   void morte_persona() {
     for (int i = 0; i < popolazione.size(); i++) {
@@ -139,11 +139,11 @@ class Animazione : public sf::Drawable {
       prova.centro = sf::Vector2f(rand() % static_cast<int>(limiti.getlimiti().width - 2 * prova.raggio) + limiti.getlimiti().left + prova.raggio,
                                   rand() % static_cast<int>(limiti.getlimiti().height - 2 * prova.raggio) + limiti.getlimiti().top + prova.raggio);
       prova.vel = sf::Vector2f(rand() % 50 - 25.f, rand() % 50 - 25.f);
-      prova.P = Stato::VULNERABILE;
       popolazione[i] = prova;
+      popolazione[i].P = Stato::VULNERABILE;
     }
-   /*  popolazione[n - 1].P = Stato::INFETTO;   */// Se metto popolazione[0] vengono tutti rossi
-                                            // Se metto tipo popolazione[7] vengono tutti verdi
+    popolazione[0].P = Stato::INFETTO;            // Se metto popolazione[0] vengono tutti rossi
+                                                  // Se metto tipo popolazione[7] vengono tutti verdi
     struttura.resize(popolazione.size() * 3);
 
     struttura.setPrimitiveType(sf::Triangles);
