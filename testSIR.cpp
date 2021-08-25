@@ -49,7 +49,7 @@ TEST_CASE("Testing great mortality")
   CHECK(finale.rimossi == 20);
 }
 
-TEST_CASE("Testing end of the world")   // FALLISCE!!! provare per credere
+TEST_CASE("Testing end of the world")
 {
   epidemia::State start {100, 20, 0};
   int giorni = 1000;
