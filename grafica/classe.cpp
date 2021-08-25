@@ -2,10 +2,9 @@
 
 #include <algorithm>
 
-#include "finestra.hpp"
 
 Mondo::Mondo()
-    : a_window("test", sf::Vector2u(800, 600)), statica(sf::Vector2f(1800, 1800), sf::Vector2f(500, 500), 10, 0.3, 0.5, 3, 0), dinamica(20, &timer) {
+    :overlay(sf::Vector2f(100, 500)), a_window("test", sf::Vector2u(800, 600), &overlay), dinamica(20), statica(sf::Vector2f(1800, 1800), sf::Vector2f(500, 500), 10, 0.3, 0.5, 3, 0){
   /*   if (!ominoprova.loadFromFile("uomoverde.png")) {
       throw std::runtime_error{"texture loading failed"};
     }

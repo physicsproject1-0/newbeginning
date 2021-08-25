@@ -13,7 +13,7 @@ int main() {
     map.Gestisci_input();
     map.Aggiorna();
     map.Disegna();
-    map.azzera();
+    //map.azzera();
     // glFinish();
   }
 }

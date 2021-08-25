@@ -13,51 +13,25 @@
 #include <string>
 
 #include "finestra.hpp"
+#include "gui.hpp"
 
 #ifndef DISA
 #define DISA
 
-enum class StatoPupino { VULNERABILE, INFETTO, RIMOSSO };
-
 // per disegnare altre cose oltre il vertex array
 /* class Rappresentazione : public sf::Drawable { */
+enum class Stato { VULNERABILE, INFETTO, RIMOSSO };
+
+struct Persona {
+  sf::Vector2f centro;
+  float raggio;
+  sf::Vector2f vel;
+  sf::Clock cambiovelocita;
+  Stato P;
+  bool checked = false;
+};
+
 class Animazione : public sf::Drawable {
-  struct Persona {
-    sf::Vector2f centro;
-    float raggio;
-    sf::Vector2f vel;
-    sf::Clock cambiovelocita;
-    StatoPupino P;
-    bool checked = false;
-  };
-
-  class Bordi : public sf::Drawable {
-    sf::RectangleShape rettangolo;
-    sf::FloatRect bordo_collisioni;
-
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
-      target.draw(rettangolo);
-    }  // metterci anche states altrimenti rompe il casso
-
-   public:
-    Bordi(sf::Vector2f dimensione) {
-      rettangolo.setSize(dimensione);
-      rettangolo.setFillColor(sf::Color::Transparent);
-      rettangolo.setOutlineColor(sf::Color::White);
-      rettangolo.setOutlineThickness(3);
-      rettangolo.setPosition(100, 100);
-
-      bordo_collisioni.left = 100;
-      bordo_collisioni.top = 100;
-      bordo_collisioni.width = dimensione.x;
-      bordo_collisioni.height = dimensione.y;
-    }
-
-    sf::FloatRect getlimiti() { return bordo_collisioni; };
-  };
-
-  sf::Clock* orologio;
-
   sf::Clock orologio2;
   sf::Texture ominoprova;
   sf::VertexArray struttura;
@@ -65,19 +39,19 @@ class Animazione : public sf::Drawable {
 
   Bordi limiti;
 
-  StatoPupino P;
+  Stato P;
 
   void collisione() {
     for (int i = 0; i < popolazione.size(); i++) {
       Persona& PallinaA = popolazione[i];
-      if (PallinaA.P == StatoPupino::VULNERABILE) {
+      if (PallinaA.P == Stato::VULNERABILE) {  // qua ci va vulnerabile? che per sbaglio l'ho cancellato
         for (int j = 0; j < popolazione.size(); j++) {
           Persona& PallinaB = popolazione[j];
 
-          if ((i != j) && (PallinaB.P == StatoPupino::INFETTO)) {
+          if ((i != j) && (PallinaB.P == Stato::INFETTO)) {
             if (modulo(PallinaA.centro - PallinaB.centro) <= 1.5 * PallinaB.raggio) {
-              PallinaA.P = StatoPupino::INFETTO;
-              aggiorna_texture();
+              PallinaA.P = Stato::INFETTO;
+              /* aggiorna_texture(); */
             }
           } else {
             continue;
@@ -88,41 +62,41 @@ class Animazione : public sf::Drawable {
       }
     }
   }
-  void aggiorna_texture() {
+ /*  void aggiorna_texture() {
     for (int i = 0; i < popolazione.size(); i++) {
-      if (popolazione[i].P == StatoPupino::INFETTO) {
+      if (popolazione[i].P == Stato::INFETTO) {
         ominoprova.loadFromFile("uomorosso.png");
-      } else if (popolazione[i].P == StatoPupino::RIMOSSO) {
+      } else if (popolazione[i].P == Stato::RIMOSSO) {
         ominoprova.loadFromFile("uomogrigio.png");
       } else {
         break;
       }
-
+ */
       /* switch (P) {
-         case (StatoPupino::INFETTO):  // Carichiamo la red texture...
+         case (Stato::INFETTO):  // Carichiamo la red texture...
 
            ominoprova.loadFromFile("uomorosso.png");
 
-         case (StatoPupino::RIMOSSO):  // carichiamo la white texture
+         case (Stato::RIMOSSO):  // carichiamo la white texture
            iter[0].color = sf::Color::White;
            iter[1].color = sf::Color::White;
            iter[2].color = sf::Color::White;
            break;
 
-         case (StatoPupino::VULNERABILE):  // carichiamo la green texture
+         case (Stato::VULNERABILE):  // carichiamo la green texture
            iter[0].color = sf::Color::Green;
            iter[1].color = sf::Color::Green;
            iter[2].color = sf::Color::Green;
            break;
        } */
-    }
+ /*    }
   }
-
+ */
   // Faccio morire/guarire la persona dopo 8 secondi che e' infetta
   void morte_persona() {
     for (int i = 0; i < popolazione.size(); i++) {
-      if ((popolazione[i].P == StatoPupino::INFETTO) && (orologio2.getElapsedTime().asSeconds() > 8)) {
-        popolazione[i].P = StatoPupino::RIMOSSO;
+      if ((popolazione[i].P == Stato::INFETTO) && (orologio2.getElapsedTime().asSeconds() > 8)) {
+        popolazione[i].P = Stato::RIMOSSO;
         orologio2.restart();
       } else {
         break;
@@ -153,29 +127,29 @@ class Animazione : public sf::Drawable {
   }
 
  public:
-  Animazione(int n, sf::Clock* t_orologio) : limiti(sf::Vector2f(600, 400)), orologio{t_orologio} {
+  Animazione(int n) : limiti(sf::Vector2f(600, 400), sf::Vector2f(100, 100)) {
     if (!ominoprova.loadFromFile("uomoverde.png")) {
       throw std::runtime_error{"texture loading failed"};  // catcharlo
     }
 
     Persona prova;
 
-      for (int i = 1; i < n; i++) {
+    for (int i = 0; i < n; i++) {
       prova.raggio = 10.f;
       prova.centro = sf::Vector2f(rand() % static_cast<int>(limiti.getlimiti().width - 2 * prova.raggio) + limiti.getlimiti().left + prova.raggio,
                                   rand() % static_cast<int>(limiti.getlimiti().height - 2 * prova.raggio) + limiti.getlimiti().top + prova.raggio);
       prova.vel = sf::Vector2f(rand() % 50 - 25.f, rand() % 50 - 25.f);
-      prova.P = StatoPupino::VULNERABILE;
+      prova.P = Stato::VULNERABILE;
       popolazione[i] = prova;
     }
-    popolazione[n - 1].P = StatoPupino::INFETTO;  // Se metto popolazione[0] vengono tutti rossi
-                                                  // Se metto tipo popolazione[7] vengono tutti verdi
+   /*  popolazione[n - 1].P = Stato::INFETTO;   */// Se metto popolazione[0] vengono tutti rossi
+                                            // Se metto tipo popolazione[7] vengono tutti verdi
     struttura.resize(popolazione.size() * 3);
 
     struttura.setPrimitiveType(sf::Triangles);
 
     settexturecoords();
-    aggiorna_texture();
+    /* aggiorna_texture(); */
   }
 
   void aggiorna_griglia() {
@@ -195,7 +169,6 @@ class Animazione : public sf::Drawable {
   // void check_collisions();  // devo passare un puntatore all'orologio per averne solo uno  //pensarci
 
   void aggiorna_lista() {
-    float deltat = /* orologio2.restart().asSeconds(); */ orologio->restart().asSeconds();
     // metto qua perchè se lo chiamo in punti diversi magari sono leggemente diversi
     float deltat2 = orologio2.restart().asSeconds();
 
@@ -221,7 +194,7 @@ class Animazione : public sf::Drawable {
 
   void check_external_bounds(Persona& test);
 
-  void change_status();  // Fa cambiare la texture nel momento in cui le due particelle si scontrano
+  void change_Stato();  // Fa cambiare la texture nel momento in cui le due particelle si scontrano
 
   void change_vel();
 
@@ -256,64 +229,61 @@ class Animazione : public sf::Drawable {
 
 // QUI INIZIA LA PARTE AUTOMA   ################################################
 
-enum class Status { VULNERABLE, INFECTED, REMOVED };
+class Cellula : public sf::Drawable {  // se è una struct non funziona l'inheritance?
+  virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
+    target.draw(rettangolo);
+    target.draw(numero);
+  }  // metterci anche states altrimenti rompe il casso
+     // non posso loadare un font qui dentro direttamente
+
+ public:
+  // wtf
+
+  void aggiorna_colore() {
+    switch (S) {
+      case (Stato::INFETTO):  // Carichiamo la red texture...
+        rettangolo.setFillColor(sf::Color::Red);
+        std::cout << "sto aggiornando il rosso" << '\n';
+
+        break;
+
+      case (Stato::RIMOSSO):  // carichiamo la white texture
+        rettangolo.setFillColor(sf::Color::Cyan);
+        break;
+
+      case (Stato::VULNERABILE):  // carichiamo la green texture
+
+        rettangolo.setFillColor(sf::Color::Green);
+        break;
+    }
+  }
+
+  int counter;
+
+  int infection_days;
+
+  Stato S = Stato::VULNERABILE;
+  sf::RectangleShape rettangolo;
+
+  sf::Text numero;
+
+  Cellula(sf::Vector2f posizione, sf::Vector2f dimensione) : counter(0), infection_days(0) {  // funzionerà
+    rettangolo.setPosition(posizione);
+    rettangolo.setSize(dimensione);
+    rettangolo.setOutlineColor(sf::Color::White);
+    rettangolo.setOutlineThickness(2.f);
+    aggiorna_colore();
+
+    /* numero.setFont(*p_font); */
+    numero.setPosition(posizione);
+    numero.setFillColor(sf::Color::White);
+    numero.setCharacterSize(50);
+  }
+};
 
 class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUERE I MORTI DAI GUARITI
-  sf::Font font;
+  /* sf::Font font; */
 
-  class Cellula : public sf::Drawable {  // se è una struct non funziona l'inheritance?
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
-      target.draw(rettangolo);
-      target.draw(numero);
-    }  // metterci anche states altrimenti rompe il casso
-       // non posso loadare un font qui dentro direttamente
-
-   public:
-    // wtf
-
-    void aggiorna_colore() {
-      switch (S) {
-        case (Status::INFECTED):  // Carichiamo la red texture...
-          rettangolo.setFillColor(sf::Color::Red);
-          std::cout << "sto aggiornando il rosso" << '\n';
-
-          break;
-
-        case (Status::REMOVED):  // carichiamo la white texture
-          rettangolo.setFillColor(sf::Color::Cyan);
-          break;
-
-        case (Status::VULNERABLE):  // carichiamo la green texture
-
-          rettangolo.setFillColor(sf::Color::Green);
-          break;
-      }
-    }
-
-    sf::Font* p_font;
-
-    int counter;
-
-    int infection_days;
-
-    Status S = Status::VULNERABLE;
-    sf::RectangleShape rettangolo;
-
-    sf::Text numero;
-
-    Cellula(sf::Vector2f posizione, sf::Vector2f dimensione, sf::Font* t_font) : counter(0), infection_days(0), p_font{t_font} {  // funzionerà
-      rettangolo.setPosition(posizione);
-      rettangolo.setSize(dimensione);
-      rettangolo.setOutlineColor(sf::Color::White);
-      rettangolo.setOutlineThickness(2.f);
-      aggiorna_colore();
-
-      numero.setFont(*p_font);
-      numero.setPosition(posizione);
-      numero.setFillColor(sf::Color::White);
-      numero.setCharacterSize(50);
-    }
-  };
   // mettere errori per dimensioni minori di 0?
   std::vector<std::vector<Cellula>> grid;
 
@@ -351,13 +321,13 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
     /* if (!font.loadFromFile("Arial.ttf")) {
       throw std::runtime_error{"texture loading failed"};
     } */
-    try {
-      if (!font.loadFromFile("Arial.ttf")) {
-        throw std::runtime_error{"denominator is zero"};
-      }
-    } catch (std::runtime_error const& e) {
-      std::cerr << e.what() << '\n';  //
-    }
+    /*  try {
+       if (!font.loadFromFile("Arial.ttf")) {
+         throw std::runtime_error{"denominator is zero"};
+       }
+     } catch (std::runtime_error const& e) {
+       std::cerr << e.what() << '\n';  //
+     } */
 
     float t_lunghezza_x = dimensioni.x / numero_lato;
 
@@ -367,7 +337,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
       std::vector<Cellula> riga;
       for (int j = 0; j < numero_lato; j++) {
         sf::Vector2f posizionemovente(posizione.x + j * t_lunghezza_x, posizione.y + i * t_lunghezza_y);
-        Cellula riempi(posizionemovente, sf::Vector2f(t_lunghezza_x, t_lunghezza_y), &font);
+        Cellula riempi(posizionemovente, sf::Vector2f(t_lunghezza_x, t_lunghezza_y) /* , &font */);
 
         riga.push_back(riempi);
 
@@ -384,22 +354,22 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
     for (int a = 0; a < infette; a++) {
       int riga = rand() % numero_lato;
       int colonna = rand() % numero_lato;
-      if (grid[riga][colonna].S != Status::VULNERABLE) {
+      if (grid[riga][colonna].S != Stato::VULNERABILE) {
         a--;
         continue;
       }
-      grid[riga][colonna].S = Status::INFECTED;
+      grid[riga][colonna].S = Stato::INFETTO;
       grid[riga][colonna].aggiorna_colore();
     }
 
     for (int a = 0; a < rimosse; a++) {
       int riga = rand() % numero_lato;
       int colonna = rand() % numero_lato;
-      if (grid[riga][colonna].S != Status::VULNERABLE) {
+      if (grid[riga][colonna].S != Stato::VULNERABILE) {
         a--;
         continue;
       }
-      grid[riga][colonna].S = Status::REMOVED;
+      grid[riga][colonna].S = Stato::RIMOSSO;
       grid[riga][colonna].aggiorna_colore();
     }
   }
@@ -423,7 +393,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
         std::cout << "esiste "
                   << "in posizione"
                   << " riga " << i - 1 << " colonna " << j - 1 + a << '\n';
-        if (grid[i - 1][j - 1 + a].S == Status::INFECTED) {
+        if (grid[i - 1][j - 1 + a].S == Stato::INFETTO) {
           std::cout << "c'è infetto" << '\n';
           cell.counter++;
         }
@@ -433,7 +403,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
                   << "in posizione"
                   << " riga " << i + 1 << " colonna " << j - 1 + a << '\n';
 
-        if (grid[i + 1][j - 1 + a].S == Status::INFECTED) {
+        if (grid[i + 1][j - 1 + a].S == Stato::INFETTO) {
           std::cout << "c'è infetto" << '\n';
           cell.counter++;
         }
@@ -444,7 +414,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
                 << "in posizione"
                 << " riga " << i << " colonna " << j - 1 << '\n';
 
-      if (grid[i][j - 1].S == Status::INFECTED) {
+      if (grid[i][j - 1].S == Stato::INFETTO) {
         std::cout << "c'è infetto" << '\n';
 
         cell.counter++;
@@ -455,7 +425,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
                 << "in posizione"
                 << " riga " << i << " colonna " << j + 1 << '\n';
 
-      if (grid[i][j + 1].S == Status::INFECTED) {
+      if (grid[i][j + 1].S == Stato::INFETTO) {
         std::cout << "c'è infetto" << '\n';
         cell.counter++;
       }
@@ -468,7 +438,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
       for (int j = 0; j < numero_lato; j++) {
         Cellula& cell = grid[i][j];
         std::cout << "riga " << i << " colonna " << j << '\n';
-        if (cell.S == Status::VULNERABLE) {
+        if (cell.S == Stato::VULNERABILE) {
           std::cout << "sono vulnerabile" << '\n';
           int esponente = cell.counter;
           // cell.numero.setString(std::to_string(esponente));
@@ -482,18 +452,18 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
             if (estrazione > prob_sano) {
               // aggiungere i seed randomici
 
-              cell.S = Status::INFECTED;  // PORCO DIO AVEVO MESSO DUE UGUALI
+              cell.S = Stato::INFETTO;  // PORCO DIO AVEVO MESSO DUE UGUALI
               std::cout << "ora sono infetto" << '\n';
               cell.aggiorna_colore();
             }
           }
         }
 
-        else if (cell.S == Status::INFECTED) {
+        else if (cell.S == Stato::INFETTO) {
           std::cout << "sono arrivato qua" << '\n';
           cell.infection_days++;
           if ((rand() % 100) / 100.f < probabilita_guarigione) {
-            cell.S = Status::REMOVED;
+            cell.S = Stato::RIMOSSO;
             cell.aggiorna_colore();
             // qua forse ci sta fare così
           }
@@ -520,16 +490,17 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
 class Mondo /* : public sf::Drawable  */ {
  private:  // la draw non va nel protected??
   /* sf::VertexArray Griglia; */
+  GUI overlay;
+
   Finestra a_window;
 
   Animazione dinamica;  // fare altra classe che contiene sia griglia sia bordi, gestire tutto lì
 
+  Automa statica;
   // non ho capito perhcè qui dentro non ci posso mettere il costruttore;
 
   sf::Clock timer;
   sf::Time trascorso;
-
-  Automa statica;
 
   /* virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.texture = &ominoprova;
@@ -571,6 +542,8 @@ class Mondo /* : public sf::Drawable  */ {
     a_window.Disegna(dinamica);
 
     a_window.Disegna(statica);
+
+    a_window.Disegna(overlay);
 
     a_window.Mostra();
   }
