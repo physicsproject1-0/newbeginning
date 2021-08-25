@@ -14,7 +14,8 @@ std::vector<State> SIR::riempimento() {
 
     newState.suscettibili = stato.suscettibili - (m_beta * stato.suscettibili * stato.infetti) / N;
     newState.infetti = stato.infetti + (m_beta * stato.suscettibili * stato.infetti) / N - m_gamma * stato.infetti;
-    newState.rimossi = stato.rimossi + m_gamma * stato.infetti;
+   // newState.rimossi = stato.rimossi + m_gamma * stato.infetti;
+    newState.rimossi = N - newState.suscettibili - newState.infetti;
     newState.giorno = i + 1;
 
     simulazione.push_back(newState);
@@ -27,7 +28,8 @@ State SIR::approx(State obj) {
   State stato;
   stato.suscettibili = static_cast<int>(obj.suscettibili);
   stato.infetti = static_cast<int>(obj.infetti);
-  stato.rimossi = static_cast<int>(obj.rimossi);
+  //stato.rimossi = static_cast<int>(obj.rimossi);
+  stato.rimossi = N - stato.suscettibili - stato.infetti;
   stato.giorno = obj.giorno;
   return stato;
 }
@@ -37,14 +39,21 @@ std::vector<State> SIR::convertitore(std::vector<State> const& vergine) {
   for (unsigned int i = 1; i < vergine.size(); ++i) {
     State stato_approssimato = approx(vergine[i]);
     State precedente = risultato.back();
+    
+    if (precedente.infetti == 0) {
+      stato_approssimato.suscettibili = precedente.suscettibili;
+      stato_approssimato.rimossi = precedente.rimossi;
+      risultato.push_back(stato_approssimato);
+    } else {
+
+    
 
     int somma = stato_approssimato.suscettibili + stato_approssimato.infetti + stato_approssimato.rimossi;
-
+    
     if (somma != N) {
       int a = N - somma;
 
-      float r_suscettibili =
-          std::modf(vergine[i].suscettibili, &stato_approssimato.suscettibili);  // modf() mi dà la parte decimale di un numero double o float
+      float r_suscettibili = std::modf(vergine[i].suscettibili, &stato_approssimato.suscettibili);  // modf() mi dà la parte decimale di un numero double o float
       float r_infetti = std::modf(vergine[i].infetti, &stato_approssimato.infetti);
       float r_rimossi = std::modf(vergine[i].rimossi, &stato_approssimato.rimossi);
 
@@ -65,6 +74,7 @@ std::vector<State> SIR::convertitore(std::vector<State> const& vergine) {
         }
         a--;
       }
+    
       /*
       //end() ACCEDE ALLA CASELLA DOPO L'ULTIMA
       while (a != 0){
@@ -88,7 +98,7 @@ std::vector<State> SIR::convertitore(std::vector<State> const& vergine) {
       risultato.push_back(stato_approssimato);
     } else {
       risultato.push_back(stato_approssimato);
-    }
+    }}
   }
 
   return risultato;
