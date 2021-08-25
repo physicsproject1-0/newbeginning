@@ -52,11 +52,17 @@ void Finestra::Update() {
 
       SetVista(view2);
     }
-    if (evento.type == sf::Event::KeyPressed && evento.key.code == sf::Keyboard::P) {
+    if (evento.type == sf::Event::KeyPressed && evento.key.code == sf::Keyboard::P) {    //lasciamo le lettere P e O ???
       sf::Vector2u dimensioni_nuove = v_mainfinestra.getSize();
       sf::Vector2f NuovoCentro(dimensioni_nuove.x, dimensioni_nuove.y);
       sf::View view3(sf::Vector2f(2000, 2000), NuovoCentro);
       SetVista(view3);
+    }
+     if (evento.type == sf::Event::KeyPressed && evento.key.code == sf::Keyboard::O) {
+      sf::Vector2u dimensioni_nuove = v_mainfinestra.getSize();
+      sf::Vector2f NuovoCentro(dimensioni_nuove.x, dimensioni_nuove.y);
+      sf::View view4(sf::Vector2f(400, 300), NuovoCentro);
+      SetVista(view4);
     }
   }
 }
