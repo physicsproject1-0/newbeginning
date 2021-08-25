@@ -28,8 +28,8 @@ State SIR::approx(State obj) {
   State stato;
   stato.suscettibili = static_cast<int>(obj.suscettibili);
   stato.infetti = static_cast<int>(obj.infetti);
-  //stato.rimossi = static_cast<int>(obj.rimossi);
-  stato.rimossi = N - stato.suscettibili - stato.infetti;
+  stato.rimossi = static_cast<int>(obj.rimossi);
+  //stato.rimossi = N - stato.suscettibili - stato.infetti;
   stato.giorno = obj.giorno;
   return stato;
 }
@@ -65,7 +65,7 @@ std::vector<State> SIR::convertitore(std::vector<State> const& vergine) {
         if ((r_suscettibili > r_infetti) && (r_suscettibili > r_rimossi) && (stato_approssimato.suscettibili < precedente.suscettibili)) {
           stato_approssimato.suscettibili += 1;
           r_suscettibili = 0;
-        } else if ((r_infetti < r_rimossi) && (stato_approssimato.rimossi > precedente.rimossi)) {
+        } else if ((r_infetti < r_rimossi) || (stato_approssimato.rimossi < precedente.rimossi)) {
           stato_approssimato.rimossi += 1;
           r_infetti = 0;
         } else {
