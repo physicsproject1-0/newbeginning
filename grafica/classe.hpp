@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cstdlib>
+#include <ctime>
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -41,82 +42,83 @@ class Animazione : public sf::Drawable {
 
   Stato P;
 
+  // Nel momento in cui collidono due persone, se una era infetta, cambia lo stato anche dell' altra
   void collisione() {
     for (int i = 0; i < popolazione.size(); i++) {
       Persona& PallinaA = popolazione[i];
-      if (PallinaA.P == Stato::VULNERABILE) {  // qua ci va vulnerabile? che per sbaglio l'ho cancellato
+      if (PallinaA.P == Stato::VULNERABILE) {
         for (int j = 0; j < popolazione.size(); j++) {
           Persona& PallinaB = popolazione[j];
 
           if ((i != j) && (PallinaB.P == Stato::INFETTO)) {
             if (modulo(PallinaA.centro - PallinaB.centro) <= 1.5 * PallinaB.raggio) {
               PallinaA.P = Stato::INFETTO;
-              /* aggiorna_texture(); */
+              setredTextures();
             }
           } else {
             continue;
           }
+        }
+      } else if (PallinaA.P == Stato::INFETTO) {  // Se una e' gia' infetta dopo tot secondi diventa rimossa
+        if (orologio2.getElapsedTime().asSeconds() > 8) {
+          popolazione[i].P = Stato::RIMOSSO;
+          setwhiteTextures();
+          orologio2.restart();
         }
       } else {
         continue;
       }
     }
   }
-   void aggiorna_texture() {
-    for (int i = 0; i < popolazione.size(); i++) {
-      if (popolazione[i].P == Stato::INFETTO) {
-        ominoprova.loadFromFile("uomorosso.png");
-      } else if (popolazione[i].P == Stato::RIMOSSO) {
-        ominoprova.loadFromFile("uomogrigio.png");
-      } else {
-        break;
-      }
- 
-      /* switch (P) {
-         case (Stato::INFETTO):  // Carichiamo la red texture...
 
-           ominoprova.loadFromFile("uomorosso.png");
-
-         case (Stato::RIMOSSO):  // carichiamo la white texture
-           iter[0].color = sf::Color::White;
-           iter[1].color = sf::Color::White;
-           iter[2].color = sf::Color::White;
-           break;
-
-         case (Stato::VULNERABILE):  // carichiamo la green texture
-           iter[0].color = sf::Color::Green;
-           iter[1].color = sf::Color::Green;
-           iter[2].color = sf::Color::Green;
-           break;
-       } */
-     }
-  }
- 
-  // Faccio morire/guarire la persona dopo 8 secondi che e' infetta
-  void morte_persona() {
-    for (int i = 0; i < popolazione.size(); i++) {
-      if ((popolazione[i].P == Stato::INFETTO) && (orologio2.getElapsedTime().asSeconds() > 8)) {
-        popolazione[i].P = Stato::RIMOSSO;
-        orologio2.restart();
-      } else {
-        break;
-      }
-    }
-  }
-
-  void settexturecoords() {
+  // Funzione con cui carico la Texture verde
+  void setgreenTextures() {
     for (int i = 0; i < popolazione.size(); i++) {
       sf::Vertex* iter = &struttura[i * 3];
 
-      iter[0].texCoords = sf::Vector2f(430.f, 0.f);  // strane coord
-      iter[1].texCoords = sf::Vector2f(0.f, 1681.f);
-      iter[2].texCoords = sf::Vector2f(860.f, 1681.f);
+      iter[0].texCoords = sf::Vector2f(110.f, 20.f);  // coordinate pupini verdi
+      iter[1].texCoords = sf::Vector2f(20.f, 210.f);
+      iter[2].texCoords = sf::Vector2f(205.f, 210.f);
     }
+  }
 
-    // sf::Vertex* iter2 = &struttura[0];  // tentativo di metterne una rossa
-    // iter2[0].color = sf::Color::Red;
-    // iter2[1].color = sf::Color::Red;
-    // iter2[2].color = sf::Color::Red;
+  // Funzione in cui carico la Texture rossa sullo stato INFETTO
+  void setredTextures() {
+    for (int i = 0; i < popolazione.size(); i++) {
+      if (popolazione[i].P == Stato::INFETTO) {
+        sf::Vertex* iter = &struttura[i * 3];
+
+        iter[0].texCoords = sf::Vector2f(315.f, 20.f);  // coordinate pupini rossi
+        iter[1].texCoords = sf::Vector2f(230.f, 210.f);
+        iter[2].texCoords = sf::Vector2f(410.f, 210.f);
+
+      } else {
+        continue;
+      }
+    }
+  }
+
+  // Ho immaginato che al 40% muoiano e al 60% guariscono, si possono cambiare le probabilita' of course
+  // Funzione in cui carico sullo stato RIMOSSO al 40% la texture grigia e al 60% quella azzurra
+  void setwhiteTextures() {
+    for (int i = 0; i < popolazione.size(); i++) {
+      if (popolazione[i].P == Stato::RIMOSSO) {
+        sf::Vertex* iter = &struttura[i * 3];
+        srand(time(NULL));
+        int a = rand() % 100 + 1;
+        if (a < 40) {
+          iter[0].texCoords = sf::Vector2f(520.f, 20.f);  // coordinate pupini grigi
+          iter[1].texCoords = sf::Vector2f(430.f, 210.f);
+          iter[2].texCoords = sf::Vector2f(615.f, 210.f);
+        } else {
+          iter[0].texCoords = sf::Vector2f(730.f, 20.f);  // coordinate pupini azzurri
+          iter[1].texCoords = sf::Vector2f(635.f, 210.f);
+          iter[2].texCoords = sf::Vector2f(825.f, 210.f);
+        }
+      } else {
+        continue;
+      }
+    }
   }
 
   virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -128,28 +130,32 @@ class Animazione : public sf::Drawable {
 
  public:
   Animazione(int n) : limiti(sf::Vector2f(600, 400), sf::Vector2f(100, 100)) {
-    if (!ominoprova.loadFromFile("uomoverde.png")) {
+    if (!ominoprova.loadFromFile("uomini.png")) {
       throw std::runtime_error{"texture loading failed"};  // catcharlo
     }
 
     Persona prova;
 
+    srand(time(NULL));
+
+    // Riempio la mappa (popolazione) di persone
     for (int i = 0; i < n; i++) {
-      prova.raggio = 10.f;
+      prova.raggio = 13.f;
       prova.centro = sf::Vector2f(rand() % static_cast<int>(limiti.getlimiti().width - 2 * prova.raggio) + limiti.getlimiti().left + prova.raggio,
                                   rand() % static_cast<int>(limiti.getlimiti().height - 2 * prova.raggio) + limiti.getlimiti().top + prova.raggio);
       prova.vel = sf::Vector2f(rand() % 50 - 25.f, rand() % 50 - 25.f);
       popolazione[i] = prova;
       popolazione[i].P = Stato::VULNERABILE;
     }
-    popolazione[0].P = Stato::INFETTO;            // Se metto popolazione[0] vengono tutti rossi
-                                                  // Se metto tipo popolazione[7] vengono tutti verdi
+
+    popolazione[rand() % popolazione.size() + 1].P = Stato::INFETTO;
+
     struttura.resize(popolazione.size() * 3);
 
     struttura.setPrimitiveType(sf::Triangles);
 
-    settexturecoords();
-    /* aggiorna_texture(); */
+    setgreenTextures();
+    setredTextures();
   }
 
   void aggiorna_griglia() {
@@ -206,8 +212,6 @@ class Animazione : public sf::Drawable {
     check_borders();
 
     collisione();
-
-    morte_persona();
 
     aggiorna_lista();
 
