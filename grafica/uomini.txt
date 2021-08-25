@@ -1,0 +1,21 @@
+coordinate texture:(vertici in senso antiorario a partire da quello in alto)
+
+Verde: 
+110,20
+20,210
+205,210
+
+Rosso:
+315,20
+230,210
+410,210
+
+Grigio:
+520,20
+430,210
+615,210
+
+Blu:
+730,20
+635,205
+825,210
