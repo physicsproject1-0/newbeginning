@@ -14,7 +14,6 @@ std::vector<State> SIR::riempimento() {
 
     newState.suscettibili = stato.suscettibili - (m_beta * stato.suscettibili * stato.infetti) / N;
     newState.infetti = stato.infetti + (m_beta * stato.suscettibili * stato.infetti) / N - m_gamma * stato.infetti;
-   // newState.rimossi = stato.rimossi + m_gamma * stato.infetti;
     newState.rimossi = N - newState.suscettibili - newState.infetti;
     newState.giorno = i + 1;
 
@@ -29,7 +28,6 @@ State SIR::approx(State obj) {
   stato.suscettibili = static_cast<int>(obj.suscettibili);
   stato.infetti = static_cast<int>(obj.infetti);
   stato.rimossi = static_cast<int>(obj.rimossi);
-  //stato.rimossi = N - stato.suscettibili - stato.infetti;
   stato.giorno = obj.giorno;
   return stato;
 }
@@ -44,9 +42,7 @@ std::vector<State> SIR::convertitore(std::vector<State> const& vergine) {
       stato_approssimato.suscettibili = precedente.suscettibili;
       stato_approssimato.rimossi = precedente.rimossi;
       risultato.push_back(stato_approssimato);
-    } else {
-
-    
+    } else {   
 
     int somma = stato_approssimato.suscettibili + stato_approssimato.infetti + stato_approssimato.rimossi;
     
@@ -56,10 +52,6 @@ std::vector<State> SIR::convertitore(std::vector<State> const& vergine) {
       float r_suscettibili = std::modf(vergine[i].suscettibili, &stato_approssimato.suscettibili);  // modf() mi dà la parte decimale di un numero double o float
       float r_infetti = std::modf(vergine[i].infetti, &stato_approssimato.infetti);
       float r_rimossi = std::modf(vergine[i].rimossi, &stato_approssimato.rimossi);
-
-      // std::array<int, 3> prec = {precedente.rimossi, precedente.suscettibili, precedente.infetti }
-      // std::array<int, 3> stato = {&stato_approssimato.rimossi, &stato_approssimato.suscettibili, &stato_approssimato.infetti};
-      // std::array<float, 3> resti = { r_rimossi, r_suscettibili, r_infetti};
 
       while (a != 0) {
         if ((r_suscettibili > r_infetti) && (r_suscettibili > r_rimossi) && (stato_approssimato.suscettibili < precedente.suscettibili)) {
@@ -72,33 +64,14 @@ std::vector<State> SIR::convertitore(std::vector<State> const& vergine) {
           stato_approssimato.infetti += 1;
           r_rimossi = 0;
         }
-        a--;
+        --a;
       }
-    
-      /*
-      //end() ACCEDE ALLA CASELLA DOPO L'ULTIMA
-      while (a != 0){
-        auto elemento = std::max_element(resti.begin(), resti.end());
-        int index = std::distance(resti.begin(), elemento);
-
-        if (index ==1 && index){
-
-        }
-        if else (){
-
-        }
-        else{
-
-        }
-        resti[index]=0;
-        a--;
-      }
-      */
 
       risultato.push_back(stato_approssimato);
     } else {
       risultato.push_back(stato_approssimato);
-    }}
+    }
+    }
   }
 
   return risultato;
@@ -136,19 +109,6 @@ void SIR::print_semplice_spazio(std::vector<State> vettore) {
     std::cout << std::right << std::setw(13) << std::setprecision(0) << i.giorno << " " << std::setw(13) << i.suscettibili << " " << std::setw(13)
               << i.infetti << " " << std::setw(13) << i.rimossi << "\n";
   }
-}
-
-void SIR::print_grafico(std::vector<State> vettore) {
-  std::vector<double> x;
-  std::vector<double> y;
-  std::vector<double> z;
-
-  for (auto const& i : vettore) {
-    x.push_back(i.suscettibili);
-    y.push_back(i.infetti);
-    z.push_back(i.rimossi);
-  }
-  grafico(x, y, z);
 }
 
 // Funzione per stampare input e output
@@ -196,12 +156,12 @@ SIR insert() {
     throw std::runtime_error{"Il numero di soggetti suscettibili deve essere un intero positivo"};
   }
 
-  epidemia::State s0;
+  State s0;
 
   s0.suscettibili = S_I;
   s0.infetti = I_I;
   s0.rimossi = R_I;
-  int NUMERO = S_I + I_I + R_I;  // testare anche l'altra
+  int NUMERO = S_I + I_I + R_I;
   return {s0, giorni, beta, gamma, NUMERO};
 }
 }  // namespace epidemia
