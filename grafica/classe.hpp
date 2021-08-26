@@ -59,12 +59,19 @@ class Animazione : public sf::Drawable {
             continue;
           }
         }
-      } else if (PallinaA.P == Stato::INFETTO) {  // Se una e' gia' infetta dopo tot secondi diventa rimossa
-        if (orologio2.getElapsedTime().asSeconds() > 8) {
-          popolazione[i].P = Stato::RIMOSSO;
-          setwhiteTextures();
-          orologio2.restart();
-        }
+      } else {
+        continue;
+      }
+    }
+  }
+
+
+  void morte_persona() {
+    for (int i = 0; i < popolazione.size(); i++) {
+      if ((popolazione[i].P == Stato::INFETTO) && (orologio2.getElapsedTime().asSeconds() > 8)) {
+        popolazione[i].P = Stato::RIMOSSO;
+        setwhiteTextures();
+        orologio2.restart();
       } else {
         continue;
       }
@@ -106,7 +113,7 @@ class Animazione : public sf::Drawable {
         sf::Vertex* iter = &struttura[i * 3];
         srand(time(NULL));
         int a = rand() % 100 + 1;
-        if (a < 40) {
+        if (a < 30) {
           iter[0].texCoords = sf::Vector2f(520.f, 20.f);  // coordinate pupini grigi
           iter[1].texCoords = sf::Vector2f(430.f, 210.f);
           iter[2].texCoords = sf::Vector2f(615.f, 210.f);
@@ -210,6 +217,8 @@ class Animazione : public sf::Drawable {
     check_borders();
 
     collisione();
+
+    morte_persona();
 
     aggiorna_lista();
 
