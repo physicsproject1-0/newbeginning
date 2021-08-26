@@ -42,7 +42,8 @@ std::vector<State> SIR::convertitore(std::vector<State> const& vergine) {
       stato_approssimato.suscettibili = precedente.suscettibili;
       stato_approssimato.rimossi = precedente.rimossi;
       risultato.push_back(stato_approssimato);
-    } else {   
+      continue;
+    }   
 
     int somma = stato_approssimato.suscettibili + stato_approssimato.infetti + stato_approssimato.rimossi;
     
@@ -71,7 +72,7 @@ std::vector<State> SIR::convertitore(std::vector<State> const& vergine) {
     } else {
       risultato.push_back(stato_approssimato);
     }
-    }
+    
   }
 
   return risultato;

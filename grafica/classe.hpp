@@ -16,8 +16,8 @@
 #include "finestra.hpp"
 #include "gui.hpp"
 
-#ifndef DISA
-#define DISA
+#ifndef CLASSE_HPP
+#define CLASSE_HPP
 
 // per disegnare altre cose oltre il vertex array
 /* class Rappresentazione : public sf::Drawable { */
@@ -161,14 +161,12 @@ class Animazione : public sf::Drawable {
   void aggiorna_griglia() {
     for (int i = 0; i < popolazione.size(); i++) {
       sf::Vertex* iter = &struttura[i * 3];
-      iter[0].position = sf::Vector2f(popolazione.at(i).centro.x, popolazione.at(i).centro.y - popolazione.at(i).raggio);  // strane coord
-      iter[1].position = sf::Vector2f(popolazione.at(i).centro.x - popolazione.at(i).raggio * (1.7f / 2),
-                                      popolazione.at(i).centro.y + (popolazione.at(i).raggio / 2));
-      iter[2].position = sf::Vector2f(popolazione.at(i).centro.x + popolazione.at(i).raggio * (1.7f / 2),
-                                      popolazione.at(i).centro.y + (popolazione.at(i).raggio / 2));
+      iter[0].position = sf::Vector2f(popolazione[i].centro.x, popolazione[i].centro.y - popolazione[i].raggio);  // strane coord
+      iter[1].position = sf::Vector2f(popolazione[i].centro.x - popolazione[i].raggio * (1.7f / 2),
+                                      popolazione[i].centro.y + (popolazione[i].raggio / 2));
+      iter[2].position = sf::Vector2f(popolazione[i].centro.x + popolazione[i].raggio * (1.7f / 2),
+                                      popolazione[i].centro.y + (popolazione[i].raggio / 2));
       // bisognerà cancellare il puntatore?
-
-      // non posso usare [] perchè mi dice che non funziona per le robe const
     }
   }
 
