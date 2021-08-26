@@ -30,6 +30,7 @@ struct Persona {
   sf::Clock cambiovelocita;
   Stato P;
   bool checked = false;
+  int numero_contatti = 0;
 };
 
 class Animazione : public sf::Drawable {
@@ -64,20 +65,33 @@ class Animazione : public sf::Drawable {
       }
     }
   }
-
-
-  void morte_persona() {
-    for (int i = 0; i < popolazione.size(); i++) {
-      if ((popolazione[i].P == Stato::INFETTO) && (orologio2.getElapsedTime().asSeconds() > 8)) {
-        popolazione[i].P = Stato::RIMOSSO;
-        setwhiteTextures();
-        orologio2.restart();
-      } else {
-        continue;
+  /*
+    void conteggio_contatti() {
+      for (int i = 0; i < popolazione.size(); i++) {
+        Persona& PallinaA = popolazione[i];
+        for (int j = 0; j < popolazione.size(); j++) {
+          Persona& PallinaB = popolazione[j];
+          if ((i != j) && (modulo(PallinaA.centro - PallinaB.centro) <= 1.5 * PallinaB.raggio)) {
+            PallinaA.numero_contatti++;
+          } else {
+            continue;
+          }
+        }
       }
     }
-  }
 
+    void morte_persona() {
+      for (int i = 0; i < popolazione.size(); i++) {
+        Persona& PallinaA = popolazione[i];
+        if ((PallinaA.P == Stato::INFETTO) && (PallinaA.numero_contatti >= 80)) {
+          PallinaA.P = Stato::RIMOSSO;
+          setwhiteTextures();
+        } else {
+          continue;
+        }
+      }
+    }
+  */
   // Funzione con cui carico la Texture verde
   void setgreenTextures() {
     for (int i = 0; i < popolazione.size(); i++) {
@@ -109,15 +123,17 @@ class Animazione : public sf::Drawable {
   // Funzione in cui carico sullo stato RIMOSSO al 40% la texture grigia e al 60% quella azzurra
   void setwhiteTextures() {
     for (int i = 0; i < popolazione.size(); i++) {
-      if (popolazione[i].P == Stato::RIMOSSO) {
-        sf::Vertex* iter = &struttura[i * 3];
+      Persona& PallinaA = popolazione[i];
+      if (PallinaA.P == Stato::RIMOSSO) {
         srand(time(NULL));
         int a = rand() % 100 + 1;
-        if (a < 30) {
+        if (a < 40) {
+          sf::Vertex* iter = &struttura[i * 3];
           iter[0].texCoords = sf::Vector2f(520.f, 20.f);  // coordinate pupini grigi
           iter[1].texCoords = sf::Vector2f(430.f, 210.f);
           iter[2].texCoords = sf::Vector2f(615.f, 210.f);
         } else {
+          sf::Vertex* iter = &struttura[i * 3];
           iter[0].texCoords = sf::Vector2f(730.f, 20.f);  // coordinate pupini azzurri
           iter[1].texCoords = sf::Vector2f(635.f, 210.f);
           iter[2].texCoords = sf::Vector2f(825.f, 210.f);
@@ -169,10 +185,10 @@ class Animazione : public sf::Drawable {
     for (int i = 0; i < popolazione.size(); i++) {
       sf::Vertex* iter = &struttura[i * 3];
       iter[0].position = sf::Vector2f(popolazione[i].centro.x, popolazione[i].centro.y - popolazione[i].raggio);  // strane coord
-      iter[1].position = sf::Vector2f(popolazione[i].centro.x - popolazione[i].raggio * (1.7f / 2),
-                                      popolazione[i].centro.y + (popolazione[i].raggio / 2));
-      iter[2].position = sf::Vector2f(popolazione[i].centro.x + popolazione[i].raggio * (1.7f / 2),
-                                      popolazione[i].centro.y + (popolazione[i].raggio / 2));
+      iter[1].position =
+          sf::Vector2f(popolazione[i].centro.x - popolazione[i].raggio * (1.7f / 2), popolazione[i].centro.y + (popolazione[i].raggio / 2));
+      iter[2].position =
+          sf::Vector2f(popolazione[i].centro.x + popolazione[i].raggio * (1.7f / 2), popolazione[i].centro.y + (popolazione[i].raggio / 2));
       // bisognerà cancellare il puntatore?
     }
   }
@@ -216,9 +232,11 @@ class Animazione : public sf::Drawable {
   void aggiorna_generale() {
     check_borders();
 
+    // conteggio_contatti();
+
     collisione();
 
-    morte_persona();
+    // morte_persona();
 
     aggiorna_lista();
 
@@ -444,6 +462,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
   }
 
   void aggiorna() {
+    srand(time(NULL));
     giorni++;
     for (int i = 0; i < numero_lato; i++) {
       for (int j = 0; j < numero_lato; j++) {
@@ -463,7 +482,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
             if (estrazione > prob_sano) {
               // aggiungere i seed randomici
 
-              cell.S = Stato::INFETTO;  // PORCO DIO AVEVO MESSO DUE UGUALI
+              cell.S = Stato::INFETTO;
               std::cout << "ora sono infetto" << '\n';
               cell.aggiorna_colore();
             }
