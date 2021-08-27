@@ -21,7 +21,7 @@
 
 // per disegnare altre cose oltre il vertex array
 /* class Rappresentazione : public sf::Drawable { */
-enum class Stato { VULNERABILE, INFETTO, RIMOSSO };
+enum class Stato { VULNERABILE, INFETTO, RIMOSSO, MORTO, GUARITO };
 
 struct Persona {
   sf::Vector2f m_centro;
@@ -34,7 +34,7 @@ struct Persona {
 };
 
 class Animazione : public sf::Drawable {
-  sf::Clock m_m_orologio2;
+  sf::Clock m_orologio2;
   sf::Texture m_ominoprova;
   sf::VertexArray m_struttura;
   std::map<int, Persona> m_popolazione;  // vedere se meglio vector
@@ -69,10 +69,13 @@ class Animazione : public sf::Drawable {
   void Conteggio_contatti() {
     for (int i = 0; i < m_popolazione.size(); i++) {
       Persona& PallinaA = m_popolazione[i];
-      for (int j = 0; j < m_popolazione.size(); j++) {        //provare con un range di raggio
+      for (int j = 0; j < m_popolazione.size(); j++) {  
         Persona& PallinaB = m_popolazione[j];
-        if ((i != j) && (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.5 * PallinaB.m_raggio) && (PallinaA.m_P == Stato::INFETTO)) {
-          PallinaA.m_numero_contatti++;
+        if ((i != j) && (PallinaA.m_P == Stato::INFETTO)) {
+          if ((Modulo(PallinaA.m_centro - PallinaB.m_centro) >= 1.45f * PallinaB.m_raggio) ||
+              (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.55f * PallinaB.m_raggio)) {
+            PallinaA.m_numero_contatti++;
+          }
         } else {
           continue;
         }
@@ -83,7 +86,7 @@ class Animazione : public sf::Drawable {
   void Morte_persona() {
     for (int i = 0; i < m_popolazione.size(); i++) {
       Persona& PallinaA = m_popolazione[i];
-      if ((PallinaA.m_P == Stato::INFETTO) && (PallinaA.m_numero_contatti == 150)) {
+      if ((PallinaA.m_P == Stato::INFETTO) && (PallinaA.m_numero_contatti == 10)) {
         PallinaA.m_P = Stato::RIMOSSO;
         SetwhiteTextures();
       } else {
@@ -119,20 +122,22 @@ class Animazione : public sf::Drawable {
     }
   }
 
-  // Ho immaginato che al 40% muoiano e al 60% guariscono, si possono cambiare le probabilita' of course
-  // Funzione in cui carico sullo stato RIMOSSO al 40% la texture grigia e al 60% quella azzurra
+  // Ho immaginato che al 30% muoiano e al 70% guariscono, si possono cambiare le probabilita' of course
+  // Funzione in cui carico sullo stato RIMOSSO al 30% la texture grigia e al 70% quella azzurra
   void SetwhiteTextures() {
     for (int i = 0; i < m_popolazione.size(); i++) {
       Persona& PallinaA = m_popolazione[i];
-      if (PallinaA.m_P == Stato::RIMOSSO) {     //Aggiungere stato guarito/morto
+      if (PallinaA.m_P == Stato::RIMOSSO) {  // Aggiungere stato guarito/morto
         srand(time(NULL));
         int a = rand() % 100 + 1;
         if (a < 40) {
+          PallinaA.m_P = Stato::MORTO;
           sf::Vertex* iter = &m_struttura[i * 3];
           iter[0].texCoords = sf::Vector2f(520.f, 20.f);  // coordinate pupini grigi
           iter[1].texCoords = sf::Vector2f(430.f, 210.f);
           iter[2].texCoords = sf::Vector2f(615.f, 210.f);
         } else {
+          PallinaA.m_P = Stato::GUARITO;
           sf::Vertex* iter = &m_struttura[i * 3];
           iter[0].texCoords = sf::Vector2f(730.f, 20.f);  // coordinate pupini azzurri
           iter[1].texCoords = sf::Vector2f(635.f, 210.f);
@@ -200,7 +205,7 @@ class Animazione : public sf::Drawable {
 
   void Aggiorna_lista() {
     // metto qua perchè se lo chiamo in punti diversi magari sono leggemente diversi
-    float deltat2 = m_m_orologio2.restart().asSeconds();
+    float deltat2 = m_orologio2.restart().asSeconds();
 
     // std::cout << "tempo1 " << deltat << '\n';
     // std::cout << "tempo2 " << deltat2 << '\n';
