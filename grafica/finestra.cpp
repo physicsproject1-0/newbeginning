@@ -27,9 +27,9 @@ void Finestra::Destroy() { v_mainfinestra.close(); }
 
 Finestra::Finestra() { Setup("Defaultwindow", sf::Vector2u(1280, 720)); }
 
-Finestra::Finestra(const std::string& titolo, const sf::Vector2u& dimensione, GUI* overlay, const Bordi& t_bordo_animazione,
-                   const Bordi& t_bordo_automa)
-    : v_overlay{overlay}, v_vista(Vista::Animazione) {
+Finestra::Finestra(const std::string& titolo, const sf::Vector2u& dimensione, GUI* overlay, Animazione* t_dinamico, Automa* t_statico,
+                   const Bordi& t_bordo_animazione, const Bordi& t_bordo_automa)
+    : v_vista(Vista::Animazione), v_overlay{overlay}, m_dinamico{t_dinamico}, m_statico{t_statico} {
   Setup(titolo, dimensione);
   specifiche_viste(Vista::Animazione, t_bordo_animazione.getlimiti());
   specifiche_viste(Vista::Automa, t_bordo_automa.getlimiti());
@@ -69,6 +69,8 @@ void Finestra::Update() {
 
       upd_vista();
       /* sf::View view2(sf::Vector2f(400, 300), converti(dimensioni_nuove)); */
+      m_statico->AzzeraOrologio();
+      m_dinamico->AzzeraOrologio();  // evitiamo che si perdano pezzi di animazione durante il resize
     }
 
     if (evento.type == sf::Event::MouseEntered) {
@@ -87,41 +89,36 @@ void Finestra::Update() {
 
       if (evento.type == sf::Event::MouseButtonPressed && evento.mouseButton.button == sf::Mouse::Left) {
         switch (v_overlay->mouse_clicked()) {
-          case MousePos::Checkbox1:
+          case MousePos::CheckboxAnimazione:
             v_vista = Vista::Animazione;
             punto_alto_sx.x = vista_animazione.getCenter().x - vista_animazione.getSize().x / 2;
             punto_alto_sx.y = vista_animazione.getCenter().y - vista_animazione.getSize().y / 2;
             break;
 
-          case MousePos::Checkbox2:
+          case MousePos::CheckboxAutoma:
             v_vista = Vista::Automa;
             punto_alto_sx.x = vista_automa.getCenter().x - vista_automa.getSize().x / 2;
             punto_alto_sx.y = vista_automa.getCenter().y - vista_automa.getSize().y / 2;
             break;
+
+          case MousePos::PulsantePlay:
+
+            m_dinamico->StartAnimazione();
+            m_statico->StartAutoma();
+            break;
+          case MousePos::PulsantePausa:
+            m_dinamico->StopAnimazione();
+            m_statico->StopAutoma();
+            break;
         }
         upd_vista();
       }
-      /*    if (evento.type == sf::Event::KeyPressed && evento.key.code == sf::Keyboard::P) {    //lasciamo le lettere P e O ???
-           sf::Vector2u dimensioni_nuove = v_mainfinestra.getSize();
-           sf::Vector2f NuovoCentro(dimensioni_nuove.x, dimensioni_nuove.y);
-           sf::View view3(sf::Vector2f(2000, 2000), NuovoCentro);
-           SetVista(view3);
-         } */
-      /* if (evento.type == sf::Event::KeyPressed && evento.key.code == sf::Keyboard::O) {
-       sf::Vector2u dimensioni_nuove = v_mainfinestra.getSize();
-       sf::Vector2f NuovoCentro(dimensioni_nuove.x, dimensioni_nuove.y);
-       sf::View view4(sf::Vector2f(400, 300), NuovoCentro);
-       SetVista(view4);
-     } */
     }
-
-    /* if (evento.type == sf::Event::KeyPressed && evento.key.code == sf::Keyboard::P) {
-      sf::Vector2u dimensioni_nuove = v_mainfinestra.getSize();
-      sf::Vector2f NuovoCentro(dimensioni_nuove.x, dimensioni_nuove.y);
-      sf::View view3(sf::Vector2f(2000, 2000), NuovoCentro);
-      SetVista(view3);
-    } */
   }
+  /*
+    if (v_overlay->cliccabile()){
+      v_mouse.
+    } */
 }
 
 void Finestra::upd_vista() {

@@ -19,7 +19,7 @@
 
 enum class Vista { Automa, Animazione };
 
-enum class MousePos { None, Checkbox1, Checkbox2  };
+enum class MousePos { None, CheckboxAnimazione, CheckboxAutoma, PulsantePlay, PulsantePausa };
 
 class Bordi : public sf::Drawable {
  protected:
@@ -40,12 +40,12 @@ class Bordi : public sf::Drawable {
   sf::FloatRect getlimiti() const;
 };
 
-
 class Checkbox : public Bordi {  // origine al centro
+ protected:
   bool m_clicked = false;
 
  public:
-  void set_posizione(sf::Vector2f posizione) {
+  virtual void set_posizione(sf::Vector2f posizione) {
     m_rettangolo.setPosition(posizione);
 
     m_rettangolo_esterno.left = posizione.x - m_rettangolo_esterno.width / 2;
@@ -55,19 +55,21 @@ class Checkbox : public Bordi {  // origine al centro
   void change_status(bool var) { m_clicked = var; }
   Checkbox(sf::Vector2f dimensione);
   void setinterncolor(sf::Color colore);
+  void ImpostaOrigine(sf::Vector2f t_nuova_origine) { m_rettangolo.setOrigin(t_nuova_origine); }
 };
 
 class Textbox : public Bordi {  // origine al centro //chiamare pprima scrivi e poi set posizione
   sf::Font* m_font;
   sf::Text m_testo;
-  float m_fattore_conversione; //dimensioni lettera testo lungo asse x rispetto ad asse y
+  float m_fattore_conversione;  // dimensioni lettera testo lungo asse x rispetto ad asse y
 
  public:
   Textbox(int dimensione_carattere, sf::Font* t_font, sf::Color colore_testo)
-      : Bordi(sf::Vector2f(dimensione_carattere, dimensione_carattere)), m_font{t_font}, m_fattore_conversione{0.6} {  // chiamare il costruttore di bordi
+      : Bordi(sf::Vector2f(dimensione_carattere, dimensione_carattere)), m_font{t_font}, m_fattore_conversione{0.6} {  // chiamare il costruttore di
+                                                                                                                       // bordi
     m_testo.setFillColor(colore_testo);
     m_testo.setFont(*m_font);
-    m_testo.setCharacterSize(dimensione_carattere);
+    m_testo.setCharacterSize(dimensione_carattere /* * 4 */);
 
     m_rettangolo.setFillColor(sf::Color(211, 211, 211));
 
@@ -80,10 +82,21 @@ class Textbox : public Bordi {  // origine al centro //chiamare pprima scrivi e 
 
   void scrivi(std::string stringa) {
     m_testo.setString(stringa);
-    sf::Vector2f dimensioni_testo(m_testo.getCharacterSize() * stringa.size() * m_fattore_conversione ,  //fattore di conversione per dimensione x
-                                  m_testo.getCharacterSize());  // ci sono anche le funzioni getlocal e... ma sono imprecise
-    ridimensiona(dimensioni_testo);
+    sf::Vector2f dimensioni_testo(
+        m_testo.getGlobalBounds().width +
+            1 /* m_testo.getCharacterSize() * stringa.size() * m_fattore_conversione */,  // fattore di conversione per dimensione x
+        m_testo.getGlobalBounds().height + 3);                                            // ci sono anche le funzioni getlocal e... ma sono imprecise
     m_testo.setOrigin(dimensioni_testo.x / 2, dimensioni_testo.y / 2);
+    /* m_testo.scale(0.25, 0.25); */
+
+    std::cout << "width" << m_testo.getGlobalBounds().width << "height" << m_testo.getCharacterSize() << '\n';
+    /* sf::Vector2f dimensioni_testo_ridotte(
+        m_testo.getGlobalBounds().width +
+            4 /* m_testo.getCharacterSize() * stringa.size() * m_fattore_conversione ,  // fattore di conversione per dimensione x
+        m_testo.getGlobalBounds().height + 4);
+ */
+    ridimensiona(dimensioni_testo);
+
     m_rettangolo.setOrigin(dimensioni_testo.x / 2, dimensioni_testo.y / 2);
   }
   virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -92,11 +105,156 @@ class Textbox : public Bordi {  // origine al centro //chiamare pprima scrivi e 
   }
 };
 
-class Pulsante {};
+enum class TipoPulsante { Play, Pausa };
+
+class Pulsante : public Checkbox {  // origine al centro
+  TipoPulsante m_tipo_pulsante;
+  sf::CircleShape m_simbolo;
+
+ public:
+  Pulsante(float lato, TipoPulsante t_tipopulsante) : Checkbox(sf::Vector2f(lato, lato)), m_tipo_pulsante{t_tipopulsante} {
+    m_simbolo.setRadius(lato / 4);
+    if (m_tipo_pulsante == TipoPulsante::Play) {
+      m_simbolo.setPointCount(3);
+      m_simbolo.setRotation(90);  // senso orario
+    } else {
+      m_simbolo.setPointCount(4);
+      m_simbolo.setRotation(-45);
+    }
+    m_simbolo.setFillColor(sf::Color::Black);
+    m_simbolo.setOrigin(sf::Vector2f(lato / 4, lato / 4));
+  }
+
+  void set_posizione(sf::Vector2f posizione) {
+    m_rettangolo.setPosition(posizione);
+    m_simbolo.setPosition(posizione);
+
+    m_rettangolo_esterno.left = posizione.x - m_rettangolo_esterno.width / 2;
+    m_rettangolo_esterno.top = posizione.y - m_rettangolo_esterno.height / 2;
+  }
+
+  void AggiornaStato() {  // se cliccato
+  }
+  virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
+    target.draw(m_rettangolo);
+    target.draw(m_simbolo);
+  }
+};
+
+class Paletta : public sf::Drawable {
+  Checkbox m_box_verde;
+  Checkbox m_box_rosso;
+  Checkbox m_box_blu;
+
+  Bordi m_riquadro_esterno;
+
+  sf::RectangleShape m_dainserire_verde;
+  sf::RectangleShape m_dainserire_rosso;
+  sf::RectangleShape m_dainserire_blu;
+
+  Textbox m_testo_verde;
+  Textbox m_testo_rosso;
+  Textbox m_testo_blu;
+
+ public:
+  Paletta(sf::Vector2f t_dimensione_riquadro, sf::Font* t_font)
+      : m_box_verde(sf::Vector2f(t_dimensione_riquadro.x / 2, t_dimensione_riquadro.x / 2)),
+        m_box_rosso(sf::Vector2f(t_dimensione_riquadro.x / 2, t_dimensione_riquadro.x / 2)),
+        m_box_blu(sf::Vector2f(t_dimensione_riquadro.x / 2, t_dimensione_riquadro.x / 2)),
+        m_riquadro_esterno(t_dimensione_riquadro),
+
+        m_testo_verde(9.5, t_font, sf::Color::Black),
+        m_testo_rosso(9.5, t_font, sf::Color::Black),
+        m_testo_blu(9.5, t_font, sf::Color::Black) {
+    m_box_verde.setinterncolor(sf::Color::Green);
+    m_box_verde.ImpostaOrigine(sf::Vector2f(t_dimensione_riquadro.x / 4, t_dimensione_riquadro.x / 4));
+
+    m_box_rosso.setinterncolor(sf::Color::Red);
+    m_box_rosso.ImpostaOrigine(sf::Vector2f(t_dimensione_riquadro.x / 4, t_dimensione_riquadro.x / 4));
+
+    m_box_blu.setinterncolor(sf::Color::Cyan);
+    m_box_blu.ImpostaOrigine(sf::Vector2f(t_dimensione_riquadro.x / 4, t_dimensione_riquadro.x / 4));
+
+    m_dainserire_verde.setSize(sf::Vector2f(t_dimensione_riquadro.x / 6, t_dimensione_riquadro.x / 6));
+    m_dainserire_verde.setFillColor(sf::Color::Green);
+    m_dainserire_verde.setOrigin(sf::Vector2f(t_dimensione_riquadro.x / 12, t_dimensione_riquadro.x / 12));
+
+    m_dainserire_rosso.setSize(sf::Vector2f(t_dimensione_riquadro.x / 6, t_dimensione_riquadro.x / 6));
+    m_dainserire_rosso.setFillColor(sf::Color::Red);
+    m_dainserire_rosso.setOrigin(sf::Vector2f(t_dimensione_riquadro.x / 12, t_dimensione_riquadro.x / 12));
+
+    m_dainserire_blu.setSize(sf::Vector2f(t_dimensione_riquadro.x / 6, t_dimensione_riquadro.x / 6));
+    m_dainserire_blu.setFillColor(sf::Color::Cyan);
+    m_dainserire_blu.setOrigin(sf::Vector2f(t_dimensione_riquadro.x / 12, t_dimensione_riquadro.x / 12));
+  }
+
+  void ImpostaPosizione(sf::Vector2f t_posizione_centro) {  // la consideriamo rispetto al centro
+    m_riquadro_esterno.set_posizione(t_posizione_centro -
+                                     sf::Vector2f(m_riquadro_esterno.getlimiti().width / 2, m_riquadro_esterno.getlimiti().height / 2));
+
+    m_box_verde.set_posizione(sf::Vector2f(t_posizione_centro.x, t_posizione_centro.y - m_riquadro_esterno.getlimiti().height / 3));
+    m_box_rosso.set_posizione(sf::Vector2f(t_posizione_centro.x, t_posizione_centro.y));
+    m_box_blu.set_posizione(sf::Vector2f(t_posizione_centro.x, t_posizione_centro.y + m_riquadro_esterno.getlimiti().height / 3));
+
+    m_testo_verde.set_posizione(sf::Vector2f(t_posizione_centro.x, m_box_verde.getlimiti().top - 10));
+    m_testo_rosso.set_posizione(sf::Vector2f(t_posizione_centro.x, m_box_rosso.getlimiti().top - 10));
+    m_testo_blu.set_posizione(sf::Vector2f(t_posizione_centro.x, m_box_blu.getlimiti().top - 10));
+  }
+  void Scrivi() {  // funzione presente altrimenti scrive prima di caricare il font e mi restituisce 0 di larghezza , il loading del font avviene dopo
+                   // in GUI
+    m_testo_verde.scrivi("Vulnerabile");
+    m_testo_rosso.scrivi("Infetto");
+    m_testo_blu.scrivi("Rimosso");
+    if (m_testo_verde.getlimiti().width > m_riquadro_esterno.getlimiti().width ||
+        m_testo_rosso.getlimiti().width > m_riquadro_esterno.getlimiti().width ||
+        m_testo_blu.getlimiti().width > m_riquadro_esterno.getlimiti().width) {
+      throw std::runtime_error("dimensione paletta non sufficiente per ospitare testo");
+    }
+  }
+  void draw(sf::RenderTarget& target, sf::RenderStates states) const {
+    target.draw(m_box_verde);
+    target.draw(m_box_rosso);
+    target.draw(m_box_blu);
+    target.draw(m_riquadro_esterno);
+    target.draw(m_testo_verde);
+    target.draw(m_testo_rosso);
+    target.draw(m_testo_blu);
+  }
+
+  void PrendiVerde() {}
+
+  void PrendiRosso() {}
+  void PrendiGiallo() {}
+  /*  bool Contiene(sf::Vector2f t_coordinate_mouse, MousePos& t_posizione_mouse) {
+     if (m_box_verde.getlimiti().contains(t_coordinate_mouse)) {
+       m_posizione_mouse = MousePos::CheckboxAnimazione;
+       std::cout << "sei sopra la casella animazione" << '\n';
+
+     } else if (m_box_rosso.contains(t_coordinate_mouse)) {
+       m_posizione_mouse = MousePos::CheckboxAutoma;
+       std::cout << "sei sopra la casella automa" << '\n';
+
+     } else if (m_box_blu.contains(t_coordinate_mouse)) {
+       m_posizione_mouse = MousePos::PulsantePlay;
+       std::cout << "sei sopra la casella play" << '\n';
+
+     } else if (m_riquadro_esterno.contains(t_coordinate_mouse)) {
+       m_posizione_mouse = MousePos::PulsantePausa;
+       std::cout << "sei sopra la casella pausa" << '\n';
+
+     } else {
+       m_posizione_mouse = MousePos::None;
+       std::cout << "nope" << '\n';
+     }
+   } */
+};
+/*
+sf::Vector2f operator/(const int& t_numero) {}   come si overloada???
+ */
 class GUI : public sf::Drawable {
   sf::Font m_font;
 
-  sf::RectangleShape m_sfondo_grigio;  //non uso nè bordi nè checkbox perchè non adatti
+  sf::RectangleShape m_sfondo_grigio;  // non uso nè bordi nè checkbox perchè non adatti
   Bordi m_limiti_sfondo_grigio;
 
   Textbox m_testo_animazione;
@@ -104,6 +262,11 @@ class GUI : public sf::Drawable {
 
   Checkbox m_casella_animazione;
   Checkbox m_casella_automa;
+
+  Pulsante m_pulsante_play;
+  Pulsante m_pulsante_pausa;
+
+  Paletta m_paletta_colori;
 
   MousePos m_posizione_mouse;
 
@@ -114,31 +277,92 @@ class GUI : public sf::Drawable {
 
   void check_mouse_position(sf::Vector2f t_coordinate_mouse) {
     if (m_casella_animazione.getlimiti().contains(t_coordinate_mouse)) {
-      m_posizione_mouse = MousePos::Checkbox1;
+      m_posizione_mouse = MousePos::CheckboxAnimazione;
       std::cout << "sei sopra la casella animazione" << '\n';
+
     } else if (m_casella_automa.getlimiti().contains(t_coordinate_mouse)) {
-      m_posizione_mouse = MousePos::Checkbox2;
+      m_posizione_mouse = MousePos::CheckboxAutoma;
       std::cout << "sei sopra la casella automa" << '\n';
+
+    } else if (m_pulsante_play.getlimiti().contains(t_coordinate_mouse)) {
+      m_posizione_mouse = MousePos::PulsantePlay;
+      std::cout << "sei sopra la casella play" << '\n';
+
+    } else if (m_pulsante_pausa.getlimiti().contains(t_coordinate_mouse)) {
+      m_posizione_mouse = MousePos::PulsantePausa;
+      std::cout << "sei sopra la casella pausa" << '\n';
 
     } else {
       m_posizione_mouse = MousePos::None;
-     /*  std::cout << "false" << '\n'; */  // attenzione agli else!!!!!!!!!!!!!!!!!
+      std::cout << "nope" << '\n';
     }
   }
 
   void check_color(sf::Color colore) {
     switch (m_posizione_mouse) {
-      case MousePos::Checkbox1:
+      case MousePos::CheckboxAnimazione:
         if (!m_casella_animazione.return_status()) {
           m_casella_animazione.setinterncolor(colore);
         }
+        if (!m_casella_automa.return_status()) {
+          m_casella_automa.setinterncolor(sf::Color(128, 128, 128));
+        }
+
+        if (!m_pulsante_play.return_status()) {
+          m_pulsante_play.setinterncolor(sf::Color(128, 128, 128));
+        }
+        if (!m_pulsante_pausa.return_status()) {
+          m_pulsante_pausa.setinterncolor(sf::Color(128, 128, 128));
+        }
+
         break;
 
-      case MousePos::Checkbox2:
+      case MousePos::CheckboxAutoma:
         if (!m_casella_automa.return_status()) {
           m_casella_automa.setinterncolor(colore);
         }
+        if (!m_casella_animazione.return_status()) {
+          m_casella_animazione.setinterncolor(sf::Color(128, 128, 128));
+        }
+        if (!m_pulsante_play.return_status()) {
+          m_pulsante_play.setinterncolor(sf::Color(128, 128, 128));
+        }
+        if (!m_pulsante_pausa.return_status()) {
+          m_pulsante_pausa.setinterncolor(sf::Color(128, 128, 128));
+        }
+
         break;
+      case MousePos::PulsantePlay:
+        if (!m_pulsante_play.return_status()) {
+          m_pulsante_play.setinterncolor(colore);
+        }
+        if (!m_casella_automa.return_status()) {
+          m_casella_automa.setinterncolor(sf::Color(128, 128, 128));
+        }
+        if (!m_casella_animazione.return_status()) {
+          m_casella_animazione.setinterncolor(sf::Color(128, 128, 128));
+        }
+        if (!m_pulsante_pausa.return_status()) {
+          m_pulsante_pausa.setinterncolor(sf::Color(128, 128, 128));
+        }
+
+        break;
+      case MousePos::PulsantePausa:
+        if (!m_pulsante_pausa.return_status()) {
+          m_pulsante_pausa.setinterncolor(colore);
+        }
+        if (!m_casella_automa.return_status()) {
+          m_casella_automa.setinterncolor(sf::Color(128, 128, 128));
+        }
+        if (!m_casella_animazione.return_status()) {
+          m_casella_animazione.setinterncolor(sf::Color(128, 128, 128));
+        }
+        if (!m_pulsante_play.return_status()) {
+          m_pulsante_play.setinterncolor(sf::Color(128, 128, 128));
+        }
+
+        break;
+
       case MousePos::None:
         if (!m_casella_automa.return_status()) {
           m_casella_automa.setinterncolor(sf::Color(128, 128, 128));
@@ -146,30 +370,62 @@ class GUI : public sf::Drawable {
         if (!m_casella_animazione.return_status()) {
           m_casella_animazione.setinterncolor(sf::Color(128, 128, 128));
         }
+        if (!m_pulsante_play.return_status()) {
+          m_pulsante_play.setinterncolor(sf::Color(128, 128, 128));
+        }
+        if (!m_pulsante_pausa.return_status()) {
+          m_pulsante_pausa.setinterncolor(sf::Color(128, 128, 128));
+        }
         break;
     }
   }
 
+  /*  void ControlloGiaCliccata(Checkbox t_checkbox) {
+     if (!m_casella_automa.return_status()) {
+           m_casella_automa.setinterncolor(sf::Color(128, 128, 128));
+         }
+   } */
+
   MousePos mouse_clicked() {
-    if (m_posizione_mouse == MousePos::Checkbox1) {
+    if (m_posizione_mouse == MousePos::CheckboxAnimazione) {
       m_casella_animazione.setinterncolor(sf::Color::Red);
       m_casella_animazione.change_status(true);
       m_casella_automa.setinterncolor(sf::Color(128, 128, 128));
       m_casella_automa.change_status(false);
       return m_posizione_mouse;
-    }
-    if (m_posizione_mouse == MousePos::Checkbox2) {
+    } else if (m_posizione_mouse == MousePos::CheckboxAutoma) {
       m_casella_animazione.setinterncolor(sf::Color(128, 128, 128));
       m_casella_animazione.change_status(false);
       m_casella_automa.setinterncolor(sf::Color::Red);
       m_casella_automa.change_status(true);
       return m_posizione_mouse;
+    } else if (m_posizione_mouse == MousePos::PulsantePlay) {
+      m_pulsante_play.setinterncolor(sf::Color::Red);
+      m_pulsante_play.change_status(true);
+      m_pulsante_pausa.setinterncolor(sf::Color(128, 128, 128));
+      m_pulsante_pausa.change_status(false);
+      return m_posizione_mouse;
+    } else if (m_posizione_mouse == MousePos::PulsantePausa) {
+      m_pulsante_play.setinterncolor(sf::Color(128, 128, 128));
+      m_pulsante_play.change_status(false);
+      m_pulsante_pausa.setinterncolor(sf::Color::Red);
+      m_pulsante_pausa.change_status(true);
+      return m_posizione_mouse;
+
     } else {
       return m_posizione_mouse;
     }
   }
 
   void is_out() { check_color(sf::Color(128, 128, 128)); }
+
+  bool cliccabile() {
+    if (m_posizione_mouse != MousePos::None) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 };
 
 enum class Stato { VULNERABILE, INFETTO, RIMOSSO, MORTO, GUARITO };
@@ -189,6 +445,9 @@ class Animazione : public sf::Drawable {
   sf::Texture m_ominoprova;
   sf::VertexArray m_struttura;
   std::map<int, Persona> m_popolazione;  // vedere se meglio vector
+
+  bool m_is_stopped;
+
 
   Bordi m_limiti;
 
@@ -220,7 +479,7 @@ class Animazione : public sf::Drawable {
   void Conteggio_contatti() {
     for (int i = 0; i < m_popolazione.size(); i++) {
       Persona& PallinaA = m_popolazione[i];
-      for (int j = 0; j < m_popolazione.size(); j++) {  
+      for (int j = 0; j < m_popolazione.size(); j++) {
         Persona& PallinaB = m_popolazione[j];
         if ((i != j) && (PallinaA.m_P == Stato::INFETTO)) {
           if ((Modulo(PallinaA.m_centro - PallinaB.m_centro) >= 1.49f * PallinaB.m_raggio) &&
@@ -308,7 +567,7 @@ class Animazione : public sf::Drawable {
   }
 
  public:
-  Animazione(int n) : m_limiti(sf::Vector2f(600, 400), sf::Vector2f(100, 100)) {
+  Animazione(int n) : m_limiti(sf::Vector2f(600, 400), sf::Vector2f(100, 100)), m_is_stopped{true} {
     if (!m_ominoprova.loadFromFile("uomini.png")) {
       throw std::runtime_error{"texture loading failed"};  // catcharlo
     }
@@ -336,6 +595,7 @@ class Animazione : public sf::Drawable {
 
     SetgreenTextures();
     SetredTextures();
+    Aggiorna_griglia();  //chiamarlo almeno una volta sennò no good;
   }
 
   Bordi get_bordi() { return m_limiti; }
@@ -376,7 +636,9 @@ class Animazione : public sf::Drawable {
         m_popolazione[i].m_vel.y = -m_popolazione[i].m_vel.y;
       }
     }
-  };
+  }
+
+  void AzzeraOrologio() { m_orologio2.restart(); }
 
   void Check_external_bounds(Persona& test);
 
@@ -387,6 +649,17 @@ class Animazione : public sf::Drawable {
   int Check_occur(Persona const& persona, int m_raggio);
 
   double Modulo(sf::Vector2f const& vettore);
+
+  void StopAnimazione(){
+    m_is_stopped = true;
+  }
+
+  void StartAnimazione(){
+    m_is_stopped = false;
+    m_orologio2.restart();
+  }
+
+  bool IsStopped(){return m_is_stopped;}
 
   void Aggiorna_Generale() {
     Check_borders();
@@ -491,6 +764,8 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
 
   int m_giorni = 0;
 
+  bool m_is_stopped;
+
   virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
     for (int i = 0; i < m_numero_lato; i++) {
       for (int j = 0; j < m_numero_lato; j++) {
@@ -508,7 +783,8 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
         m_numero_lato{t_numero},
         m_probabilita_contagio{t_probabilita_contagio},
         m_probabilita_guarigione{t_probabilita_guarigione},
-        limiti{t_dimensione, t_posizione} {
+        limiti{t_dimensione, t_posizione} ,
+        m_is_stopped{true} {
     assert(m_probabilita_contagio <= 1 && m_probabilita_contagio >= 0);  // mettere except
     /* if (!font.loadFromFile("Arial.ttf")) {
       throw std::runtime_error{"texture loading failed"};
@@ -652,6 +928,20 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
       m_orologio.restart();
     }
   }
+
+  void AzzeraOrologio() { m_orologio.restart(); }
+
+    void StopAutoma(){
+    m_is_stopped = true;
+  }
+
+  void StartAutoma(){
+    m_is_stopped = false;
+    m_orologio.restart();
+  }
+
+  bool IsStopped(){return m_is_stopped;}
+
 };
 
 #endif

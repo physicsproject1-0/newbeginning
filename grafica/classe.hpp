@@ -22,7 +22,6 @@
 // per disegnare altre cose oltre il vertex array
 /* class Rappresentazione : public sf::Drawable { */
 
-
 class Mondo /* : public sf::Drawable  */ {
  private:  // la draw non va nel protected??
   /* sf::VertexArray Griglia; */
@@ -32,9 +31,6 @@ class Mondo /* : public sf::Drawable  */ {
 
   Automa m_statica;
   // non ho capito perhcè qui dentro non ci posso mettere il costruttore;
-
-  sf::Clock m_timer;
-  sf::Time m_trascorso;
 
   Finestra m_window;
   /* virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -54,7 +50,6 @@ class Mondo /* : public sf::Drawable  */ {
 
   // funzioni da usare nel main
 
-  void Azzera();
 
   Finestra* Prendi_finestra() { return &m_window; }
 
@@ -66,17 +61,31 @@ class Mondo /* : public sf::Drawable  */ {
   }
 
   void Aggiorna() {
-    m_dinamica.Aggiorna_Generale();
-
-    m_statica.Avanza();
+    if (m_window.GetVista() == Vista::Animazione ) {
+      
+      if(!m_dinamica.IsStopped()){
+      m_dinamica.Aggiorna_Generale();
+      std::cout << "Aggiorno dinamica" << '\n';
+      m_statica.AzzeraOrologio();
+      }
+      
+    } else {
+      m_statica.Avanza();
+      std::cout << "Aggiorno statica" << '\n';
+      m_dinamica.AzzeraOrologio();
+    }
   }
 
   void Disegna() {
     m_window.Pulisci();
+    if (m_window.GetVista() == Vista::Animazione) {
+      m_window.Disegna(m_dinamica);
+      std::cout << "DIsegno dinamica" << '\n';
 
-    m_window.Disegna(m_dinamica);
-
-    m_window.Disegna(m_statica);
+    } else {
+      m_window.Disegna(m_statica);
+      std::cout << "DIsegno statica" << '\n';
+    }
 
     m_window.Disegna(m_overlay);
 

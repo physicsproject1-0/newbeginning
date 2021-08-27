@@ -24,6 +24,9 @@ class Finestra {
   sf::Vector2f punto_alto_sx;
 
   GUI* v_overlay;
+  Animazione* m_dinamico;
+  Automa* m_statico;
+  
 
   void Setup(const std::string& titolo, const sf::Vector2u& dimensione);
   void Create();
@@ -31,7 +34,7 @@ class Finestra {
 
  public:
   Finestra();  // di default facciamo che la dimensione è 1280*720
-  Finestra(const std::string& titolo, const sf::Vector2u& dimensione, GUI* overlay, const Bordi& t_bordo_animazione,
+  Finestra(const std::string& titolo, const sf::Vector2u& dimensione, GUI* overlay, Animazione* t_dinamico, Automa* t_statico, const Bordi& t_bordo_animazione,
            const Bordi& t_bordo_automa);  // passo tipi strani, quindi passo by ref
   ~Finestra();
 
@@ -54,6 +57,9 @@ class Finestra {
   bool Isfullscreen();
 
   void SetVista(sf::View vista);
+  Vista GetVista( ){
+    return v_vista;
+  };
 };
 
 #endif
