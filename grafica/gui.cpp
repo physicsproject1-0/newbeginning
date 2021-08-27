@@ -84,6 +84,7 @@ GUI::GUI(sf::Vector2f dimensione)
   m_casella_animazione.setinterncolor(sf::Color::Red);
   m_pulsante_pausa.change_status(true);
   m_pulsante_pausa.setinterncolor(sf::Color::Red);
+  
 
   m_testo_animazione.scrivi("Animazione");
   m_testo_automa.scrivi("Automa");

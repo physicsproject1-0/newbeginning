@@ -105,10 +105,13 @@ void Finestra::Update() {
 
             m_dinamico->StartAnimazione();
             m_statico->StartAutoma();
+            v_overlay->DisattivaInserimento();
+
             break;
           case MousePos::PulsantePausa:
             m_dinamico->StopAnimazione();
             m_statico->StopAutoma();
+            v_overlay->AttivaInserimento();
             break;
         }
         upd_vista();
