@@ -1,127 +1,103 @@
 #include "gui.hpp"
 
+// Bordi
+
 void Bordi::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-  target.draw(rettangolo);
+  target.draw(m_rettangolo);
 }  // metterci anche states altrimenti rompe il casso
 
 Bordi::Bordi(sf::Vector2f dimensione, sf::Vector2f posizione) {
-  rettangolo.setSize(dimensione);
-  rettangolo.setFillColor(sf::Color::Transparent);
-  rettangolo.setOutlineColor(sf::Color::White);
-  rettangolo.setOutlineThickness(3);
-  rettangolo.setPosition(posizione);
+  m_rettangolo.setSize(dimensione);
+  m_rettangolo.setFillColor(sf::Color::Transparent);
+  m_rettangolo.setOutlineColor(sf::Color::White);
+  m_rettangolo.setOutlineThickness(3);
+  m_rettangolo.setPosition(posizione);
 
-  bordo_collisioni.left = posizione.x;
-  bordo_collisioni.top = posizione.y;
-  bordo_collisioni.width = dimensione.x;  // serve davvero?
-  bordo_collisioni.height = dimensione.y;
+  m_rettangolo_esterno.left = posizione.x;
+  m_rettangolo_esterno.top = posizione.y;
+  m_rettangolo_esterno.width = dimensione.x;
+  m_rettangolo_esterno.height = dimensione.y;
 }
 
 Bordi::Bordi(sf::Vector2f dimensione) {
-  rettangolo.setSize(dimensione);
-  rettangolo.setFillColor(sf::Color::Transparent);
-  rettangolo.setOutlineColor(sf::Color::White);
-  rettangolo.setOutlineThickness(3);
-  bordo_collisioni.width = dimensione.x;
-  bordo_collisioni.height = dimensione.y;
+  m_rettangolo.setSize(dimensione);
+  m_rettangolo.setFillColor(sf::Color::Transparent);
+  m_rettangolo.setOutlineColor(sf::Color::White);
+  m_rettangolo.setOutlineThickness(3);
+  m_rettangolo_esterno.width = dimensione.x;
+  m_rettangolo_esterno.height = dimensione.y;
 }
 
 void Bordi::set_posizione(sf::Vector2f posizione) {
-  rettangolo.setPosition(posizione);
+  m_rettangolo.setPosition(posizione);
 
-  bordo_collisioni.left = posizione.x;
-  bordo_collisioni.top = posizione.y;
+  m_rettangolo_esterno.left = posizione.x;
+  m_rettangolo_esterno.top = posizione.y;
 }
 
-void Bordi::set_color(sf::Color Colore) { rettangolo.setOutlineColor(Colore); }
+void Bordi::set_color(sf::Color Colore) { m_rettangolo.setOutlineColor(Colore); }
 
-sf::FloatRect Bordi::getlimiti() const { return bordo_collisioni; };
+sf::FloatRect Bordi::getlimiti() const { return m_rettangolo_esterno; };
 
-/* void Checkbox::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-  target.draw(rettangolo);
-}  // metterci anche states altrimenti rompe il casso
-
-Checkbox::Checkbox(sf::Vector2f dimensione, sf::Vector2f posizione) {
-  rettangolo.setSize(dimensione);
-  rettangolo.setFillColor(sf::Color::Transparent);
-  rettangolo.setOutlineColor(sf::Color::White);
-  rettangolo.setOutlineThickness(3);
-  rettangolo.setPosition(posizione);
-
-  bordo_collisioni.left = posizione.x;
-  bordo_collisioni.top = posizione.y;
-  bordo_collisioni.width = dimensione.x;  // serve davvero?
-  bordo_collisioni.height = dimensione.y;
-}
-
-Checkbox::Checkbox(sf::Vector2f dimensione) {
-  rettangolo.setSize(dimensione);
-  rettangolo.setFillColor(sf::Color::Transparent);
-  rettangolo.setOutlineColor(sf::Color::White);
-  rettangolo.setOutlineThickness(3);
-  bordo_collisioni.width = dimensione.x;
-  bordo_collisioni.height = dimensione.y;
-}
-
-void Checkbox::set_posizione(sf::Vector2f posizione) {
-  rettangolo.setPosition(posizione);
-
-  bordo_collisioni.left = posizione.x;
-  bordo_collisioni.top = posizione.y;
-}
-
-void Checkbox::set_color(sf::Color Colore) { rettangolo.setOutlineColor(Colore); }
-
-sf::FloatRect Checkbox::getlimiti() const { return bordo_collisioni; };
-
-void Checkbox::setinterncolor(sf::Color colore) {
-  rettangolo.setFillColor(colore);
-} */
+// Checkbox
 
 Checkbox::Checkbox(sf::Vector2f dimensione) : Bordi(dimensione) {
-  rettangolo.setOrigin(sf::Vector2f(dimensione.x / 2, dimensione.y / 2));
-  rettangolo.setFillColor(sf::Color(128, 128, 128));
+  m_rettangolo.setOrigin(sf::Vector2f(dimensione.x / 2, dimensione.y / 2));
+  m_rettangolo.setFillColor(sf::Color(128, 128, 128));
 };
 
+void Checkbox::setinterncolor(sf::Color colore) { m_rettangolo.setFillColor(colore); }
 
-void Checkbox::setinterncolor(sf::Color colore) {
-  rettangolo.setFillColor(colore);
-}
-  /* box.setSize(dimensione);
-  box.setFillColor(sf::Color(128, 128, 128));
-  box.setOutlineColor(sf::Color::White);
-  box.setOutlineThickness(2);
-  box.setOrigin(sf::Vector2f(dimensione.x / 2, dimensione.y / 2));  // metto l'origine al centro
-//}
-/* void Checkbox::Set_posizione(sf::Vector2f posizione) { box.setPosition(posizione); } */
-/* void Checkbox::set_color(sf::Color Colore) { box.setFillColor(Colore); } */
+// GUI
 
 void GUI::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-  target.draw(sfondo);
-  target.draw(limite);
-  target.draw(casella_animazione);
-  target.draw(casella_automa);
+  target.draw(m_sfondo_grigio);
+  target.draw(m_limiti_sfondo_grigio);
+  target.draw(m_casella_animazione);
+  target.draw(m_casella_automa);
+  target.draw(m_testo_animazione);
+  target.draw(m_testo_automa);
 }
 
-GUI::GUI(sf::Vector2f dimensione) : limite(sf::Vector2f(dimensione)), testo_animazione(5, &font), testo_automa(5, &font), casella_animazione(sf::Vector2f(40, 40)), casella_automa(sf::Vector2f(40, 40)), posizione(MousePos::none) {
-  
-  if(!font.loadFromFile("Arial.ttf")){
+GUI::GUI(sf::Vector2f dimensione)
+    : m_limiti_sfondo_grigio(sf::Vector2f(dimensione)),
+      m_testo_animazione(10, &m_font, sf::Color::Black),
+      m_testo_automa(10, &m_font, sf::Color::Black),
+      m_casella_animazione(sf::Vector2f(40, 40)),
+      m_casella_automa(sf::Vector2f(40, 40)),
+      m_posizione_mouse(MousePos::None) {
+  if (!m_font.loadFromFile("Arial.ttf")) {
     throw std::runtime_error("font non caricato");
   }
-  
-  sfondo.setFillColor(sf::Color(128, 128, 128));  // Grey
-  sfondo.setSize(dimensione);
+
+  m_sfondo_grigio.setFillColor(sf::Color(128, 128, 128));  // Grey
+  m_sfondo_grigio.setSize(dimensione);
 
   // la prima vista è animazione
-  casella_animazione.change_status(true);
-  casella_animazione.setinterncolor(sf::Color::Red);
+  m_casella_animazione.change_status(true);
+  m_casella_animazione.setinterncolor(sf::Color::Red);
+
+  m_testo_animazione.scrivi("Animazione");
+  m_testo_automa.scrivi("Automa");
+
+  if (m_testo_animazione.getlimiti().width > m_limiti_sfondo_grigio.getlimiti().width ||
+      m_testo_automa.getlimiti().width > m_limiti_sfondo_grigio.getlimiti().width) {
+    throw std::runtime_error("la larghezza della GUI non è sufficiente ad ospitare le caselle di testo");
+  }
 }
 void GUI::aggiorna_posizione(sf::Vector2f punto_in_altodx, sf::Vector2f dimensioni_finestra) {  // da usare nel resize
-  sf::Vector2f posizione(punto_in_altodx.x,
-                         punto_in_altodx.y + dimensioni_finestra.y / 2 - limite.getlimiti().height / 2);  // punta al centro del lato sinistro
-  sfondo.setPosition(posizione);
-  limite.set_posizione(posizione);
-  casella_animazione.set_posizione(sf::Vector2f(punto_in_altodx.x + limite.getlimiti().width / 2, posizione.y + limite.getlimiti().height / 6));
-  casella_automa.set_posizione(sf::Vector2f(punto_in_altodx.x + limite.getlimiti().width / 2, posizione.y + limite.getlimiti().height / 3));
-}
+  sf::Vector2f posizione(
+      punto_in_altodx.x,
+      punto_in_altodx.y + dimensioni_finestra.y / 2 - m_limiti_sfondo_grigio.getlimiti().height / 2);  // punta al centro del lato sinistro
+  m_sfondo_grigio.setPosition(posizione);
+  m_limiti_sfondo_grigio.set_posizione(posizione);
 
+  m_casella_animazione.set_posizione(
+      sf::Vector2f(punto_in_altodx.x + m_limiti_sfondo_grigio.getlimiti().width / 2, posizione.y + m_limiti_sfondo_grigio.getlimiti().height / 6));
+  m_casella_automa.set_posizione(
+      sf::Vector2f(punto_in_altodx.x + m_limiti_sfondo_grigio.getlimiti().width / 2, posizione.y + m_limiti_sfondo_grigio.getlimiti().height / 3));
+
+  m_testo_animazione.set_posizione(sf::Vector2f(punto_in_altodx.x + m_limiti_sfondo_grigio.getlimiti().width / 2,
+                                                m_casella_animazione.getlimiti().top - 10));  // riferiti alle checkbox
+  m_testo_automa.set_posizione(sf::Vector2f(punto_in_altodx.x + m_limiti_sfondo_grigio.getlimiti().width / 2, m_casella_automa.getlimiti().top - 10));
+}

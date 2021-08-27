@@ -46,19 +46,22 @@ void Finestra::Update() {
       v_Isclosed = true;
     }
     if (evento.type == sf::Event::Resized) {
+      std::cout << " finestra resized" << '\n';
       sf::Vector2u dimensioni_nuove = v_mainfinestra.getSize();
-
+      std::cout << "nuove dimensioni " << dimensioni_nuove.x << " " << dimensioni_nuove.y << '\n';
       v_dimensioni = dimensioni_nuove;
 
+      vista_animazione.setSize(converti(dimensioni_nuove));  // le dimensioni si devono aggiornare per entrambe le viste ad ogni resize
+      vista_automa.setSize(converti(dimensioni_nuove));
       switch (v_vista) {
         case Vista::Animazione:
-          vista_animazione.setSize(converti(dimensioni_nuove));
+
           punto_alto_sx.x = vista_animazione.getCenter().x - dimensioni_nuove.x / 2;
           punto_alto_sx.y = vista_animazione.getCenter().y - dimensioni_nuove.y / 2;
           break;
 
         case Vista::Automa:
-          vista_automa.setSize(converti(dimensioni_nuove));
+
           punto_alto_sx.x = vista_automa.getCenter().x - dimensioni_nuove.x / 2;
           punto_alto_sx.y = vista_automa.getCenter().y - dimensioni_nuove.y / 2;
           break;
@@ -79,7 +82,7 @@ void Finestra::Update() {
       posizione_mouse = punto_alto_sx + (converti(v_mouse.getPosition(v_mainfinestra)));
 
       v_overlay->check_mouse_position(posizione_mouse);  // vedere se funziona
-      std::cout << posizione_mouse.x << " " << posizione_mouse.y << '\n';
+      /* std::cout << posizione_mouse.x << " " << posizione_mouse.y << '\n'; */
       v_overlay->check_color(sf::Color::Yellow);
 
       if (evento.type == sf::Event::MouseButtonPressed && evento.mouseButton.button == sf::Mouse::Left) {

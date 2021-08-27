@@ -8,161 +8,153 @@
 
 enum class Vista { Automa, Animazione };
 
-enum class MousePos { Checkbox1, Checkbox2, none };
+enum class MousePos { None, Checkbox1, Checkbox2  };
 
 class Bordi : public sf::Drawable {
  protected:
-  sf::RectangleShape rettangolo;
-  sf::FloatRect bordo_collisioni;
+  sf::RectangleShape m_rettangolo;
+  sf::FloatRect m_rettangolo_esterno;
 
  public:
   virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
   Bordi(sf::Vector2f dimensione, sf::Vector2f posizione);
   Bordi(sf::Vector2f dimensione);
   virtual void set_posizione(sf::Vector2f posizione);
+  void ridimensiona(sf::Vector2f dimensione) {
+    m_rettangolo.setSize(dimensione);
+    m_rettangolo_esterno.width = dimensione.x;
+    m_rettangolo_esterno.height = dimensione.y;
+  }
   void set_color(sf::Color Colore);
   sf::FloatRect getlimiti() const;
 };
 
-/* class Checkbox : public sf::Drawable{
-    sf::RectangleShape rettangolo;
-  sf::FloatRect bordo_collisioni;
 
-  virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-
- public:
-  Checkbox(sf::Vector2f dimensione, sf::Vector2f posizione);
-  Checkbox(sf::Vector2f dimensione);
-  void set_posizione(sf::Vector2f posizione);
-  void set_color(sf::Color Colore);
-  sf::FloatRect getlimiti() const;
-  void setinterncolor(sf::Color colore);
-};
-
- */
-
-class Checkbox : public Bordi {  //origine al centro
-  bool clicked = false;
+class Checkbox : public Bordi {  // origine al centro
+  bool m_clicked = false;
 
  public:
   void set_posizione(sf::Vector2f posizione) {
-    rettangolo.setPosition(posizione);
+    m_rettangolo.setPosition(posizione);
 
-    bordo_collisioni.left = posizione.x - bordo_collisioni.width / 2;
-    bordo_collisioni.top = posizione.y - bordo_collisioni.height / 2;  // aggiustato cambio coordinate
+    m_rettangolo_esterno.left = posizione.x - m_rettangolo_esterno.width / 2;
+    m_rettangolo_esterno.top = posizione.y - m_rettangolo_esterno.height / 2;  // aggiustato cambio coordinate
   }
-  bool return_status() { return clicked; }
-  void change_status(bool var) { clicked = var; }
+  bool return_status() { return m_clicked; }
+  void change_status(bool var) { m_clicked = var; }
   Checkbox(sf::Vector2f dimensione);
   void setinterncolor(sf::Color colore);
 };
 
-class Textbox : public Bordi {  //origine al centro //chiamare pprima scrivi e poi set posizione
-  sf::Font* font;
-  sf::Text testo;
+class Textbox : public Bordi {  // origine al centro //chiamare pprima scrivi e poi set posizione
+  sf::Font* m_font;
+  sf::Text m_testo;
+  float m_fattore_conversione; //dimensioni lettera testo lungo asse x rispetto ad asse y
 
  public:
-  Textbox(int dimensione_carattere, sf::Font* t_font) : Bordi(sf::Vector2f(dimensione_carattere,dimensione_carattere)) , font{t_font} {     //chiamare il costruttore di bordi
-    testo.setFillColor(sf::Color::White);
-    testo.setFont(*font);
-    testo.setCharacterSize(dimensione_carattere);
+  Textbox(int dimensione_carattere, sf::Font* t_font, sf::Color colore_testo)
+      : Bordi(sf::Vector2f(dimensione_carattere, dimensione_carattere)), m_font{t_font}, m_fattore_conversione{0.6} {  // chiamare il costruttore di bordi
+    m_testo.setFillColor(colore_testo);
+    m_testo.setFont(*m_font);
+    m_testo.setCharacterSize(dimensione_carattere);
 
-    rettangolo.setFillColor(sf::Color(211, 211, 211));
+    m_rettangolo.setFillColor(sf::Color(211, 211, 211));
+
+    m_rettangolo.setOutlineThickness(1);  // lo spessore più piccolo altrimenti non si vede
   }
-void set_posizione(sf::Vector2f posizione){
-    rettangolo.setPosition(posizione);
-    testo.setPosition(posizione);
-}
+  void set_posizione(sf::Vector2f posizione) {
+    m_rettangolo.setPosition(posizione);
+    m_testo.setPosition(posizione);
+  }
 
   void scrivi(std::string stringa) {
-    testo.setString(stringa);
-    sf::Vector2f dimensioni_testo(testo.getCharacterSize() * stringa.size(),testo.getCharacterSize()); //ci sono anche le funzioni getlocal e... ma sono imprecise
-    rettangolo.setSize(dimensioni_testo);
-    testo.setOrigin(dimensioni_testo.x/2, dimensioni_testo.y/2);
-    rettangolo.setOrigin(dimensioni_testo.x/2, dimensioni_testo.y/2);
+    m_testo.setString(stringa);
+    sf::Vector2f dimensioni_testo(m_testo.getCharacterSize() * stringa.size() * m_fattore_conversione ,  //fattore di conversione per dimensione x
+                                  m_testo.getCharacterSize());  // ci sono anche le funzioni getlocal e... ma sono imprecise
+    ridimensiona(dimensioni_testo);
+    m_testo.setOrigin(dimensioni_testo.x / 2, dimensioni_testo.y / 2);
+    m_rettangolo.setOrigin(dimensioni_testo.x / 2, dimensioni_testo.y / 2);
   }
   virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    target.draw(rettangolo);
-    target.draw(testo);
+    target.draw(m_rettangolo);
+    target.draw(m_testo);
   }
 };
 
+class Pulsante {};
 class GUI : public sf::Drawable {
-  sf::Font font;
+  sf::Font m_font;
 
-  sf::RectangleShape sfondo;
-  Bordi limite;
+  sf::RectangleShape m_sfondo_grigio;  //non uso nè bordi nè checkbox perchè non adatti
+  Bordi m_limiti_sfondo_grigio;
 
-  Textbox testo_animazione;
-  Textbox testo_automa;
+  Textbox m_testo_animazione;
+  Textbox m_testo_automa;
 
-  Checkbox casella_animazione;
-  Checkbox casella_automa;
+  Checkbox m_casella_animazione;
+  Checkbox m_casella_automa;
 
-  virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-
-  MousePos posizione;
+  MousePos m_posizione_mouse;
 
  public:
   GUI(sf::Vector2f dimensione);
+  virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
   void aggiorna_posizione(sf::Vector2f punto_in_altodx, sf::Vector2f dimensioni_finestra);
 
-  void check_mouse_position(sf::Vector2f posizione_mouse) {
-    if (casella_animazione.getlimiti().contains(posizione_mouse)) {
-      posizione = MousePos::Checkbox1;
+  void check_mouse_position(sf::Vector2f t_coordinate_mouse) {
+    if (m_casella_animazione.getlimiti().contains(t_coordinate_mouse)) {
+      m_posizione_mouse = MousePos::Checkbox1;
       std::cout << "sei sopra la casella animazione" << '\n';
-    } else if (casella_automa.getlimiti().contains(posizione_mouse)) {
-      posizione = MousePos::Checkbox2;
+    } else if (m_casella_automa.getlimiti().contains(t_coordinate_mouse)) {
+      m_posizione_mouse = MousePos::Checkbox2;
       std::cout << "sei sopra la casella automa" << '\n';
 
     } else {
-      posizione = MousePos::none;
-      std::cout << "false" << '\n';  // attenzione agli else!!!!!!!!!!!!!!!!!
+      m_posizione_mouse = MousePos::None;
+     /*  std::cout << "false" << '\n'; */  // attenzione agli else!!!!!!!!!!!!!!!!!
     }
   }
 
   void check_color(sf::Color colore) {
-    switch (posizione) {
+    switch (m_posizione_mouse) {
       case MousePos::Checkbox1:
-        if (!casella_animazione.return_status()) {
-          casella_animazione.setinterncolor(colore);
-          std::cout << "colore animazione cambiato" << '\n';
+        if (!m_casella_animazione.return_status()) {
+          m_casella_animazione.setinterncolor(colore);
         }
         break;
 
       case MousePos::Checkbox2:
-        if (!casella_automa.return_status()) {
-          casella_automa.setinterncolor(colore);
-          std::cout << "colore automa cambiato" << '\n';
+        if (!m_casella_automa.return_status()) {
+          m_casella_automa.setinterncolor(colore);
         }
         break;
-      case MousePos::none:
-        if (!casella_automa.return_status()) {
-          casella_automa.setinterncolor(sf::Color(128, 128, 128));
+      case MousePos::None:
+        if (!m_casella_automa.return_status()) {
+          m_casella_automa.setinterncolor(sf::Color(128, 128, 128));
         }
-        if (!casella_animazione.return_status()) {
-          casella_animazione.setinterncolor(sf::Color(128, 128, 128));
+        if (!m_casella_animazione.return_status()) {
+          m_casella_animazione.setinterncolor(sf::Color(128, 128, 128));
         }
         break;
     }
   }
 
   MousePos mouse_clicked() {
-    if (posizione == MousePos::Checkbox1) {
-      casella_animazione.setinterncolor(sf::Color::Red);
-      casella_animazione.change_status(true);
-      casella_automa.setinterncolor(sf::Color(128, 128, 128));
-      casella_automa.change_status(false);
-      return posizione;
+    if (m_posizione_mouse == MousePos::Checkbox1) {
+      m_casella_animazione.setinterncolor(sf::Color::Red);
+      m_casella_animazione.change_status(true);
+      m_casella_automa.setinterncolor(sf::Color(128, 128, 128));
+      m_casella_automa.change_status(false);
+      return m_posizione_mouse;
     }
-    if (posizione == MousePos::Checkbox2) {
-      casella_animazione.setinterncolor(sf::Color(128, 128, 128));
-      casella_animazione.change_status(false);
-      casella_automa.setinterncolor(sf::Color::Red);
-      casella_automa.change_status(true);
-      return posizione;
+    if (m_posizione_mouse == MousePos::Checkbox2) {
+      m_casella_animazione.setinterncolor(sf::Color(128, 128, 128));
+      m_casella_animazione.change_status(false);
+      m_casella_automa.setinterncolor(sf::Color::Red);
+      m_casella_automa.change_status(true);
+      return m_posizione_mouse;
     } else {
-      return posizione;
+      return m_posizione_mouse;
     }
   }
 
