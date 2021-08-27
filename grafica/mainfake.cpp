@@ -7,7 +7,7 @@ int main() {
   
   Mondo map;
 
-  while (!map.prendi_finestra()->Isclosed()) {
+  while (!map.Prendi_finestra()->Isclosed()) {
     // handle events
     
     map.Gestisci_input();

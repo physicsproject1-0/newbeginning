@@ -233,11 +233,11 @@ class Animazione : public sf::Drawable {
   void Aggiorna_Generale() {
     Check_borders();
 
-    // Conteggio_contatti();
+    Conteggio_contatti();
 
     Collisione();
 
-    // Morte_persona();
+    Morte_persona();
 
     Aggiorna_lista();
 
