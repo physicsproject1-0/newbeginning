@@ -595,9 +595,18 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
     }
     return true;
   }
+  
+  /* void censimento (Cellula& cell) {
+    switch (Cellula::S)
+
+   case (Stato::VULNERABILE)
+  }
+  */
+
 
   void Aggiorna_counter(int i, int j) {
     Cellula& cell = m_grid[i][j];
+    //censimento(cell);
 
     for (int a = 0; a <= 2; a++) {
       if (Esiste(i - 1, j - 1 + a)) {
