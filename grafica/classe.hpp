@@ -30,7 +30,7 @@ struct Persona {
   sf::Clock m_cambiom_velocita;
   Stato m_P;
   bool checked = false;
-  int m_m_numero_contatti = 0;
+  int m_numero_contatti = 0;
 };
 
 class Animazione : public sf::Drawable {
@@ -69,10 +69,10 @@ class Animazione : public sf::Drawable {
   void Conteggio_contatti() {
     for (int i = 0; i < m_popolazione.size(); i++) {
       Persona& PallinaA = m_popolazione[i];
-      for (int j = 0; j < m_popolazione.size(); j++) {
+      for (int j = 0; j < m_popolazione.size(); j++) {        //provare con un range di raggio
         Persona& PallinaB = m_popolazione[j];
-        if ((i != j) && (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.5 * PallinaB.m_raggio)) {
-          PallinaA.m_m_numero_contatti++;
+        if ((i != j) && (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.5 * PallinaB.m_raggio) && (PallinaA.m_P == Stato::INFETTO)) {
+          PallinaA.m_numero_contatti++;
         } else {
           continue;
         }
@@ -83,7 +83,7 @@ class Animazione : public sf::Drawable {
   void Morte_persona() {
     for (int i = 0; i < m_popolazione.size(); i++) {
       Persona& PallinaA = m_popolazione[i];
-      if ((PallinaA.m_P == Stato::INFETTO) && (PallinaA.m_m_numero_contatti == 20)) {
+      if ((PallinaA.m_P == Stato::INFETTO) && (PallinaA.m_numero_contatti == 150)) {
         PallinaA.m_P = Stato::RIMOSSO;
         SetwhiteTextures();
       } else {
@@ -124,7 +124,7 @@ class Animazione : public sf::Drawable {
   void SetwhiteTextures() {
     for (int i = 0; i < m_popolazione.size(); i++) {
       Persona& PallinaA = m_popolazione[i];
-      if (PallinaA.m_P == Stato::RIMOSSO) {
+      if (PallinaA.m_P == Stato::RIMOSSO) {     //Aggiungere stato guarito/morto
         srand(time(NULL));
         int a = rand() % 100 + 1;
         if (a < 40) {
@@ -224,9 +224,9 @@ class Animazione : public sf::Drawable {
 
   void Check_external_bounds(Persona& test);
 
-  // void change_Stato();  // Fa cambiare la texture nel momento in cui le due particelle si scontrano
+  void change_Stato();  // Fa cambiare la texture nel momento in cui le due particelle si scontrano
 
-  // void change_m_vel();
+  void change_m_vel();
 
   int Check_occur(Persona const& persona, int m_raggio);
 
@@ -421,37 +421,26 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
 
   void Aggiorna_counter(int i, int j) {
     Cellula& cell = m_grid[i][j];
- 
+
     for (int a = 0; a <= 2; a++) {
       if (Esiste(i - 1, j - 1 + a)) {
-
         if (m_grid[i - 1][j - 1 + a].S == Stato::INFETTO) {
           cell.m_counter++;
         }
       }
       if (Esiste(i + 1, j - 1 + a)) {
-
-
         if (m_grid[i + 1][j - 1 + a].S == Stato::INFETTO) {
-
           cell.m_counter++;
         }
       }
     }
     if (Esiste(i, j - 1)) {
-
-
       if (m_grid[i][j - 1].S == Stato::INFETTO) {
-
-
         cell.m_counter++;
       }
     }
     if (Esiste(i, j + 1)) {
-
-
       if (m_grid[i][j + 1].S == Stato::INFETTO) {
-
         cell.m_counter++;
       }
     }
@@ -463,9 +452,8 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
     for (int i = 0; i < m_numero_lato; i++) {
       for (int j = 0; j < m_numero_lato; j++) {
         Cellula& cell = m_grid[i][j];
- 
-        if (cell.S == Stato::VULNERABILE) {
 
+        if (cell.S == Stato::VULNERABILE) {
           int esponente = cell.m_counter;
           // cell.m_numero.setString(std::to_string(esponente));
           if (esponente == 0) {
@@ -484,7 +472,6 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
         }
 
         else if (cell.S == Stato::INFETTO) {
-
           cell.m_infection_days++;
           if ((rand() % 100) / 100.f < m_probabilita_guarigione) {
             cell.S = Stato::RIMOSSO;
