@@ -65,33 +65,33 @@ class Animazione : public sf::Drawable {
       }
     }
   }
-  /*
-    void Conteggio_contatti() {
-      for (int i = 0; i < m_popolazione.size(); i++) {
-        Persona& PallinaA = m_popolazione[i];
-        for (int j = 0; j < m_popolazione.size(); j++) {
-          Persona& PallinaB = m_popolazione[j];
-          if ((i != j) && (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.5 * PallinaB.m_raggio)) {
-            PallinaA.m_m_numero_contatti++;
-          } else {
-            continue;
-          }
-        }
-      }
-    }
 
-    void Morte_persona() {
-      for (int i = 0; i < m_popolazione.size(); i++) {
-        Persona& PallinaA = m_popolazione[i];
-        if ((PallinaA.m_P == Stato::INFETTO) && (PallinaA.m_m_numero_contatti >= 80)) {
-          PallinaA.m_P = Stato::RIMOSSO;
-          SetwhiteTextures();
+  void Conteggio_contatti() {
+    for (int i = 0; i < m_popolazione.size(); i++) {
+      Persona& PallinaA = m_popolazione[i];
+      for (int j = 0; j < m_popolazione.size(); j++) {
+        Persona& PallinaB = m_popolazione[j];
+        if ((i != j) && (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.5 * PallinaB.m_raggio)) {
+          PallinaA.m_m_numero_contatti++;
         } else {
           continue;
         }
       }
     }
-  */
+  }
+
+  void Morte_persona() {
+    for (int i = 0; i < m_popolazione.size(); i++) {
+      Persona& PallinaA = m_popolazione[i];
+      if ((PallinaA.m_P == Stato::INFETTO) && (PallinaA.m_m_numero_contatti == 20)) {
+        PallinaA.m_P = Stato::RIMOSSO;
+        SetwhiteTextures();
+      } else {
+        continue;
+      }
+    }
+  }
+
   // Funzione con cui carico la Texture verde
   void SetgreenTextures() {
     for (int i = 0; i < m_popolazione.size(); i++) {
