@@ -428,6 +428,20 @@ class GUI : public sf::Drawable {
   }
 };
 
+// QUI INIZIA LA PARTE SIMULAZIONE   ################################################
+
+// QUI INIZIA LA PARTE SIMULAZIONE   ################################################
+
+// QUI INIZIA LA PARTE SIMULAZIONE   ################################################
+
+// QUI INIZIA LA PARTE SIMULAZIONE   ################################################
+
+// QUI INIZIA LA PARTE SIMULAZIONE   ################################################
+
+// QUI INIZIA LA PARTE SIMULAZIONE   ################################################
+
+// QUI INIZIA LA PARTE SIMULAZIONE   ################################################
+
 enum class Stato { VULNERABILE, INFETTO, RIMOSSO, MORTO, GUARITO };
 
 struct Persona {
@@ -461,10 +475,17 @@ class Animazione : public sf::Drawable {
         for (int j = 0; j < m_popolazione.size(); j++) {
           Persona& PallinaB = m_popolazione[j];
 
+          // Contagiosita' del 40%
           if ((i != j) && (PallinaB.m_P == Stato::INFETTO)) {
             if (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.5 * PallinaB.m_raggio) {
-              PallinaA.m_P = Stato::INFETTO;
-              SetredTextures();
+              srand(time(NULL));
+              int a = rand() % 100 + 1;
+              if (a < 40) {
+                PallinaA.m_P = Stato::INFETTO;
+                SetredTextures();
+              } else {
+                continue;
+              }
             }
           } else {
             continue;
@@ -496,7 +517,7 @@ class Animazione : public sf::Drawable {
   void Morte_persona() {
     for (int i = 0; i < m_popolazione.size(); i++) {
       Persona& PallinaA = m_popolazione[i];
-      if ((PallinaA.m_P == Stato::INFETTO) && (PallinaA.m_numero_contatti == 10)) {
+      if ((PallinaA.m_P == Stato::INFETTO) && (PallinaA.m_numero_contatti == 35)) {
         PallinaA.m_P = Stato::RIMOSSO;
         SetwhiteTextures();
       } else {
@@ -540,7 +561,7 @@ class Animazione : public sf::Drawable {
       if (PallinaA.m_P == Stato::RIMOSSO) {  // Aggiungere stato guarito/morto
         srand(time(NULL));
         int a = rand() % 100 + 1;
-        if (a < 40) {
+        if (a < 30) {
           PallinaA.m_P = Stato::MORTO;
           sf::Vertex* iter = &m_struttura[i * 3];
           iter[0].texCoords = sf::Vector2f(520.f, 20.f);  // coordinate pupini grigi
@@ -850,9 +871,18 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
     }
     return true;
   }
+  
+  /* void censimento (Cellula& cell) {
+    switch (Cellula::S)
+
+   case (Stato::VULNERABILE)
+  }
+  */
+
 
   void Aggiorna_counter(int i, int j) {
     Cellula& cell = m_grid[i][j];
+    //censimento(cell);
 
     for (int a = 0; a <= 2; a++) {
       if (Esiste(i - 1, j - 1 + a)) {
