@@ -55,15 +55,7 @@ Mondo::Mondo()
 }
 
  */
-int Animazione::Check_occur(Persona const& persona, int raggio) {  // decidere un raggio accettabile
-  int occur = 0;
-  for (int i = 0; i < m_popolazione.size(); i++) {
-    if (Modulo(persona.m_centro - m_popolazione[i].m_centro) <= raggio) {
-      occur++;
-    }
-  }
-  return occur;
-}  // in caso creare delle corone circolari con varie numerazioni
+  // in caso creare delle corone circolari con varie numerazioni
 // introdurre dipendenza dal tempo
 
 /* void Animazione::check_collisions() {  // Non so cosa passare a questa funzione e se cosi' va bene, l 'idea c e'
@@ -115,6 +107,5 @@ void Mondo::change_vel() {
 }
 */
 
-double Animazione::Modulo(sf::Vector2f const& vettore) { return sqrt(pow(vettore.x, 2) + pow(vettore.y, 2)); }
 
 void Mondo::Azzera() { m_trascorso = m_timer.restart(); }

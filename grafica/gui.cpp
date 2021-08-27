@@ -101,3 +101,17 @@ void GUI::aggiorna_posizione(sf::Vector2f punto_in_altodx, sf::Vector2f dimensio
                                                 m_casella_animazione.getlimiti().top - 10));  // riferiti alle checkbox
   m_testo_automa.set_posizione(sf::Vector2f(punto_in_altodx.x + m_limiti_sfondo_grigio.getlimiti().width / 2, m_casella_automa.getlimiti().top - 10));
 }
+
+
+
+double Animazione::Modulo(sf::Vector2f const& vettore) { return sqrt(pow(vettore.x, 2) + pow(vettore.y, 2)); }
+
+int Animazione::Check_occur(Persona const& persona, int raggio) {  // decidere un raggio accettabile
+  int occur = 0;
+  for (int i = 0; i < m_popolazione.size(); i++) {
+    if (Modulo(persona.m_centro - m_popolazione[i].m_centro) <= raggio) {
+      occur++;
+    }
+  }
+  return occur;
+}
