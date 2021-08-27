@@ -19,7 +19,7 @@
 
 enum class Vista { Automa, Animazione };
 
-enum class MousePos { None, Checkbox1, Checkbox2  };
+enum class MousePos { None, Checkbox1, Checkbox2 };
 
 class Bordi : public sf::Drawable {
  protected:
@@ -40,7 +40,6 @@ class Bordi : public sf::Drawable {
   sf::FloatRect getlimiti() const;
 };
 
-
 class Checkbox : public Bordi {  // origine al centro
   bool m_clicked = false;
 
@@ -60,11 +59,12 @@ class Checkbox : public Bordi {  // origine al centro
 class Textbox : public Bordi {  // origine al centro //chiamare pprima scrivi e poi set posizione
   sf::Font* m_font;
   sf::Text m_testo;
-  float m_fattore_conversione; //dimensioni lettera testo lungo asse x rispetto ad asse y
+  float m_fattore_conversione;  // dimensioni lettera testo lungo asse x rispetto ad asse y
 
  public:
   Textbox(int dimensione_carattere, sf::Font* t_font, sf::Color colore_testo)
-      : Bordi(sf::Vector2f(dimensione_carattere, dimensione_carattere)), m_font{t_font}, m_fattore_conversione{0.6} {  // chiamare il costruttore di bordi
+      : Bordi(sf::Vector2f(dimensione_carattere, dimensione_carattere)), m_font{t_font}, m_fattore_conversione{0.6} {  // chiamare il costruttore di
+                                                                                                                       // bordi
     m_testo.setFillColor(colore_testo);
     m_testo.setFont(*m_font);
     m_testo.setCharacterSize(dimensione_carattere);
@@ -80,7 +80,7 @@ class Textbox : public Bordi {  // origine al centro //chiamare pprima scrivi e 
 
   void scrivi(std::string stringa) {
     m_testo.setString(stringa);
-    sf::Vector2f dimensioni_testo(m_testo.getCharacterSize() * stringa.size() * m_fattore_conversione ,  //fattore di conversione per dimensione x
+    sf::Vector2f dimensioni_testo(m_testo.getCharacterSize() * stringa.size() * m_fattore_conversione,  // fattore di conversione per dimensione x
                                   m_testo.getCharacterSize());  // ci sono anche le funzioni getlocal e... ma sono imprecise
     ridimensiona(dimensioni_testo);
     m_testo.setOrigin(dimensioni_testo.x / 2, dimensioni_testo.y / 2);
@@ -96,7 +96,7 @@ class Pulsante {};
 class GUI : public sf::Drawable {
   sf::Font m_font;
 
-  sf::RectangleShape m_sfondo_grigio;  //non uso nè bordi nè checkbox perchè non adatti
+  sf::RectangleShape m_sfondo_grigio;  // non uso nè bordi nè checkbox perchè non adatti
   Bordi m_limiti_sfondo_grigio;
 
   Textbox m_testo_animazione;
@@ -122,7 +122,7 @@ class GUI : public sf::Drawable {
 
     } else {
       m_posizione_mouse = MousePos::None;
-     /*  std::cout << "false" << '\n'; */  // attenzione agli else!!!!!!!!!!!!!!!!!
+      /*  std::cout << "false" << '\n'; */  // attenzione agli else!!!!!!!!!!!!!!!!!
     }
   }
 
@@ -172,6 +172,20 @@ class GUI : public sf::Drawable {
   void is_out() { check_color(sf::Color(128, 128, 128)); }
 };
 
+// QUI INIZIA LA PARTE SIMULAZIONE   ################################################
+
+// QUI INIZIA LA PARTE SIMULAZIONE   ################################################
+
+// QUI INIZIA LA PARTE SIMULAZIONE   ################################################
+
+// QUI INIZIA LA PARTE SIMULAZIONE   ################################################
+
+// QUI INIZIA LA PARTE SIMULAZIONE   ################################################
+
+// QUI INIZIA LA PARTE SIMULAZIONE   ################################################
+
+// QUI INIZIA LA PARTE SIMULAZIONE   ################################################
+
 enum class Stato { VULNERABILE, INFETTO, RIMOSSO, MORTO, GUARITO };
 
 struct Persona {
@@ -202,10 +216,17 @@ class Animazione : public sf::Drawable {
         for (int j = 0; j < m_popolazione.size(); j++) {
           Persona& PallinaB = m_popolazione[j];
 
+          // Contagiosita' del 40%
           if ((i != j) && (PallinaB.m_P == Stato::INFETTO)) {
             if (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.5 * PallinaB.m_raggio) {
-              PallinaA.m_P = Stato::INFETTO;
-              SetredTextures();
+              srand(time(NULL));
+              int a = rand() % 100 + 1;
+              if (a < 40) {
+                PallinaA.m_P = Stato::INFETTO;
+                SetredTextures();
+              } else {
+                continue;
+              }
             }
           } else {
             continue;
@@ -220,7 +241,7 @@ class Animazione : public sf::Drawable {
   void Conteggio_contatti() {
     for (int i = 0; i < m_popolazione.size(); i++) {
       Persona& PallinaA = m_popolazione[i];
-      for (int j = 0; j < m_popolazione.size(); j++) {  
+      for (int j = 0; j < m_popolazione.size(); j++) {
         Persona& PallinaB = m_popolazione[j];
         if ((i != j) && (PallinaA.m_P == Stato::INFETTO)) {
           if ((Modulo(PallinaA.m_centro - PallinaB.m_centro) >= 1.49f * PallinaB.m_raggio) &&
@@ -237,7 +258,7 @@ class Animazione : public sf::Drawable {
   void Morte_persona() {
     for (int i = 0; i < m_popolazione.size(); i++) {
       Persona& PallinaA = m_popolazione[i];
-      if ((PallinaA.m_P == Stato::INFETTO) && (PallinaA.m_numero_contatti == 10)) {
+      if ((PallinaA.m_P == Stato::INFETTO) && (PallinaA.m_numero_contatti == 35)) {
         PallinaA.m_P = Stato::RIMOSSO;
         SetwhiteTextures();
       } else {
@@ -281,7 +302,7 @@ class Animazione : public sf::Drawable {
       if (PallinaA.m_P == Stato::RIMOSSO) {  // Aggiungere stato guarito/morto
         srand(time(NULL));
         int a = rand() % 100 + 1;
-        if (a < 40) {
+        if (a < 30) {
           PallinaA.m_P = Stato::MORTO;
           sf::Vertex* iter = &m_struttura[i * 3];
           iter[0].texCoords = sf::Vector2f(520.f, 20.f);  // coordinate pupini grigi
