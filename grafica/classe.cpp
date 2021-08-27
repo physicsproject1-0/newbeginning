@@ -4,7 +4,7 @@
 
 
 Mondo::Mondo()
-    :overlay(sf::Vector2f(100, 500)), a_window("test", sf::Vector2u(800, 600), &overlay), dinamica(20), statica(sf::Vector2f(1800, 1800), sf::Vector2f(500, 500), 10, 0.3, 0.5, 3, 0){
+    :overlay(sf::Vector2f(70, 500)) , dinamica(20), statica(sf::Vector2f(1800, 1800), sf::Vector2f(500, 500), 3, 0.3, 0.5, 0, 0), a_window("test", sf::Vector2u(800, 600), &overlay, dinamica.get_bordi(), statica.get_bordi()){
   /*   if (!ominoprova.loadFromFile("uomoverde.png")) {
       throw std::runtime_error{"texture loading failed"};
     }

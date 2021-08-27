@@ -62,36 +62,36 @@ class Animazione : public sf::Drawable {
       }
     }
   }
- /*  void aggiorna_texture() {
-    for (int i = 0; i < popolazione.size(); i++) {
-      if (popolazione[i].P == Stato::INFETTO) {
-        ominoprova.loadFromFile("uomorosso.png");
-      } else if (popolazione[i].P == Stato::RIMOSSO) {
-        ominoprova.loadFromFile("uomogrigio.png");
-      } else {
-        break;
-      }
- */
-      /* switch (P) {
-         case (Stato::INFETTO):  // Carichiamo la red texture...
+  /*  void aggiorna_texture() {
+     for (int i = 0; i < popolazione.size(); i++) {
+       if (popolazione[i].P == Stato::INFETTO) {
+         ominoprova.loadFromFile("uomorosso.png");
+       } else if (popolazione[i].P == Stato::RIMOSSO) {
+         ominoprova.loadFromFile("uomogrigio.png");
+       } else {
+         break;
+       }
+  */
+  /* switch (P) {
+     case (Stato::INFETTO):  // Carichiamo la red texture...
 
-           ominoprova.loadFromFile("uomorosso.png");
+       ominoprova.loadFromFile("uomorosso.png");
 
-         case (Stato::RIMOSSO):  // carichiamo la white texture
-           iter[0].color = sf::Color::White;
-           iter[1].color = sf::Color::White;
-           iter[2].color = sf::Color::White;
-           break;
+     case (Stato::RIMOSSO):  // carichiamo la white texture
+       iter[0].color = sf::Color::White;
+       iter[1].color = sf::Color::White;
+       iter[2].color = sf::Color::White;
+       break;
 
-         case (Stato::VULNERABILE):  // carichiamo la green texture
-           iter[0].color = sf::Color::Green;
-           iter[1].color = sf::Color::Green;
-           iter[2].color = sf::Color::Green;
-           break;
-       } */
- /*    }
-  }
- */
+     case (Stato::VULNERABILE):  // carichiamo la green texture
+       iter[0].color = sf::Color::Green;
+       iter[1].color = sf::Color::Green;
+       iter[2].color = sf::Color::Green;
+       break;
+   } */
+  /*    }
+   }
+  */
   // Faccio morire/guarire la persona dopo 8 secondi che e' infetta
   void morte_persona() {
     for (int i = 0; i < popolazione.size(); i++) {
@@ -142,8 +142,8 @@ class Animazione : public sf::Drawable {
       prova.P = Stato::VULNERABILE;
       popolazione[i] = prova;
     }
-   /*  popolazione[n - 1].P = Stato::INFETTO;   */// Se metto popolazione[0] vengono tutti rossi
-                                            // Se metto tipo popolazione[7] vengono tutti verdi
+    /*  popolazione[n - 1].P = Stato::INFETTO;   */  // Se metto popolazione[0] vengono tutti rossi
+                                                     // Se metto tipo popolazione[7] vengono tutti verdi
     struttura.resize(popolazione.size() * 3);
 
     struttura.setPrimitiveType(sf::Triangles);
@@ -151,6 +151,8 @@ class Animazione : public sf::Drawable {
     settexturecoords();
     /* aggiorna_texture(); */
   }
+
+  Bordi get_bordi() { return limiti; }
 
   void aggiorna_griglia() {
     for (int i = 0; i < popolazione.size(); i++) {
@@ -287,8 +289,9 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
   // mettere errori per dimensioni minori di 0?
   std::vector<std::vector<Cellula>> grid;
 
-  sf::Vector2f dimensioni;
   sf::Vector2f posizione;
+
+  sf::Vector2f dimensioni;
 
   sf::Clock orologio;
 
@@ -298,6 +301,8 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
 
   float probabilita_guarigione;
 
+  Bordi limiti;
+
   int giorni = 0;
 
   virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -306,6 +311,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
         target.draw(grid[i][j]);
       }
     }
+    target.draw(limiti);
   }
 
  public:
@@ -315,9 +321,9 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
         dimensioni{t_dimensione},
         numero_lato{t_numero},
         probabilita_contagio{t_probabilita_contagio},
-        probabilita_guarigione{t_probabilita_guarigione} {
+        probabilita_guarigione{t_probabilita_guarigione},
+        limiti{t_dimensione, t_posizione} {
     assert(probabilita_contagio <= 1 && probabilita_contagio >= 0);  // mettere except
-
     /* if (!font.loadFromFile("Arial.ttf")) {
       throw std::runtime_error{"texture loading failed"};
     } */
@@ -347,6 +353,8 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
     }
     genera(infetti, rimossi);
   }
+
+  Bordi get_bordi() { return limiti; }
 
   void genera(int infette, int rimosse) {
     assert(infette + rimosse < numero_lato * numero_lato);
@@ -386,47 +394,47 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
     /* if (i == 0 || j == 0 || i == (numero_lato - 1) ||) {
     }
  */
-    std::cout << "controllo la cellula in posizione"
-              << " riga " << i << " colonna " << j << '\n';
+    /* std::cout << "controllo la cellula in posizione"
+              << " riga " << i << " colonna " << j << '\n'; */
     for (int a = 0; a <= 2; a++) {
       if (esiste(i - 1, j - 1 + a)) {
-        std::cout << "esiste "
+        /* std::cout << "esiste "
                   << "in posizione"
-                  << " riga " << i - 1 << " colonna " << j - 1 + a << '\n';
+                  << " riga " << i - 1 << " colonna " << j - 1 + a << '\n'; */
         if (grid[i - 1][j - 1 + a].S == Stato::INFETTO) {
-          std::cout << "c'è infetto" << '\n';
+          /* std::cout << "c'è infetto" << '\n'; */
           cell.counter++;
         }
       }
       if (esiste(i + 1, j - 1 + a)) {
-        std::cout << "esiste "
+        /* std::cout << "esiste "
                   << "in posizione"
-                  << " riga " << i + 1 << " colonna " << j - 1 + a << '\n';
+                  << " riga " << i + 1 << " colonna " << j - 1 + a << '\n'; */
 
         if (grid[i + 1][j - 1 + a].S == Stato::INFETTO) {
-          std::cout << "c'è infetto" << '\n';
+          /* std::cout << "c'è infetto" << '\n'; */
           cell.counter++;
         }
       }
     }
     if (esiste(i, j - 1)) {
-      std::cout << "esiste "
+      /* std::cout << "esiste "
                 << "in posizione"
-                << " riga " << i << " colonna " << j - 1 << '\n';
+                << " riga " << i << " colonna " << j - 1 << '\n'; */
 
       if (grid[i][j - 1].S == Stato::INFETTO) {
-        std::cout << "c'è infetto" << '\n';
+        /* std::cout << "c'è infetto" << '\n'; */
 
         cell.counter++;
       }
     }
     if (esiste(i, j + 1)) {
-      std::cout << "esiste "
+      /* std::cout << "esiste "
                 << "in posizione"
-                << " riga " << i << " colonna " << j + 1 << '\n';
+                << " riga " << i << " colonna " << j + 1 << '\n'; */
 
       if (grid[i][j + 1].S == Stato::INFETTO) {
-        std::cout << "c'è infetto" << '\n';
+        /*  std::cout << "c'è infetto" << '\n'; */
         cell.counter++;
       }
     }
@@ -437,30 +445,30 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
     for (int i = 0; i < numero_lato; i++) {
       for (int j = 0; j < numero_lato; j++) {
         Cellula& cell = grid[i][j];
-        std::cout << "riga " << i << " colonna " << j << '\n';
+        /* std::cout << "riga " << i << " colonna " << j << '\n'; */
         if (cell.S == Stato::VULNERABILE) {
-          std::cout << "sono vulnerabile" << '\n';
+          /*  std::cout << "sono vulnerabile" << '\n'; */
           int esponente = cell.counter;
           // cell.numero.setString(std::to_string(esponente));
           if (esponente == 0) {
             continue;
           } else {
-            float prob_sano = pow(1 - probabilita_contagio, esponente);  // beta o gamma?
-            std::cout << "prob sano" << prob_sano << '\n';
-            float estrazione = (rand() % 101) / 100.f;  // IL .F è FONDAMENTALE
-            std::cout << "estrazione " << estrazione << '\n';
+            float prob_sano = pow(1 - probabilita_contagio, esponente);  // beta o gamma? /*  std::cout << "prob sano" << prob_sano << '\n'; */
+
+            float estrazione = (rand() % 101) / 100.f;  // IL .F è FONDAMENTALE /*   std::cout << "estrazione " << estrazione << '\n'; */
+
             if (estrazione > prob_sano) {
               // aggiungere i seed randomici
 
               cell.S = Stato::INFETTO;  // PORCO DIO AVEVO MESSO DUE UGUALI
-              std::cout << "ora sono infetto" << '\n';
+              /* std::cout << "ora sono infetto" << '\n'; */
               cell.aggiorna_colore();
             }
           }
         }
 
         else if (cell.S == Stato::INFETTO) {
-          std::cout << "sono arrivato qua" << '\n';
+          /* std::cout << "sono arrivato qua" << '\n'; */
           cell.infection_days++;
           if ((rand() % 100) / 100.f < probabilita_guarigione) {
             cell.S = Stato::RIMOSSO;
@@ -492,8 +500,6 @@ class Mondo /* : public sf::Drawable  */ {
   /* sf::VertexArray Griglia; */
   GUI overlay;
 
-  Finestra a_window;
-
   Animazione dinamica;  // fare altra classe che contiene sia griglia sia bordi, gestire tutto lì
 
   Automa statica;
@@ -502,6 +508,7 @@ class Mondo /* : public sf::Drawable  */ {
   sf::Clock timer;
   sf::Time trascorso;
 
+  Finestra a_window;
   /* virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.texture = &ominoprova;
     // capire che madonna succede qui dentro!!!
