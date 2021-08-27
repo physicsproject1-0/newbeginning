@@ -182,6 +182,8 @@ class Animazione : public sf::Drawable {
     SetredTextures();
   }
 
+  Bordi get_bordi() { return m_limiti; }
+
   void Aggiorna_griglia() {
     for (int i = 0; i < m_popolazione.size(); i++) {
       sf::Vertex* iter = &m_struttura[i * 3];
@@ -317,8 +319,9 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
   // mettere errori per m_dimensioni minori di 0?
   std::vector<std::vector<Cellula>> m_grid;
 
-  sf::Vector2f m_dimensioni;
   sf::Vector2f m_posizione;
+
+  sf::Vector2f m_dimensioni;
 
   sf::Clock m_orologio;
 
@@ -328,6 +331,8 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
 
   float m_probabilita_guarigione;
 
+  Bordi limiti;
+
   int m_giorni = 0;
 
   virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -336,18 +341,19 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
         target.draw(m_grid[i][j]);
       }
     }
+    target.draw(limiti);
   }
 
  public:
-  Automa(sf::Vector2f t_m_posizione, sf::Vector2f t_dimensione, int t_m_numero, float t_m_probabilita_contagio, float t_m_probabilita_guarigione,
-         int infetti, int rimossi)
-      : m_posizione{t_m_posizione},
+  Automa(sf::Vector2f t_posizione, sf::Vector2f t_dimensione, int t_numero, float t_probabilita_contagio, float t_probabilita_guarigione, int infetti,
+         int rimossi)
+      : m_posizione{t_posizione},
         m_dimensioni{t_dimensione},
-        m_numero_lato{t_m_numero},
-        m_probabilita_contagio{t_m_probabilita_contagio},
-        m_probabilita_guarigione{t_m_probabilita_guarigione} {
+        m_numero_lato{t_numero},
+        m_probabilita_contagio{t_probabilita_contagio},
+        m_probabilita_guarigione{t_probabilita_guarigione},
+        limiti{t_dimensione, t_posizione} {
     assert(m_probabilita_contagio <= 1 && m_probabilita_contagio >= 0);  // mettere except
-
     /* if (!font.loadFromFile("Arial.ttf")) {
       throw std::runtime_error{"texture loading failed"};
     } */
@@ -377,6 +383,8 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
     }
     Genera(infetti, rimossi);
   }
+
+  Bordi get_bordi() { return limiti; }
 
   void Genera(int infette, int rimosse) {
     assert(infette + rimosse < m_numero_lato * m_numero_lato);
@@ -413,50 +421,37 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
 
   void Aggiorna_counter(int i, int j) {
     Cellula& cell = m_grid[i][j];
-    /* if (i == 0 || j == 0 || i == (m_numero_lato - 1) ||) {
-    }
- */
-    std::cout << "controllo la cellula in m_posizione"
-              << " riga " << i << " colonna " << j << '\n';
+ 
     for (int a = 0; a <= 2; a++) {
       if (Esiste(i - 1, j - 1 + a)) {
-        std::cout << "Esiste "
-                  << "in m_posizione"
-                  << " riga " << i - 1 << " colonna " << j - 1 + a << '\n';
+
         if (m_grid[i - 1][j - 1 + a].S == Stato::INFETTO) {
-          std::cout << "c'è infetto" << '\n';
           cell.m_counter++;
         }
       }
       if (Esiste(i + 1, j - 1 + a)) {
-        std::cout << "Esiste "
-                  << "in m_posizione"
-                  << " riga " << i + 1 << " colonna " << j - 1 + a << '\n';
+
 
         if (m_grid[i + 1][j - 1 + a].S == Stato::INFETTO) {
-          std::cout << "c'è infetto" << '\n';
+
           cell.m_counter++;
         }
       }
     }
     if (Esiste(i, j - 1)) {
-      std::cout << "Esiste "
-                << "in m_posizione"
-                << " riga " << i << " colonna " << j - 1 << '\n';
+
 
       if (m_grid[i][j - 1].S == Stato::INFETTO) {
-        std::cout << "c'è infetto" << '\n';
+
 
         cell.m_counter++;
       }
     }
     if (Esiste(i, j + 1)) {
-      std::cout << "Esiste "
-                << "in m_posizione"
-                << " riga " << i << " colonna " << j + 1 << '\n';
+
 
       if (m_grid[i][j + 1].S == Stato::INFETTO) {
-        std::cout << "c'è infetto" << '\n';
+
         cell.m_counter++;
       }
     }
@@ -468,28 +463,28 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
     for (int i = 0; i < m_numero_lato; i++) {
       for (int j = 0; j < m_numero_lato; j++) {
         Cellula& cell = m_grid[i][j];
-        std::cout << "riga " << i << " colonna " << j << '\n';
+ 
         if (cell.S == Stato::VULNERABILE) {
-          std::cout << "sono vulnerabile" << '\n';
+
           int esponente = cell.m_counter;
           // cell.m_numero.setString(std::to_string(esponente));
           if (esponente == 0) {
             continue;
           } else {
             float prob_sano = pow(1 - m_probabilita_contagio, esponente);  // beta o gamma?
-            std::cout << "prob sano" << prob_sano << '\n';
+
             float estrazione = (rand() % 101) / 100.f;  // IL .F è FONDAMENTALE
-            std::cout << "estrazione " << estrazione << '\n';
+
             if (estrazione > prob_sano) {
               cell.S = Stato::INFETTO;
-              std::cout << "ora sono infetto" << '\n';
+
               cell.Aggiorna_colore();
             }
           }
         }
 
         else if (cell.S == Stato::INFETTO) {
-          std::cout << "sono arrivato qua" << '\n';
+
           cell.m_infection_days++;
           if ((rand() % 100) / 100.f < m_probabilita_guarigione) {
             cell.S = Stato::RIMOSSO;
@@ -519,9 +514,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
 class Mondo /* : public sf::Drawable  */ {
  private:  // la draw non va nel protected??
   /* sf::VertexArray Griglia; */
-  GUI overlay;
-
-  Finestra a_window;
+  GUI m_overlay;
 
   Animazione m_dinamica;  // fare altra classe che contiene sia griglia sia bordi, gestire tutto lì
 
@@ -531,6 +524,7 @@ class Mondo /* : public sf::Drawable  */ {
   sf::Clock m_timer;
   sf::Time m_trascorso;
 
+  Finestra m_window;
   /* virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.texture = &m_ominoprova;
     // capire che madonna succede qui dentro!!!
@@ -550,12 +544,12 @@ class Mondo /* : public sf::Drawable  */ {
 
   void Azzera();
 
-  Finestra* Prendi_finestra() { return &a_window; }
+  Finestra* Prendi_finestra() { return &m_window; }
 
   void Gestisci_input() {
-    a_window.Update();  // gestisce gli eventi
-    if (a_window.Isclosed()) {
-      a_window.~Finestra();
+    m_window.Update();  // gestisce gli eventi
+    if (m_window.Isclosed()) {
+      m_window.~Finestra();
     }
   }
 
@@ -566,15 +560,15 @@ class Mondo /* : public sf::Drawable  */ {
   }
 
   void Disegna() {
-    a_window.Pulisci();
+    m_window.Pulisci();
 
-    a_window.Disegna(m_dinamica);
+    m_window.Disegna(m_dinamica);
 
-    a_window.Disegna(m_statica);
+    m_window.Disegna(m_statica);
 
-    a_window.Disegna(overlay);
+    m_window.Disegna(m_overlay);
 
-    a_window.Mostra();
+    m_window.Mostra();
   }
 };
 

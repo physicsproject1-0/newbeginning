@@ -1,48 +1,59 @@
 #include <SFML/Graphics.hpp>
+
 #include "gui.hpp"
 
 #ifndef FINESTRA_HPP
 #define FINESTRA_HPP
 
+sf::Vector2f converti(sf::Vector2u vettore);
+sf::Vector2f converti(sf::Vector2i vettore);
 
 class Finestra {
-    std::string v_titolo;
-    sf::Vector2u v_dimensioni;
-    sf::RenderWindow v_mainfinestra;
-    bool v_Isclosed;
-    bool v_Isfullscreen;
-    
-    GUI* v_overlay;
+  std::string v_titolo;
+  sf::Vector2u v_dimensioni;
+  sf::RenderWindow v_mainfinestra;
+  bool v_Isclosed;
+  bool v_Isfullscreen;
+  bool mouse_in;
+  Vista v_vista;
+  sf::View vista_animazione;
+  sf::View vista_automa;
 
-    void Setup(const std::string& titolo, const sf::Vector2u& dimensione);
-    void Create();
-    void Destroy();
+  sf::Mouse v_mouse;
+  sf::Vector2f posizione_mouse;
+  sf::Vector2f punto_alto_sx;
 
-   public:
-    Finestra();  // di default facciamo che la dimensione è 1280*720
-    Finestra(const std::string& titolo,
-             const sf::Vector2u& dimensione,
-             GUI* overlay);  // passo tipi strani, quindi passo by ref
-    ~Finestra();
+  GUI* v_overlay;
 
-    // void Setsfondo(); //aggiunta da me per attaccare lo sfondo
-    void Update();
-    void Fullscreen();
+  void Setup(const std::string& titolo, const sf::Vector2u& dimensione);
+  void Create();
+  void Destroy();
 
-   /*  void aggiungi_pointer(GUI* pointer); */
+ public:
+  Finestra();  // di default facciamo che la dimensione è 1280*720
+  Finestra(const std::string& titolo, const sf::Vector2u& dimensione, GUI* overlay, const Bordi& t_bordo_animazione,
+           const Bordi& t_bordo_automa);  // passo tipi strani, quindi passo by ref
+  ~Finestra();
 
-    void Pulisci();
-    void Disegna(sf::Drawable& cosadadisegnare);
-    void Mostra();
+  // void Setsfondo(); //aggiunta da me per attaccare lo sfondo
+  void Update();
 
-    sf::Vector2u Getdimensions();
+  void set_origin();
+  void upd_vista();
+  void specifiche_viste(Vista t_vista, sf::FloatRect t_limite);
 
-    sf::Vector2u Getoriginaldimensions();
+  void Pulisci();
+  void Disegna(sf::Drawable& cosadadisegnare);
+  void Mostra();
 
-    bool Isclosed();
-    bool Isfullscreen();
+  sf::Vector2u Getdimensions();
 
-    void SetVista(sf::View vista);
+  sf::Vector2u Getoriginaldimensions();
+
+  bool Isclosed();
+  bool Isfullscreen();
+
+  void SetVista(sf::View vista);
 };
 
-#endif 
+#endif
