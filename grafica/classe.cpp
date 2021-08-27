@@ -4,7 +4,7 @@
 
 
 Mondo::Mondo()
-    :overlay(sf::Vector2f(100, 500)), a_window("test", sf::Vector2u(800, 600), &overlay), dinamica(20), statica(sf::Vector2f(1800, 1800), sf::Vector2f(500, 500), 10, 0.3, 0.5, 3, 0){
+    :overlay(sf::Vector2f(100, 500)), a_window("test", sf::Vector2u(800, 600), &overlay), m_dinamica(20), m_statica(sf::Vector2f(1800, 1800), sf::Vector2f(500, 500), 10, 0.3, 0.5, 3, 0){
   /*   if (!ominoprova.loadFromFile("uomoverde.png")) {
       throw std::runtime_error{"texture loading failed"};
     }
@@ -55,10 +55,10 @@ Mondo::Mondo()
 }
 
  */
-int Animazione::check_occur(Persona const& persona, int raggio) {  // decidere un raggio accettabile
+int Animazione::Check_occur(Persona const& persona, int raggio) {  // decidere un raggio accettabile
   int occur = 0;
-  for (int i = 0; i < popolazione.size(); i++) {
-    if (modulo(persona.centro - popolazione[i].centro) <= raggio) {
+  for (int i = 0; i < m_popolazione.size(); i++) {
+    if (Modulo(persona.m_centro - m_popolazione[i].m_centro) <= raggio) {
       occur++;
     }
   }
@@ -115,6 +115,6 @@ void Mondo::change_vel() {
 }
 */
 
-double Animazione::modulo(sf::Vector2f const& vettore) { return sqrt(pow(vettore.x, 2) + pow(vettore.y, 2)); }
+double Animazione::Modulo(sf::Vector2f const& vettore) { return sqrt(pow(vettore.x, 2) + pow(vettore.y, 2)); }
 
-void Mondo::azzera() { trascorso = timer.restart(); }
+void Mondo::Azzera() { m_trascorso = m_timer.restart(); }
