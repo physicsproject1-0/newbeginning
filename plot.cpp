@@ -15,4 +15,17 @@ void grafico(std::vector<double> x, std::vector<double> y, std::vector<double> z
      << "with lines title 'Rimossi' linecolor rgb 'dark-red' linewidth 2" << std::endl;
 }
 
+void SIR::print_grafico(std::vector<State> vettore) {
+  std::vector<double> x;
+  std::vector<double> y;
+  std::vector<double> z;
+
+  for (auto const& i : vettore) {
+    x.push_back(i.suscettibili);
+    y.push_back(i.infetti);
+    z.push_back(i.rimossi);
+  }
+  grafico(x, y, z);
+}
+
 }  // namespace epidemia
