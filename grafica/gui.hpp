@@ -444,11 +444,17 @@ class GUI : public sf::Drawable {
 
 enum class Stato { VULNERABILE, INFETTO, RIMOSSO, MORTO, GUARITO };
 
+struct Censimento {
+  int m_suscettibili;
+  int m_infetti;
+  int m_guariti;
+  int m_morti;
+};
 struct Persona {
   sf::Vector2f m_centro;
   float m_raggio;
   sf::Vector2f m_vel;
-  sf::Clock m_cambiom_velocita;
+             //sf::Clock m_cambiom_velocita;   senza collisioni non serve più giusto???
   Stato m_P;
   bool checked = false;
   int m_numero_contatti = 0;
@@ -462,10 +468,9 @@ class Animazione : public sf::Drawable {
 
   bool m_is_stopped;
 
-
   Bordi m_limiti;
 
-  Stato m_P;
+  Censimento m_burocrazia;
 
   // Nel momento in cui collidono due persone, se una era infetta, cambia lo stato anche dell' altra
   void Collisione() {
@@ -482,7 +487,7 @@ class Animazione : public sf::Drawable {
               int a = rand() % 100 + 1;
               if (a < 40) {
                 PallinaA.m_P = Stato::INFETTO;
-                SetredTextures();
+                SetRedTextures();
               } else {
                 continue;
               }
@@ -503,8 +508,8 @@ class Animazione : public sf::Drawable {
       for (int j = 0; j < m_popolazione.size(); j++) {
         Persona& PallinaB = m_popolazione[j];
         if ((i != j) && (PallinaA.m_P == Stato::INFETTO)) {
-          if ((Modulo(PallinaA.m_centro - PallinaB.m_centro) >= 1.49f * PallinaB.m_raggio) &&
-              (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.51f * PallinaB.m_raggio)) {
+          if ((Modulo(PallinaA.m_centro - PallinaB.m_centro) >= PallinaB.m_raggio) &&
+              (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.50f * PallinaB.m_raggio)) {
             PallinaA.m_numero_contatti++;
           }
         } else {
@@ -519,7 +524,7 @@ class Animazione : public sf::Drawable {
       Persona& PallinaA = m_popolazione[i];
       if ((PallinaA.m_P == Stato::INFETTO) && (PallinaA.m_numero_contatti == 35)) {
         PallinaA.m_P = Stato::RIMOSSO;
-        SetwhiteTextures();
+        SetWhiteTextures();
       } else {
         continue;
       }
@@ -527,7 +532,7 @@ class Animazione : public sf::Drawable {
   }
 
   // Funzione con cui carico la Texture verde
-  void SetgreenTextures() {
+  void SetGreenTextures() {
     for (int i = 0; i < m_popolazione.size(); i++) {
       sf::Vertex* iter = &m_struttura[i * 3];
 
@@ -538,7 +543,7 @@ class Animazione : public sf::Drawable {
   }
 
   // Funzione in cui carico la Texture rossa sullo stato INFETTO
-  void SetredTextures() {
+  void SetRedTextures() {
     for (int i = 0; i < m_popolazione.size(); i++) {
       if (m_popolazione[i].m_P == Stato::INFETTO) {
         sf::Vertex* iter = &m_struttura[i * 3];
@@ -555,7 +560,7 @@ class Animazione : public sf::Drawable {
 
   // Ho immaginato che al 30% muoiano e al 70% guariscono, si possono cambiare le probabilita' of course
   // Funzione in cui carico sullo stato RIMOSSO al 30% la texture grigia e al 70% quella azzurra
-  void SetwhiteTextures() {
+  void SetWhiteTextures() {
     for (int i = 0; i < m_popolazione.size(); i++) {
       Persona& PallinaA = m_popolazione[i];
       if (PallinaA.m_P == Stato::RIMOSSO) {  // Aggiungere stato guarito/morto
@@ -614,8 +619,8 @@ class Animazione : public sf::Drawable {
 
     m_struttura.setPrimitiveType(sf::Triangles);
 
-    SetgreenTextures();
-    SetredTextures();
+    SetGreenTextures();
+    SetRedTextures();
     Aggiorna_griglia();  //chiamarlo almeno una volta sennò no good;
   }
 
@@ -785,6 +790,8 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
 
   int m_giorni = 0;
 
+  Censimento popolazione;
+
   bool m_is_stopped;
 
   virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -872,17 +879,30 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
     return true;
   }
   
-  /* void censimento (Cellula& cell) {
-    switch (Cellula::S)
+   Censimento censimento (Cellula const& cell) {
+     popolazione = {0,0,0,0};
+     switch (cell.S) {
 
-   case (Stato::VULNERABILE)
+   case (Stato::VULNERABILE):
+   popolazione.m_suscettibili++;
+   break;
+
+   case (Stato::INFETTO):
+   popolazione.m_infetti++;
+   break;
+   
+   case (Stato::GUARITO):
+   popolazione.m_guariti++;
+
+   default:
+   popolazione.m_morti++;
+   }
+   return popolazione;
   }
-  */
 
 
   void Aggiorna_counter(int i, int j) {
     Cellula& cell = m_grid[i][j];
-    //censimento(cell);
 
     for (int a = 0; a <= 2; a++) {
       if (Esiste(i - 1, j - 1 + a)) {
@@ -914,6 +934,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
     for (int i = 0; i < m_numero_lato; i++) {
       for (int j = 0; j < m_numero_lato; j++) {
         Cellula& cell = m_grid[i][j];
+        censimento (cell);
 
         if (cell.S == Stato::VULNERABILE) {
           int esponente = cell.m_counter;
@@ -921,7 +942,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
           if (esponente == 0) {
             continue;
           } else {
-            float prob_sano = pow(1 - m_probabilita_contagio, esponente);  // beta o gamma?
+            float prob_sano = pow(1 - m_probabilita_contagio, esponente);  // beta o gamma? beta sicuro
 
             float estrazione = (rand() % 101) / 100.f;  // IL .F è FONDAMENTALE
 

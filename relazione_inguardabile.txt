@@ -1,0 +1,24 @@
+DISCLAIMER: questa non è il formato giusto, bisogna farlo bene (in lattice/pdf). 
+però intanto butto giù qualche riga altrimenti mi scordo le cose.
+
+Relazione progetto di programmazione per la fisica 20/21: simulazione di una pandemia 
+Autori: Simone Piraccini, Simone Garnero, kingdellaprogrammazione aka Edo 
+
+Parte I: modello SIR
+
+Il modello che rappresenta lo sviluppo della nostra pandemia è il modello SIR, dove S sta per suscettibili, I sta per infetti ed R sta per rimossi (morti o guariti).
+Si basa su tre equazioni differenziali caratterizzate da due parametri β e γ che indicano rispettivamente la velocità del contagio e 
+quella della fine dell’infezione; tutte le persone della stessa categoria sono indistinguibili.
+Ad ogni nuovo giorno la situazione si aggiorna secondo l’algoritmo che segue le equazioni sopra citate, insieme ai dati della giornata precedente.
+
+Abbiamo creato una struct ‘State’ che contenesse i valori caratterizzanti un determinato istante della simulazione, ovvero il giorno 
+corrente ed i rispettivi valori di S, I, R. 
+La classe ‘SIR’ invece contiene i dati necessari al funzionamento del modello, ovvero uno State stato iniziale, i parametri beta e gamma, insieme alla durata della simulazione.
+Tiene conto anche del valore (costante per tutta la durata della simulazione) dato dal totale delle persone presenti.
+‘Insert’ è la funzione che gestisce l’input e ritorna un oggetto della classe SIR: vengono richiesti quindi all’utente i valori dei parametri beta e gamma 
+(decimali tra 0 e 1), il numero di persone suscettibili, infette e rimosse; infine è necessario inserire la durata della simulazione.
+
+Le funzioni membro ‘riempimento’ e ‘convertitore’ sono chiamate per compiere la vera e propria simulazione dal punto di vista
+quantitativo: entrambe ritornano uno standard vector di ‘State’, il primo con dati grezzi, il secondo riporta approssimati all’unità i valori di S, I, R. 
+Grazie ad un ciclo for, ‘riempimento’ inserisce i dati nell’algoritmo per generare la giornata successiva e con pushback() riempie il vettore.
+Sempre con un ciclo for, ‘convertitore’ (che ha come oggetto il vettore appena creato) approssima all’unità il numero di S, I, R  
