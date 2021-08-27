@@ -141,12 +141,16 @@ class Pulsante : public Checkbox {  // origine al centro
   }
 };
 
+// fare classe da ereditare di cose che si possono attivare o no
+
 class Paletta : public sf::Drawable {
   Checkbox m_box_verde;
   Checkbox m_box_rosso;
   Checkbox m_box_blu;
 
   Bordi m_riquadro_esterno;
+
+  sf::RectangleShape m_rettangolo_opaco;
 
   sf::RectangleShape m_dainserire_verde;
   sf::RectangleShape m_dainserire_rosso;
@@ -155,6 +159,8 @@ class Paletta : public sf::Drawable {
   Textbox m_testo_verde;
   Textbox m_testo_rosso;
   Textbox m_testo_blu;
+
+  bool m_is_active;
 
  public:
   Paletta(sf::Vector2f t_dimensione_riquadro, sf::Font* t_font)
@@ -165,7 +171,12 @@ class Paletta : public sf::Drawable {
 
         m_testo_verde(9.5, t_font, sf::Color::Black),
         m_testo_rosso(9.5, t_font, sf::Color::Black),
-        m_testo_blu(9.5, t_font, sf::Color::Black) {
+        m_testo_blu(9.5, t_font, sf::Color::Black),
+        m_is_active{true} {
+    m_rettangolo_opaco.setFillColor(sf::Color(128, 128, 128, 120));
+    m_rettangolo_opaco.setSize(t_dimensione_riquadro);
+    m_rettangolo_opaco.setOrigin(sf::Vector2f(t_dimensione_riquadro.x / 2, t_dimensione_riquadro.y / 2));
+
     m_box_verde.setinterncolor(sf::Color::Green);
     m_box_verde.ImpostaOrigine(sf::Vector2f(t_dimensione_riquadro.x / 4, t_dimensione_riquadro.x / 4));
 
@@ -191,6 +202,8 @@ class Paletta : public sf::Drawable {
   void ImpostaPosizione(sf::Vector2f t_posizione_centro) {  // la consideriamo rispetto al centro
     m_riquadro_esterno.set_posizione(t_posizione_centro -
                                      sf::Vector2f(m_riquadro_esterno.getlimiti().width / 2, m_riquadro_esterno.getlimiti().height / 2));
+
+    m_rettangolo_opaco.setPosition(t_posizione_centro);
 
     m_box_verde.set_posizione(sf::Vector2f(t_posizione_centro.x, t_posizione_centro.y - m_riquadro_esterno.getlimiti().height / 3));
     m_box_rosso.set_posizione(sf::Vector2f(t_posizione_centro.x, t_posizione_centro.y));
@@ -219,7 +232,16 @@ class Paletta : public sf::Drawable {
     target.draw(m_testo_verde);
     target.draw(m_testo_rosso);
     target.draw(m_testo_blu);
+    if (!m_is_active) {
+      target.draw(m_rettangolo_opaco);
+    }
   }
+
+  bool IsActive() { return m_is_active; }
+
+  void Attiva() { m_is_active = true; }
+
+  void Disattiva() { m_is_active = false; }
 
   void PrendiVerde() {}
 
@@ -274,6 +296,10 @@ class GUI : public sf::Drawable {
   GUI(sf::Vector2f dimensione);
   virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
   void aggiorna_posizione(sf::Vector2f punto_in_altodx, sf::Vector2f dimensioni_finestra);
+
+  void AttivaInserimento() { m_paletta_colori.Attiva(); }
+
+  void DisattivaInserimento() { m_paletta_colori.Disattiva(); }
 
   void check_mouse_position(sf::Vector2f t_coordinate_mouse) {
     if (m_casella_animazione.getlimiti().contains(t_coordinate_mouse)) {
@@ -676,16 +702,14 @@ class Animazione : public sf::Drawable {
 
   double Modulo(sf::Vector2f const& vettore);
 
-  void StopAnimazione(){
-    m_is_stopped = true;
-  }
+  void StopAnimazione() { m_is_stopped = true; }
 
-  void StartAnimazione(){
+  void StartAnimazione() {
     m_is_stopped = false;
     m_orologio2.restart();
   }
 
-  bool IsStopped(){return m_is_stopped;}
+  bool IsStopped() { return m_is_stopped; }
 
   void Aggiorna_Generale() {
     Check_borders();
@@ -716,12 +740,9 @@ class Animazione : public sf::Drawable {
 
 // QUI INIZIA LA PARTE AUTOMA   ################################################
 
-class Cellula : public sf::Drawable {  // se è una struct non funziona l'inheritance?
-  virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    target.draw(m_rettangolo);
-    target.draw(m_numero);
-  }  // metterci anche states altrimenti rompe il casso
-     // non posso loadare un font qui dentro direttamente
+class Cellula : public Bordi {  // se è una struct non funziona l'inheritance?
+                                // metterci anche states altrimenti rompe il casso
+                                // non posso loadare un font qui dentro direttamente
 
  public:
   // wtf
@@ -750,21 +771,12 @@ class Cellula : public sf::Drawable {  // se è una struct non funziona l'inheri
   int m_infection_days;
 
   Stato S = Stato::VULNERABILE;
-  sf::RectangleShape m_rettangolo;
 
-  sf::Text m_numero;
+  Cellula(sf::Vector2f m_posizione, sf::Vector2f dimensione) : Bordi( dimensione,m_posizione), m_counter(0), m_infection_days(0) {  // funzionerà
 
-  Cellula(sf::Vector2f m_posizione, sf::Vector2f dimensione) : m_counter(0), m_infection_days(0) {  // funzionerà
-    m_rettangolo.setPosition(m_posizione);
-    m_rettangolo.setSize(dimensione);
     m_rettangolo.setOutlineColor(sf::Color::White);
     m_rettangolo.setOutlineThickness(2.f);
     Aggiorna_colore();
-
-    /* m_numero.setFont(*p_font); */
-    m_numero.setPosition(m_posizione);
-    m_numero.setFillColor(sf::Color::White);
-    m_numero.setCharacterSize(50);
   }
 };
 
@@ -811,7 +823,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
         m_numero_lato{t_numero},
         m_probabilita_contagio{t_probabilita_contagio},
         m_probabilita_guarigione{t_probabilita_guarigione},
-        limiti{t_dimensione, t_posizione} ,
+        limiti{t_dimensione, t_posizione},
         m_is_stopped{true} {
     assert(m_probabilita_contagio <= 1 && m_probabilita_contagio >= 0);  // mettere except
     /* if (!font.loadFromFile("Arial.ttf")) {
@@ -900,7 +912,6 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
    return popolazione;
   }
 
-
   void Aggiorna_counter(int i, int j) {
     Cellula& cell = m_grid[i][j];
 
@@ -980,19 +991,29 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
     }
   }
 
-  void AzzeraOrologio() { m_orologio.restart(); }
-
-    void StopAutoma(){
-    m_is_stopped = true;
+  std::pair<int, int> CheckMousePosition(sf::Vector2f t_coordinate_mouse) {
+    for (int i = 0; i < m_numero_lato; i++) {
+      for (int j = 0; j < m_numero_lato; j++) {
+        if (m_grid[i][j].getlimiti().contains(t_coordinate_mouse)) {
+          return std::pair<int, int>{i, j};
+        }
+      }
+    }
+    return std::pair<int, int>{-1, -1};
   }
 
-  void StartAutoma(){
+  void ChangeStatus(std::pair<int, int> t_coordinate, Stato t_stato) { m_grid[t_coordinate.first][t_coordinate.second].S = t_stato; }
+
+  void AzzeraOrologio() { m_orologio.restart(); }
+
+  void StopAutoma() { m_is_stopped = true; }
+
+  void StartAutoma() {
     m_is_stopped = false;
     m_orologio.restart();
   }
 
-  bool IsStopped(){return m_is_stopped;}
-
+  bool IsStopped() { return m_is_stopped; }
 };
 
 #endif
