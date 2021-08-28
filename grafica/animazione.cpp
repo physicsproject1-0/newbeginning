@@ -7,6 +7,8 @@
 void Animazione::Collisione() {
   for (int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
+    //popolazione = {0,0,0,0};
+    //censimento (PallinaA, popolazione);
     if (PallinaA.m_S == Stato::VULNERABILE) {
       for (int j = 0; j < m_popolazione.size(); j++) {
         Persona& PallinaB = m_popolazione[j];
