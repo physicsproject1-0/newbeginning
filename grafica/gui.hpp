@@ -582,12 +582,12 @@ class Animazione : public sf::Drawable {
         for (int j = 0; j < m_popolazione.size(); j++) {
           Persona& PallinaB = m_popolazione[j];
 
-          // Contagiosita' del 40%
+          // Contagiosita' del 30%
           if ((i != j) && (PallinaB.m_S == Stato::INFETTO)) {
             if (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.5 * PallinaB.m_raggio) {
               srand(time(NULL));
               int a = rand() % 100 + 1;
-              if (a < 40) {
+              if (a < 30) {
                 PallinaA.m_S = Stato::INFETTO;
                 SetRedTextures();
               } else {
@@ -610,8 +610,8 @@ class Animazione : public sf::Drawable {
       for (int j = 0; j < m_popolazione.size(); j++) {
         Persona& PallinaB = m_popolazione[j];
         if ((i != j) && (PallinaA.m_S == Stato::INFETTO)) {
-          if ((Modulo(PallinaA.m_centro - PallinaB.m_centro) >= PallinaB.m_raggio) &&
-              (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.50f * PallinaB.m_raggio)) {
+          if ((Modulo(PallinaA.m_centro - PallinaB.m_centro) >= 1.49f * PallinaB.m_raggio) &&
+              (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.51f * PallinaB.m_raggio)) {
             PallinaA.m_numero_contatti++;
           }
         } else {
@@ -768,11 +768,11 @@ class Animazione : public sf::Drawable {
 
   void AzzeraOrologio() { m_orologio2.restart(); }
 
-  void Check_external_bounds(Persona& test);
+  //void Check_external_bounds(Persona& test);
 
-  void change_Stato();  // Fa cambiare la texture nel momento in cui le due particelle si scontrano
+  //void change_Stato();  // Fa cambiare la texture nel momento in cui le due particelle si scontrano
 
-  void change_m_vel();
+  //void change_m_vel();
 
   int Check_occur(Persona const& persona, int m_raggio);
 
@@ -936,6 +936,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
 
   void Genera(int infette, int rimosse) {
     assert(infette + rimosse < m_numero_lato * m_numero_lato);
+    srand(time(NULL));
 
     for (int a = 0; a < infette; a++) {
       int riga = rand() % m_numero_lato;
