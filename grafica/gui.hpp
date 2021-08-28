@@ -39,6 +39,25 @@ struct Censimento {
   int m_morti;
 };
 
+ template <typename C>
+  void censimento (C const& cell) {
+  
+   switch (cell.S) {
+     case (Stato::VULNERABILE):
+       popolazione.m_suscettibili++;
+       break;
+
+     case (Stato::INFETTO):
+       popolazione.m_infetti++;
+       break;
+
+     case (Stato::GUARITO):
+       popolazione.m_guariti++;
+
+  default:
+  popolazione.m_morti++;
+  }
+ }
 class Bordi : public sf::Drawable {
  protected:
   sf::RectangleShape m_rettangolo;
