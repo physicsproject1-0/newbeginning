@@ -46,26 +46,16 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
   std::vector<std::vector<Cellula>> m_grid;
 
   sf::Vector2f m_posizione;
-
   sf::Vector2f m_dimensioni;
-
-  sf::Clock m_orologio;
-
   int m_numero_lato;
-
   float m_probabilita_contagio;
-
   float m_probabilita_guarigione;
-
   float m_probabilita_morte;
-
   Bordi limiti;
-
-  int m_giorni = 0;
-
-  Censimento popolazione;
-
   bool m_is_stopped;
+  Censimento popolazione;
+  int m_giorni = 0;
+  sf::Clock m_orologio;
 
   virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
     for (int i = 0; i < m_numero_lato; i++) {
@@ -147,7 +137,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
       for (int j = 0; j < m_numero_lato; j++) {
         Cellula& cell = m_grid[i][j];
         censimento(cell, popolazione);
-        cell.m_counter=0;
+        cell.m_counter = 0;
         cell.Aggiorna_colore();
       }
     }

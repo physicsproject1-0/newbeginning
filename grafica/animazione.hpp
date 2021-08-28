@@ -29,16 +29,13 @@ struct Persona {
 };
 
 class Animazione : public sf::Drawable {
+  Bordi m_limiti;
+  bool m_is_stopped;
+  Censimento popolazione;
   sf::Clock m_orologio2;
   sf::Texture m_ominoprova;
   sf::VertexArray m_struttura;
   std::map<int, Persona> m_popolazione;  // vedere se meglio vector
-
-  bool m_is_stopped;
-
-  Bordi m_limiti;
-
-  Censimento popolazione;
 
   // Nel momento in cui collidono due persone, se una era infetta, cambia lo stato anche dell' altra
   void Collisione();
@@ -53,7 +50,7 @@ class Animazione : public sf::Drawable {
 
   // Ho immaginato che al 30% muoiano e al 70% guariscono, si possono cambiare le probabilita' of course
   // Funzione in cui carico sullo stato MORTO al 30% la texture grigia e al 70% quella azzurra
-  //void SetWhiteTextures();
+  // void SetWhiteTextures();
   void SetAllTextures();
   virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.texture = &m_ominoprova;
@@ -62,14 +59,12 @@ class Animazione : public sf::Drawable {
   }
 
  public:
-  Animazione(int n) : m_limiti(sf::Vector2f(600, 400), sf::Vector2f(100, 100)), m_is_stopped{true}, popolazione{n-1, 1, 0, 0} {
+  Animazione(int n) : m_limiti(sf::Vector2f(600, 400), sf::Vector2f(100, 100)), m_is_stopped{true}, popolazione{n - 1, 1, 0, 0} {
     if (!m_ominoprova.loadFromFile("uomini.png")) {
       throw std::runtime_error{"texture loading failed"};  // catcharlo
     }
 
     Persona m_prova;
-
-    srand(time(NULL));
 
     // Riempio la mappa (m_popolazione) di persone
     for (int i = 0; i < n; i++) {
@@ -82,13 +77,13 @@ class Animazione : public sf::Drawable {
       m_popolazione[i].m_S = Stato::VULNERABILE;
     }
 
-    m_popolazione[rand() % m_popolazione.size() + 1].m_S = Stato::INFETTO;
+    m_popolazione[(Casuale() / 100) * m_popolazione.size()].m_S = Stato::INFETTO;
 
     m_struttura.resize(m_popolazione.size() * 3);
 
     m_struttura.setPrimitiveType(sf::Triangles);
-    
-    //SetAllTextures();
+
+    // SetAllTextures();
     SetGreenTextures();
     SetRedTextures();
     Aggiorna_griglia();  // chiamarlo almeno una volta sennò no good;
