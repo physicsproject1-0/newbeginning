@@ -22,8 +22,13 @@ Le funzioni membro ‘riempimento’ e ‘convertitore’ sono chiamate per comp
 quantitativo: entrambe ritornano uno standard vector di ‘State’, il primo con dati grezzi, il secondo riporta approssimati all’unità i valori di S, I, R. 
 Grazie ad un ciclo for, ‘riempimento’ inserisce i dati nell’algoritmo per generare la giornata successiva e con pushback() riempie il vettore.
 Sempre con un ciclo for, ‘convertitore’ (che ha come oggetto il vettore appena creato) approssima all’unità il numero di S, I, R  
-
-
+in modo da rispettare i seguenti criteri: 
+- il numero di suscettibili non può aumentare
+- il numero di rimossi non può diminuire
+- se il numero di infetti è zero la situazione si stabilizza e i valori si mantengono inalterati il giorno seguente
+Per verificare il corretto funzionamento di queste funzioni abbiamo scritto un file di test (doctest) per situazioni particolari facilmente
+intuibili a priori. 
+L'output è rappresentato dalla storia della simulazione, stampata su standard output, e da un grafico gnuplot che riporta le curve di andamento della popolazione.
 
 
 
