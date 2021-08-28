@@ -66,14 +66,14 @@ Inserimento::Inserimento() {
   }
 
   std::cout << "Persone infette \n";
-  if (!(std::cin >> m_d_infetti_iniziali) || m_d_infetti_iniziali < 0 || m_d_infetti_iniziali > m_d_dimensione_lato * m_d_dimensione_lato) {
+  if (!(std::cin >> m_d_infetti_iniziali) || m_d_infetti_iniziali < 0 || m_d_infetti_iniziali > m_d_numero_persone) {
     throw std::runtime_error{
-        "Il numero di soggetti infetti deve essere un intero positivo e minore del numero massimo di persone presenti(lato*lato)"};
+        "Il numero di soggetti infetti deve essere un intero positivo e minore del numero massimo di persone presenti"};
   }
 
   std::cout << "Persone rimosse(guarite) \n";
   if (!(std::cin >> m_d_rimossi_iniziali) || m_d_rimossi_iniziali < 0 ||
-      m_d_rimossi_iniziali > m_d_dimensione_lato * m_d_dimensione_lato - m_d_infetti_iniziali) {
+      m_d_rimossi_iniziali > m_d_numero_persone - m_d_infetti_iniziali) {
     throw std::runtime_error{
         "Il numero di soggetti rimossi(guariti) deve essere un intero positivo e minore del numero massimo di persone ancora infettabili"};
   }
