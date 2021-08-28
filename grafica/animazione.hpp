@@ -102,6 +102,7 @@ class Animazione : public sf::Drawable {
   void StopAnimazione();
   void StartAnimazione();
   bool IsStopped();
+
   void Aggiorna_Generale();
 };
 

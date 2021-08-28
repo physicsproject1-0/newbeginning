@@ -245,10 +245,10 @@ class Paletta : public sf::Drawable {
 
     m_rettangolo_opaco.setPosition(t_posizione_centro);
 
-    m_box_verde.set_posizione(sf::Vector2f(t_posizione_centro.x, t_posizione_centro.y - (m_riquadro_esterno.getlimiti().height / 5) * 2));
-    m_box_rosso.set_posizione(sf::Vector2f(t_posizione_centro.x, t_posizione_centro.y - (m_riquadro_esterno.getlimiti().height / 5) * 1));
-    m_box_blu.set_posizione(sf::Vector2f(t_posizione_centro.x, t_posizione_centro.y + (m_riquadro_esterno.getlimiti().height / 5) * 1));
-    m_box_bianco.set_posizione(sf::Vector2f(t_posizione_centro.x, t_posizione_centro.y + (m_riquadro_esterno.getlimiti().height / 5) * 2));
+    m_box_verde.set_posizione(sf::Vector2f(t_posizione_centro.x, m_riquadro_esterno.getlimiti().top +(m_riquadro_esterno.getlimiti().height / 5) * 1));
+    m_box_rosso.set_posizione(sf::Vector2f(t_posizione_centro.x, m_riquadro_esterno.getlimiti().top + (m_riquadro_esterno.getlimiti().height / 5) * 2));
+    m_box_blu.set_posizione(sf::Vector2f(t_posizione_centro.x, m_riquadro_esterno.getlimiti().top + (m_riquadro_esterno.getlimiti().height / 5) * 3));
+    m_box_bianco.set_posizione(sf::Vector2f(t_posizione_centro.x, m_riquadro_esterno.getlimiti().top+ (m_riquadro_esterno.getlimiti().height / 5) *4));
 
     m_testo_verde.set_posizione(sf::Vector2f(t_posizione_centro.x, m_box_verde.getlimiti().top - 10));
     m_testo_rosso.set_posizione(sf::Vector2f(t_posizione_centro.x, m_box_rosso.getlimiti().top - 10));
@@ -538,15 +538,17 @@ class Informazioni : public sf::Drawable {
   void AggiornaPosizione(sf::Vector2f t_posizione_in_alto_dx) {
     m_riquadro_esterno.setPosition(t_posizione_in_alto_dx);
     m_testo_vulnerabili.setPosition(
-        sf::Vector2f(t_posizione_in_alto_dx.x - m_riquadro_esterno.getSize().x + 10, t_posizione_in_alto_dx.y - m_riquadro_esterno.getSize().y / 5));
+        sf::Vector2f(t_posizione_in_alto_dx.x - m_riquadro_esterno.getSize().x + 10, t_posizione_in_alto_dx.y + m_riquadro_esterno.getSize().y / 5));
     m_testo_infetti.setPosition(sf::Vector2f(t_posizione_in_alto_dx.x - m_riquadro_esterno.getSize().x + 10,
-                                             t_posizione_in_alto_dx.y - (m_riquadro_esterno.getSize().y / 5) * 2));
+                                             t_posizione_in_alto_dx.y + (m_riquadro_esterno.getSize().y / 5) * 2));
     m_testo_guariti.setPosition(sf::Vector2f(t_posizione_in_alto_dx.x - m_riquadro_esterno.getSize().x + 10,
-                                             t_posizione_in_alto_dx.y - (m_riquadro_esterno.getSize().y / 5) * 3));
+                                             t_posizione_in_alto_dx.y + (m_riquadro_esterno.getSize().y / 5) * 3));
     m_testo_morti.setPosition(sf::Vector2f(t_posizione_in_alto_dx.x - m_riquadro_esterno.getSize().x + 10,
-                                           t_posizione_in_alto_dx.y - (m_riquadro_esterno.getSize().y / 5) * 4));
+                                           t_posizione_in_alto_dx.y + (m_riquadro_esterno.getSize().y / 5) * 4));
     m_grafico_animazione.AggiornaPosizioni(sf::Vector2f(t_posizione_in_alto_dx.x, t_posizione_in_alto_dx.y + m_riquadro_esterno.getSize().y));
     m_grafico_automa.AggiornaPosizioni(sf::Vector2f(t_posizione_in_alto_dx.x, t_posizione_in_alto_dx.y + m_riquadro_esterno.getSize().y));
+  
+  
   }
 
   void AggiungiStatoAutoma(Censimento t_stato_automa) {
