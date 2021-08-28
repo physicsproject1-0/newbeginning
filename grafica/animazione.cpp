@@ -156,7 +156,7 @@ void Animazione::StopAnimazione() { m_is_stopped = true; }
 void Animazione::StartAnimazione() {
   m_is_stopped = false;
   m_orologio2.restart();
-}
+} 
 
 bool Animazione::IsStopped() { return m_is_stopped; }
 
