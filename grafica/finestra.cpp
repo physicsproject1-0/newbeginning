@@ -130,12 +130,14 @@ void Finestra::Update() {
   }
   if (!m_statico->IsStopped() && v_vista == Vista::Automa) {
     v_overlay->GetPointerRiquadro()->AggiungiStatoAutoma(m_statico->GetCensimento());
+    v_overlay->GetPointerRiquadro()->AggiornaScritte(); 
   }
 
   if (!m_dinamico->IsStopped() && v_vista == Vista::Animazione) {
     v_overlay->GetPointerRiquadro()->AggiungiStatoAnimazione(m_dinamico->GetCensimento());
+    v_overlay->GetPointerRiquadro()->AggiornaScritte(); 
   }
-  /* v_overlay->GetPointerRiquadro()->AggiornaScritte(); */
+  /* */
   /*
     if (v_overlay->cliccabile()){
       v_mouse.
@@ -148,14 +150,14 @@ void Finestra::upd_vista() {
       SetVista(vista_animazione);
       v_overlay->aggiorna_posizione(punto_alto_sx, vista_animazione.getSize());
       v_overlay->GetPointerRiquadro()->MostraDatiAnimazione();
-    /*   v_overlay->GetPointerRiquadro()->AggiornaScritte(); */
+       v_overlay->GetPointerRiquadro()->AggiornaScritte(); 
       break;
 
     case Vista::Automa:
       SetVista(vista_automa);
       v_overlay->aggiorna_posizione(punto_alto_sx, vista_automa.getSize());
       v_overlay->GetPointerRiquadro()->MostraDatiAutoma();
-     /*  v_overlay->GetPointerRiquadro()->AggiornaScritte(); */
+       v_overlay->GetPointerRiquadro()->AggiornaScritte(); 
       break;
   }
 }

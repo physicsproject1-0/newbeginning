@@ -42,7 +42,7 @@ struct Censimento {
 };
 
  template <typename C>
-  void censimento (C const& cell, Censimento popolazione) {
+  void censimento (C const& cell, Censimento& popolazione) {
   
    switch (cell.m_S) {
      case (Stato::VULNERABILE):
@@ -599,14 +599,14 @@ class Informazioni : public sf::Drawable {
   }
   void AggiornaScritte() {
     if (m_automa_attivo) {
-      if (!m_successione_stati_animazione.empty()) {
+      if (!m_successione_stati_automa.empty()) {
         m_testo_vulnerabili.setString("Vulnerabili: " + std::to_string(m_successione_stati_automa.back().m_suscettibili));
         m_testo_infetti.setString("Infetti: " + std::to_string(m_successione_stati_automa.back().m_infetti));
         m_testo_guariti.setString("Guariti: " + std::to_string(m_successione_stati_automa.back().m_guariti));
         m_testo_morti.setString("Morti: " + std::to_string(m_successione_stati_automa.back().m_morti));
       }
     } else {
-      if (!m_successione_stati_automa.empty()) {
+      if (!m_successione_stati_animazione.empty()) {
         m_testo_vulnerabili.setString("Vulnerabili: " + std::to_string(m_successione_stati_animazione.back().m_suscettibili));
         m_testo_infetti.setString("Infetti: " + std::to_string(m_successione_stati_animazione.back().m_infetti));
         m_testo_guariti.setString("Guariti: " + std::to_string(m_successione_stati_animazione.back().m_guariti));
