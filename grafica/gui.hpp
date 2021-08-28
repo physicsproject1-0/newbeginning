@@ -32,6 +32,8 @@ enum class MousePos {
   PalettaMorti
 };
 
+enum class Stato { VULNERABILE, INFETTO, MORTO, GUARITO };
+
 struct Censimento {
   int m_suscettibili;
   int m_infetti;
@@ -39,6 +41,25 @@ struct Censimento {
   int m_morti;
 };
 
+ template <typename C>
+  void censimento (C const& cell, Censimento popolazione) {
+  
+   switch (cell.m_S) {
+     case (Stato::VULNERABILE):
+       popolazione.m_suscettibili++;
+       break;
+
+     case (Stato::INFETTO):
+       popolazione.m_infetti++;
+       break;
+
+     case (Stato::GUARITO):
+       popolazione.m_guariti++;
+
+  default:
+  popolazione.m_morti++;
+  }
+ }
 class Bordi : public sf::Drawable {
  protected:
   sf::RectangleShape m_rettangolo;
@@ -858,7 +879,7 @@ class GUI : public sf::Drawable {
 
 // QUI INIZIA LA PARTE SIMULAZIONE   ################################################
 
-enum class Stato { VULNERABILE, INFETTO, RIMOSSO, MORTO, GUARITO };
+
 
 int Casuale();
 

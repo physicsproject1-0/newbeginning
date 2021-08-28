@@ -52,7 +52,7 @@ class Animazione : public sf::Drawable {
   void SetRedTextures();
 
   // Ho immaginato che al 30% muoiano e al 70% guariscono, si possono cambiare le probabilita' of course
-  // Funzione in cui carico sullo stato RIMOSSO al 30% la texture grigia e al 70% quella azzurra
+  // Funzione in cui carico sullo stato MORTO al 30% la texture grigia e al 70% quella azzurra
   void SetWhiteTextures();
   virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.texture = &m_ominoprova;
@@ -61,7 +61,7 @@ class Animazione : public sf::Drawable {
   }
 
  public:
-  Animazione(int n) : m_limiti(sf::Vector2f(600, 400), sf::Vector2f(100, 100)), m_is_stopped{true} {
+  Animazione(int n) : m_limiti(sf::Vector2f(600, 400), sf::Vector2f(100, 100)), m_is_stopped{true}, popolazione{n-1, 1, 0, 0} {
     if (!m_ominoprova.loadFromFile("uomini.png")) {
       throw std::runtime_error{"texture loading failed"};  // catcharlo
     }
@@ -86,7 +86,7 @@ class Animazione : public sf::Drawable {
     m_struttura.resize(m_popolazione.size() * 3);
 
     m_struttura.setPrimitiveType(sf::Triangles);
-
+    
     SetGreenTextures();
     SetRedTextures();
     Aggiorna_griglia();  // chiamarlo almeno una volta sennò no good;
