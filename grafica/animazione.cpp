@@ -6,7 +6,7 @@
 
 void Animazione::Collisione() {
   popolazione = {0, 0, 0, 0};
-  for (int i = 0; i < m_popolazione.size(); i++) {
+  for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
 
     censimento(PallinaA, popolazione);
@@ -34,9 +34,9 @@ void Animazione::Collisione() {
 }
 
 void Animazione::Conteggio_contatti() {
-  for (int i = 0; i < m_popolazione.size(); i++) {
+  for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
-    for (int j = 0; j < m_popolazione.size(); j++) {
+    for (long unsigned int j = 0; j < m_popolazione.size(); j++) {
       Persona& PallinaB = m_popolazione[j];
       if ((i != j) && (PallinaA.m_S == Stato::INFETTO)) {
         if ((Modulo(PallinaA.m_centro - PallinaB.m_centro) >= PallinaB.m_raggio) &&
@@ -52,8 +52,8 @@ void Animazione::Conteggio_contatti() {
   }
 }
 
-void Animazione::Morte_persona() {  // al 30 % la persona muore, al 70% guarisce
-  for (int i = 0; i < m_popolazione.size(); i++) {
+void Animazione::Morte_persona() {                                //al 30 % la persona muore, al 70% guarisce
+  for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
     if ((PallinaA.m_S == Stato::INFETTO) && (PallinaA.m_numero_contatti == 35)) {
       PallinaA.m_S = Stato::MORTO;
@@ -68,7 +68,7 @@ void Animazione::Morte_persona() {  // al 30 % la persona muore, al 70% guarisce
 
 // Funzione con cui carico la Texture verde
 void Animazione::SetGreenTextures() {
-  for (int i = 0; i < m_popolazione.size(); i++) {
+  for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     sf::Vertex* iter = &m_struttura[i * 3];
 
     iter[0].texCoords = sf::Vector2f(110.f, 20.f);  // coordinate pupini verdi
@@ -78,7 +78,7 @@ void Animazione::SetGreenTextures() {
 }
 
 void Animazione::SetRedTextures() {
-  for (int i = 0; i < m_popolazione.size(); i++) {
+  for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     if (m_popolazione[i].m_S == Stato::INFETTO) {
       sf::Vertex* iter = &m_struttura[i * 3];
 
@@ -93,7 +93,7 @@ void Animazione::SetRedTextures() {
 }
 
 void Animazione::SetAllTextures() {
-  for (int i = 0; i < m_popolazione.size(); i++) {
+  for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
     sf::Vertex* iter = &m_struttura[i * 3];
 
@@ -129,7 +129,7 @@ void Animazione::SetAllTextures() {
 Bordi Animazione::get_bordi() { return m_limiti; }
 
 void Animazione::Aggiorna_griglia() {
-  for (int i = 0; i < m_popolazione.size(); i++) {
+  for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     sf::Vertex* iter = &m_struttura[i * 3];
     iter[0].position = sf::Vector2f(m_popolazione[i].m_centro.x, m_popolazione[i].m_centro.y - m_popolazione[i].m_raggio);  // strane coord
     iter[1].position = sf::Vector2f(m_popolazione[i].m_centro.x - m_popolazione[i].m_raggio * (1.7f / 2),
@@ -146,13 +146,13 @@ void Animazione::Aggiorna_lista() {
 
   // std::cout << "tempo1 " << deltat << '\n';
   // std::cout << "tempo2 " << deltat2 << '\n';
-  for (int i = 0; i < m_popolazione.size(); i++) {
+  for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     m_popolazione[i].m_centro += m_popolazione[i].m_vel * deltat2;
   }
 }
 
 void Animazione::Check_borders() {
-  for (int i = 0; i < m_popolazione.size(); i++) {
+  for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     if (m_popolazione[i].m_centro.x < m_limiti.getlimiti().left + m_popolazione[i].m_raggio ||
         m_popolazione[i].m_centro.x > m_limiti.getlimiti().left + m_limiti.getlimiti().width - m_popolazione[i].m_raggio) {
       m_popolazione[i].m_vel.x = -m_popolazione[i].m_vel.x;

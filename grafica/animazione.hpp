@@ -29,16 +29,13 @@ struct Persona {
 };
 
 class Animazione : public sf::Drawable {
+  Bordi m_limiti;
+  bool m_is_stopped;
+  Censimento popolazione;
   sf::Clock m_orologio2;
   sf::Texture m_ominoprova;
   sf::VertexArray m_struttura;
   std::map<int, Persona> m_popolazione;  // vedere se meglio vector
-
-  bool m_is_stopped;
-
-  Bordi m_limiti;
-
-  Censimento popolazione;
 
   int m_d_numero_persone;
   float m_d_parametro_beta;  // probabilita contagio

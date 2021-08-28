@@ -470,7 +470,7 @@ class Plot : public sf::Drawable {
   void NumeroLineee(int darmi_il_numero) {
     m_lista_linee.resize(darmi_il_numero);
     m_colori_linee.resize(darmi_il_numero);
-    for (int i = 0; i < m_lista_linee.size(); i++) {
+    for (long unsigned int i = 0; i < m_lista_linee.size(); i++) {
       m_lista_linee[i].first.setPrimitiveType(sf::LineStrip);
     }
   }
@@ -493,13 +493,12 @@ class Plot : public sf::Drawable {
     m_lista_linee[numero_linea].second.push_back(t_valore);
     m_max_value_y = std::max(m_max_value_y, t_valore);
     RiscalaPunti();
-    /* } */
   }
 
   void RiscalaPunti() {
     sf::Vector2f t_posizione_origine = m_assi[1].position;
-    for (int j = 0; j < m_lista_linee.size(); j++) {
-      for (int i = 0; i < m_lista_linee[j].second.size(); i++) {
+    for (long unsigned int j = 0; j < m_lista_linee.size(); j++) {
+      for (long unsigned int i = 0; i < m_lista_linee[j].second.size(); i++) {
         sf::Vector2f t_posizione_scalata(((m_assi[2].position.x - m_assi[1].position.x) / m_lista_linee[j].second.size()) * i,
                                          ((m_assi[1].position.y - m_assi[0].position.y) / m_max_value_y) * m_lista_linee[j].second[i]);
         m_lista_linee[j].first[i].position =
@@ -510,7 +509,7 @@ class Plot : public sf::Drawable {
 
   void draw(sf::RenderTarget& target, sf::RenderStates states) const {
     target.draw(m_sfondo);
-    for (int i = 0; i < m_lista_linee.size(); i++) {
+    for (long unsigned int i = 0; i < m_lista_linee.size(); i++) {
       target.draw(m_lista_linee[i].first);
     }
     target.draw(m_assi);
@@ -528,19 +527,18 @@ class Plot : public sf::Drawable {
 };
 
 class Informazioni : public sf::Drawable {
+  Plot m_grafico_automa;
+  Plot m_grafico_animazione;
+  bool m_animazione_attiva;
+  bool m_automa_attivo;
+  bool m_appena_azzerato;
+
   sf::RectangleShape m_riquadro_esterno;
 
   sf::Text m_testo_vulnerabili;
   sf::Text m_testo_infetti;
   sf::Text m_testo_guariti;
   sf::Text m_testo_morti;
-
-  Plot m_grafico_automa;
-  Plot m_grafico_animazione;
-
-  bool m_automa_attivo;
-  bool m_animazione_attiva;
-  bool m_appena_azzerato;
 
   std::vector<Censimento> m_successione_stati_automa;
   std::vector<Censimento> m_successione_stati_animazione;
