@@ -39,7 +39,7 @@ void Animazione::Conteggio_contatti() {
     for (int j = 0; j < m_popolazione.size(); j++) {
       Persona& PallinaB = m_popolazione[j];
       if ((i != j) && (PallinaA.m_S == Stato::INFETTO)) {
-        if ((Modulo(PallinaA.m_centro - PallinaB.m_centro) >=PallinaB.m_raggio) &&
+        if ((Modulo(PallinaA.m_centro - PallinaB.m_centro) >= PallinaB.m_raggio) &&
             (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.51f * PallinaB.m_raggio)) {
           PallinaA.m_numero_contatti++;
         }
@@ -112,38 +112,37 @@ void Animazione::SetRedTextures() {
 }*/
 
 void Animazione::SetAllTextures() {
-  for (int i = 0; i < m_popolazione.size(); i++){
+  for (int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
-  switch (PallinaA.m_S) {
-  case (Stato::VULNERABILE):
-      sf::Vertex* iter = &m_struttura[i * 3];
-    iter[0].texCoords = sf::Vector2f(110.f, 20.f);  // coordinate pupini verdi
-    iter[1].texCoords = sf::Vector2f(20.f, 210.f);
-    iter[2].texCoords = sf::Vector2f(205.f, 210.f);
-    break;
+    sf::Vertex* iter = &m_struttura[i * 3];
+    
+    switch (PallinaA.m_S) {
+      case Stato::VULNERABILE:
+        
+        iter[0].texCoords = sf::Vector2f(110.f, 20.f);  // coordinate pupini verdi
+        iter[1].texCoords = sf::Vector2f(20.f, 210.f);
+        iter[2].texCoords = sf::Vector2f(205.f, 210.f);
+        break;
 
-  case (Stato::INFETTO):
-      sf::Vertex* iter = &m_struttura[i * 3];
-    iter[0].texCoords = sf::Vector2f(315.f, 20.f);  // coordinate pupini rossi
-    iter[1].texCoords = sf::Vector2f(230.f, 210.f);
-    iter[2].texCoords = sf::Vector2f(410.f, 210.f);
-    break;
+      case Stato::INFETTO:
+        iter[0].texCoords = sf::Vector2f(315.f, 20.f);  // coordinate pupini rossi
+        iter[1].texCoords = sf::Vector2f(230.f, 210.f);
+        iter[2].texCoords = sf::Vector2f(410.f, 210.f);
+        break;
 
-  case (Stato::MORTO):
-      sf::Vertex* iter = &m_struttura[i * 3];
-    iter[0].texCoords = sf::Vector2f(520.f, 20.f);  // coordinate pupini grigi
-    iter[1].texCoords = sf::Vector2f(430.f, 210.f);
-    iter[2].texCoords = sf::Vector2f(615.f, 210.f);
-    break;
+      case Stato::MORTO:
+        iter[0].texCoords = sf::Vector2f(520.f, 20.f);  // coordinate pupini grigi
+        iter[1].texCoords = sf::Vector2f(430.f, 210.f);
+        iter[2].texCoords = sf::Vector2f(615.f, 210.f);
+        break;
 
-  case (Stato::GUARITO):
-      sf::Vertex* iter = &m_struttura[i * 3];
-    iter[0].texCoords = sf::Vector2f(730.f, 20.f);  // coordinate pupini azzurri
-    iter[1].texCoords = sf::Vector2f(635.f, 210.f);
-    iter[2].texCoords = sf::Vector2f(825.f, 210.f);
-    break;
+      case Stato::GUARITO:
+        iter[0].texCoords = sf::Vector2f(730.f, 20.f);  // coordinate pupini azzurri
+        iter[1].texCoords = sf::Vector2f(635.f, 210.f);
+        iter[2].texCoords = sf::Vector2f(825.f, 210.f);
+        break;
+    }
   }
- }
 }
 
 Bordi Animazione::get_bordi() { return m_limiti; }
@@ -206,7 +205,7 @@ void Animazione::Aggiorna_Generale() {
 
   Aggiorna_griglia();
 
-  //SetRedTextures();
+  // SetRedTextures();
   SetAllTextures();
-  //SetWhiteTextures();
+  // SetWhiteTextures();
 }

@@ -137,7 +137,7 @@ void Finestra::Update() {
             m_statico->StopAutoma();
             if (v_vista == Vista::Automa) {
               v_overlay->AttivaInserimento();  // chiarire meglio
-              v_overlay->GetPointerPaletta()->AttivaInserimento();
+              //v_overlay->GetPointerPaletta()->AttivaInserimento();
             }
 
             break;
