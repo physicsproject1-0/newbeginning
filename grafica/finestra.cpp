@@ -18,6 +18,7 @@ void Finestra::Setup(const std::string& temptitolo, const sf::Vector2u& tempdime
   v_vista = Vista::Animazione;
   mouse_in = false;
   Create();
+  v_posizione = v_mainfinestra.getPosition();
 }
 
 void Finestra::Create() {
@@ -47,12 +48,20 @@ Finestra::Finestra(const std::string& titolo, const sf::Vector2u& dimensione, GU
 Finestra::~Finestra() { Destroy(); }
 
 void Finestra::Update() {
+  if (v_mainfinestra.getPosition() !=v_posizione){
+         m_statico->AzzeraOrologio();
+      m_dinamico->AzzeraOrologio();
+      v_posizione=v_mainfinestra.getPosition();
+  }
+  
+  
   sf::Event evento;
   while (v_mainfinestra.pollEvent(evento)) {
     if (evento.type == sf::Event::Closed || (evento.type == sf::Event::KeyPressed && evento.key.code == sf::Keyboard::Escape)) {
       v_Isclosed = true;
     }
     if (evento.type == sf::Event::Resized) {
+      std::cout <<"esized"<<'\n';
       sf::Vector2u dimensioni_nuove = v_mainfinestra.getSize();
       if (dimensioni_nuove.x < v_dimensioni_minime.x || dimensioni_nuove.y < v_dimensioni_minime.y) {
         dimensioni_nuove = v_dimensioni_minime;

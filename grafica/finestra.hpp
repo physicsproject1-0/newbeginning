@@ -15,6 +15,7 @@ class Finestra {
   sf::Vector2u v_dimensioni;
 
   sf::Vector2u v_dimensioni_minime;  // quelle con cui viene creata
+  sf::Vector2i v_posizione;
 
   sf::RenderWindow v_mainfinestra;
   bool v_Isclosed;
