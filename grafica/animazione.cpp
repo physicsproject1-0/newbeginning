@@ -90,7 +90,6 @@ void Animazione::SetRedTextures() {
   }
 }
 
-
 void Animazione::SetAllTextures() {
   for (int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
