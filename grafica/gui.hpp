@@ -890,9 +890,8 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
     }
     return true;
   }
-  
-   Censimento censimento (Cellula const& cell) {
-     popolazione = {0,0,0,0};
+   template <typename C>
+   void censimento (C const& cell) {
      switch (cell.S) {
 
    case (Stato::VULNERABILE):
@@ -909,7 +908,6 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
    default:
    popolazione.m_morti++;
    }
-   return popolazione;
   }
 
   void Aggiorna_counter(int i, int j) {
@@ -942,6 +940,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
   void Aggiorna() {
     srand(time(NULL));
     m_giorni++;
+    popolazione = {0,0,0,0};
     for (int i = 0; i < m_numero_lato; i++) {
       for (int j = 0; j < m_numero_lato; j++) {
         Cellula& cell = m_grid[i][j];
@@ -979,6 +978,11 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
     }
   }
 
+   /*void contatore (){
+     stampa il censimento, non so come si fa. Edo aiutami tu
+   
+   } */
+
   void Avanza() {
     if (m_orologio.getElapsedTime().asSeconds() > 3) {
       for (int i = 0; i < m_numero_lato; i++) {
@@ -987,6 +991,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
         }
       }
       Aggiorna();
+      //contatore();
       m_orologio.restart();
     }
   }
