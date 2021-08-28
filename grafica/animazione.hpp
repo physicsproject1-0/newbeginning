@@ -38,7 +38,7 @@ class Animazione : public sf::Drawable {
 
   Bordi m_limiti;
 
-  Censimento m_burocrazia;
+  Censimento popolazione;
 
   // Nel momento in cui collidono due persone, se una era infetta, cambia lo stato anche dell' altra
   void Collisione();

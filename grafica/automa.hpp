@@ -117,12 +117,10 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
   Bordi get_bordi() { return limiti; }
   void Genera(int infette, int rimosse);
   bool Esiste(int i, int j);
-  /* template <typename C>
+  
+  template <typename C>
   void censimento (C const& cell) {
-    switch (cell.m_S) {
-
- Censimento censimento(Cellula const& cell) {
-   popolazione = {0, 0, 0, 0};
+  
    switch (cell.S) {
      case (Stato::VULNERABILE):
        popolazione.m_suscettibili++;
@@ -138,7 +136,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
   default:
   popolazione.m_morti++;
   }
- } */
+ }
 
   void Aggiorna_counter(int i, int j);
   void Aggiorna();
