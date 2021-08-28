@@ -13,7 +13,6 @@
 #include <stdexcept>
 #include <string>
 
-
 #include "gui.hpp"
 
 #ifndef ANIMAZIONE_HPP
@@ -104,6 +103,7 @@ class Animazione : public sf::Drawable {
   void StartAnimazione();
   bool IsStopped();
 
+  Censimento GetCensimento() { return popolazione; }
   void Aggiorna_Generale();
 };
 

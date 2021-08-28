@@ -556,16 +556,16 @@ class Informazioni : public sf::Drawable {
     m_successione_stati_automa.push_back(t_stato_automa);
     m_grafico_automa.AggiungiPunto(0, t_stato_automa.m_suscettibili);
     m_grafico_automa.AggiungiPunto(1, t_stato_automa.m_infetti);
-    m_grafico_automa.AggiungiPunto(0, t_stato_automa.m_guariti);
-    m_grafico_automa.AggiungiPunto(1, t_stato_automa.m_morti);
+    m_grafico_automa.AggiungiPunto(2, t_stato_automa.m_guariti);
+    m_grafico_automa.AggiungiPunto(3, t_stato_automa.m_morti);
   }
 
   void AggiungiStatoAnimazione(Censimento t_stato_animazione) {
     m_successione_stati_animazione.push_back(t_stato_animazione);
     m_grafico_animazione.AggiungiPunto(0, t_stato_animazione.m_suscettibili);
     m_grafico_animazione.AggiungiPunto(1, t_stato_animazione.m_infetti);
-    m_grafico_animazione.AggiungiPunto(0, t_stato_animazione.m_guariti);
-    m_grafico_animazione.AggiungiPunto(1, t_stato_animazione.m_morti);
+    m_grafico_animazione.AggiungiPunto(2, t_stato_animazione.m_guariti);
+    m_grafico_animazione.AggiungiPunto(3, t_stato_animazione.m_morti);
   }
 
   void MostraDatiAutoma() {
@@ -580,16 +580,16 @@ class Informazioni : public sf::Drawable {
     if (m_automa_attivo) {
       if (!m_successione_stati_animazione.empty()) {
         m_testo_vulnerabili.setString("Vulnerabili: " + std::to_string(m_successione_stati_automa.back().m_suscettibili));
-        m_testo_infetti.setString("Infetti: " + std::to_string(m_successione_stati_automa.back().m_suscettibili));
-        m_testo_guariti.setString("Guariti: " + std::to_string(m_successione_stati_automa.back().m_suscettibili));
-        m_testo_morti.setString("Morti: " + std::to_string(m_successione_stati_automa.back().m_suscettibili));
+        m_testo_infetti.setString("Infetti: " + std::to_string(m_successione_stati_automa.back().m_infetti));
+        m_testo_guariti.setString("Guariti: " + std::to_string(m_successione_stati_automa.back().m_guariti));
+        m_testo_morti.setString("Morti: " + std::to_string(m_successione_stati_automa.back().m_morti));
       }
     } else {
       if (!m_successione_stati_automa.empty()) {
         m_testo_vulnerabili.setString("Vulnerabili: " + std::to_string(m_successione_stati_animazione.back().m_suscettibili));
-        m_testo_infetti.setString("Infetti: " + std::to_string(m_successione_stati_animazione.back().m_suscettibili));
-        m_testo_guariti.setString("Guariti: " + std::to_string(m_successione_stati_animazione.back().m_suscettibili));
-        m_testo_morti.setString("Morti: " + std::to_string(m_successione_stati_animazione.back().m_suscettibili));
+        m_testo_infetti.setString("Infetti: " + std::to_string(m_successione_stati_animazione.back().m_infetti));
+        m_testo_guariti.setString("Guariti: " + std::to_string(m_successione_stati_animazione.back().m_guariti));
+        m_testo_morti.setString("Morti: " + std::to_string(m_successione_stati_animazione.back().m_morti));
       }
     }
   }
@@ -841,6 +841,7 @@ class GUI : public sf::Drawable {
       return false;
     }
   }
+  Informazioni* GetPointerRiquadro(){return &m_riquadro_informazioni;}
 };
 
 // QUI INIZIA LA PARTE SIMULAZIONE   ################################################

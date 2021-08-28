@@ -83,7 +83,8 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
         m_probabilita_contagio{t_probabilita_contagio},
         m_probabilita_guarigione{t_probabilita_guarigione},
         limiti{t_dimensione, t_posizione},
-        m_is_stopped{true} {
+        m_is_stopped{true}
+         {
     assert(m_probabilita_contagio <= 1 && m_probabilita_contagio >= 0);  // mettere except
     /* if (!font.loadFromFile("Arial.ttf")) {
       throw std::runtime_error{"texture loading failed"};
@@ -121,7 +122,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
   template <typename C>
   void censimento (C const& cell) {
   
-   switch (cell.S) {
+   switch (cell.m_S) {
      case (Stato::VULNERABILE):
        popolazione.m_suscettibili++;
        break;
@@ -151,6 +152,8 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
   void StopAutoma();
   void StartAutoma();
   bool IsStopped();
+  Censimento GetCensimento(){return popolazione;}
+
 };
 
 #endif

@@ -92,7 +92,6 @@ void Finestra::Update() {
       v_overlay->check_color(sf::Color::Yellow);
 
       v_overlay->AggiornaPosizioneRettangoliPaletta(posizione_mouse);
-      
 
       if (evento.type == sf::Event::MouseButtonPressed && evento.mouseButton.button == sf::Mouse::Left) {
         switch (v_overlay->mouse_clicked()) {
@@ -121,14 +120,22 @@ void Finestra::Update() {
             break;
         }
 
-        if (m_statico->IsStopped()){
-        m_statico->CheckMousePosition(posizione_mouse);
-      }
+        if (m_statico->IsStopped()) {
+          m_statico->CheckMousePosition(posizione_mouse);
+        }
 
         upd_vista();
       }
     }
   }
+  if (!m_statico->IsStopped() && v_vista == Vista::Automa) {
+    v_overlay->GetPointerRiquadro()->AggiungiStatoAutoma(m_statico->GetCensimento());
+  }
+
+  if (!m_dinamico->IsStopped() && v_vista == Vista::Animazione) {
+    v_overlay->GetPointerRiquadro()->AggiungiStatoAnimazione(m_dinamico->GetCensimento());
+  }
+  v_overlay->GetPointerRiquadro()->AggiornaScritte();
   /*
     if (v_overlay->cliccabile()){
       v_mouse.
@@ -140,13 +147,15 @@ void Finestra::upd_vista() {
     case Vista::Animazione:
       SetVista(vista_animazione);
       v_overlay->aggiorna_posizione(punto_alto_sx, vista_animazione.getSize());
-
+      v_overlay->GetPointerRiquadro()->MostraDatiAnimazione();
+      v_overlay->GetPointerRiquadro()->AggiornaScritte();
       break;
 
     case Vista::Automa:
       SetVista(vista_automa);
       v_overlay->aggiorna_posizione(punto_alto_sx, vista_automa.getSize());
-
+      v_overlay->GetPointerRiquadro()->MostraDatiAutoma();
+      v_overlay->GetPointerRiquadro()->AggiornaScritte();
       break;
   }
 }
