@@ -18,7 +18,7 @@ void Cellula::Aggiorna_colore() {
 
       m_rettangolo.setFillColor(sf::Color::Green);
       break;
-    
+
     case (Stato::MORTO):
       m_rettangolo.setFillColor(sf::Color::White);
       break;
@@ -91,13 +91,13 @@ void Automa::Aggiorna() {
   for (int i = 0; i < m_numero_lato; i++) {
     for (int j = 0; j < m_numero_lato; j++) {
       Cellula& cell = m_grid[i][j];
-       censimento(cell, popolazione);
+      
 
       if (cell.m_S == Stato::VULNERABILE) {
         int esponente = cell.m_counter;
         // cell.m_numero.setString(std::to_string(esponente));
         if (esponente == 0) {
-          continue;
+          
         } else {
           float prob_sano = pow(1 - m_probabilita_contagio, esponente);  // beta o gamma? beta sicuro
 
@@ -112,21 +112,25 @@ void Automa::Aggiorna() {
       }
 
       else if (cell.m_S == Stato::INFETTO) {
-        cell.m_infection_days++;
-        if (Casuale() / 100.f < m_probabilita_guarigione) {
-          if (Casuale() < 30){
-            cell.m_S = Stato::MORTO;
-            } else {
-              cell.m_S = Stato::GUARITO;
-            }
-          cell.Aggiorna_colore();
-        }
+        float estrazione = Casuale() / 100.f;
+        if (estrazione < m_probabilita_guarigione) {
+          cell.m_S = Stato::GUARITO;
+
+        } else if (estrazione > m_probabilita_guarigione && estrazione < m_probabilita_guarigione + m_probabilita_morte) {
+          cell.m_S = Stato::MORTO;
+        } 
+        cell.Aggiorna_colore();
       }
 
+      censimento(cell, popolazione);
+      std::cout<< popolazione.m_suscettibili<< popolazione.m_infetti<<popolazione.m_morti<<popolazione.m_guariti<<"\n";
       cell.m_counter = 0;
     }
+
+    
   }
 }
+
 
 void Automa::Avanza() {
   if (m_orologio.getElapsedTime().asSeconds() > 3) {
@@ -164,4 +168,3 @@ void Automa::StartAutoma() {
 }
 
 bool Automa::IsStopped() { return m_is_stopped; }
-

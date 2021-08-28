@@ -65,14 +65,16 @@ class Mondo /* : public sf::Drawable  */ {
     if (m_window.GetVista() == Vista::Animazione) {
       if (!m_dinamica.IsStopped()) {
         m_dinamica.Aggiorna_Generale();
-        std::cout << "Aggiorno dinamica" << '\n';
+      
         m_statica.AzzeraOrologio();
       }
 
     } else {
+      if (!m_statica.IsStopped()) {
       m_statica.Avanza();
-      std::cout << "Aggiorno statica" << '\n';
+   
       m_dinamica.AzzeraOrologio();
+      }
     }
   }
 
@@ -80,11 +82,11 @@ class Mondo /* : public sf::Drawable  */ {
     m_window.Pulisci();
     if (m_window.GetVista() == Vista::Animazione) {
       m_window.Disegna(m_dinamica);
-      std::cout << "DIsegno dinamica" << '\n';
+    
 
     } else {
       m_window.Disegna(m_statica);
-      std::cout << "DIsegno statica" << '\n';
+   
     }
 
     m_window.Disegna(m_overlay);

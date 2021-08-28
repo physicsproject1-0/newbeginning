@@ -99,6 +99,19 @@ void Finestra::Update() {
       v_overlay->AggiornaPosizioneRettangoliPaletta(posizione_mouse);
 
       if (evento.type == sf::Event::MouseButtonPressed && evento.mouseButton.button == sf::Mouse::Left) {
+        if (v_overlay->IsInserimentoAttivo()) {
+          std::pair<int, int> coppia = m_statico->CheckMousePosition(posizione_mouse);
+          std::cout << coppia.first << coppia.second << '\n';
+          if (coppia != std::pair<int, int>(-1, -1)) {
+            m_statico->ChangeStatus(coppia, v_overlay->GetPointerPaletta()->RitornaStatoRettangoloInserendo());
+            m_statico->AggiornaSenzaAvanzare();
+            /* v_overlay->GetPointerRiquadro()->AzzeraAutoma(); */
+
+            v_overlay->GetPointerRiquadro()->AggiornaScritte();
+            v_overlay->GetPointerPaletta()->DisattivaInserimento();
+          }
+        }
+
         switch (v_overlay->mouse_clicked()) {
           case MousePos::CheckboxAnimazione:
             v_vista = Vista::Animazione;
@@ -118,15 +131,16 @@ void Finestra::Update() {
             m_statico->StartAutoma();
             v_overlay->DisattivaInserimento();
             break;
+
           case MousePos::PulsantePausa:
             m_dinamico->StopAnimazione();
             m_statico->StopAutoma();
-            v_overlay->AttivaInserimento();
-            break;
-        }
+            if (v_vista == Vista::Automa) {
+              v_overlay->AttivaInserimento();  // chiarire meglio
+              v_overlay->GetPointerPaletta()->AttivaInserimento();
+            }
 
-        if (m_statico->IsStopped()) {
-          m_statico->CheckMousePosition(posizione_mouse);
+            break;
         }
 
         upd_vista();
@@ -134,6 +148,7 @@ void Finestra::Update() {
     }
   }
   if (!m_statico->IsStopped() && v_vista == Vista::Automa) {
+    
     v_overlay->GetPointerRiquadro()->AggiungiStatoAutoma(m_statico->GetCensimento());
     v_overlay->GetPointerRiquadro()->AggiornaScritte();
   }
@@ -156,6 +171,7 @@ void Finestra::upd_vista() {
       v_overlay->aggiorna_posizione(punto_alto_sx, vista_animazione.getSize());
       v_overlay->GetPointerRiquadro()->MostraDatiAnimazione();
       v_overlay->GetPointerRiquadro()->AggiornaScritte();
+      v_overlay->DisattivaInserimento();
       break;
 
     case Vista::Automa:
@@ -163,6 +179,9 @@ void Finestra::upd_vista() {
       v_overlay->aggiorna_posizione(punto_alto_sx, vista_automa.getSize());
       v_overlay->GetPointerRiquadro()->MostraDatiAutoma();
       v_overlay->GetPointerRiquadro()->AggiornaScritte();
+      if (m_statico->IsStopped()) {
+        v_overlay->AttivaInserimento();
+      }
       break;
   }
 }

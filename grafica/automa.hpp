@@ -57,6 +57,8 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
 
   float m_probabilita_guarigione;
 
+  float m_probabilita_morte;
+
   Bordi limiti;
 
   int m_giorni = 0;
@@ -75,17 +77,23 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
   }
 
  public:
-  Automa(sf::Vector2f t_posizione, sf::Vector2f t_dimensione, int t_numero, float t_probabilita_contagio, float t_probabilita_guarigione, int infetti,
-         int rimossi)
+  Automa(sf::Vector2f t_posizione, sf::Vector2f t_dimensione, int t_numero, float t_probabilita_contagio, float t_probabilita_guarigione,
+         float t_probabilita_morte, int infetti, int rimossi)
       : m_posizione{t_posizione},
         m_dimensioni{t_dimensione},
-        m_numero_lato{t_numero},    //rimossi si considerano guariti
+        m_numero_lato{t_numero},  // rimossi si considerano guariti
         m_probabilita_contagio{t_probabilita_contagio},
         m_probabilita_guarigione{t_probabilita_guarigione},
+        m_probabilita_morte{t_probabilita_morte},
         limiti{t_dimensione, t_posizione},
         m_is_stopped{true},
-        popolazione{t_numero*t_numero - infetti-rimossi, infetti, rimossi, 0} {
+        popolazione{t_numero * t_numero - infetti - rimossi, infetti, rimossi, 0} {
     assert(m_probabilita_contagio <= 1 && m_probabilita_contagio >= 0);  // mettere except
+
+    if (t_probabilita_guarigione + t_probabilita_morte > 1) {
+      throw std::runtime_error("la somma delle probabilità di morire e di guarire deve essere massimo 1");
+    }
+
     /* if (!font.loadFromFile("Arial.ttf")) {
       throw std::runtime_error{"texture loading failed"};
     } */
@@ -118,7 +126,6 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
   Bordi get_bordi() { return limiti; }
   void Genera(int infette, int rimosse);
   bool Esiste(int i, int j);
-  
 
   void Aggiorna_counter(int i, int j);
   void Aggiorna();
@@ -133,8 +140,18 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
   void StopAutoma();
   void StartAutoma();
   bool IsStopped();
-  Censimento GetCensimento(){return popolazione;}
-
+  Censimento GetCensimento() { return popolazione; }
+  void AggiornaSenzaAvanzare() {
+    popolazione = {0, 0, 0, 0};
+    for (int i = 0; i < m_numero_lato; i++) {
+      for (int j = 0; j < m_numero_lato; j++) {
+        Cellula& cell = m_grid[i][j];
+        censimento(cell, popolazione);
+        cell.m_counter=0;
+        cell.Aggiorna_colore();
+      }
+    }
+  }
 };
 
 #endif

@@ -41,25 +41,25 @@ struct Censimento {
   int m_morti;
 };
 
- template <typename C>
-  void censimento (C const& cell, Censimento& popolazione) {
-  
-   switch (cell.m_S) {
-     case (Stato::VULNERABILE):
-       popolazione.m_suscettibili++;
-       break;
+template <typename C>
+void censimento(C const& cell, Censimento& popolazione) {
+  switch (cell.m_S) {
+    case (Stato::VULNERABILE):
+      popolazione.m_suscettibili++;
+      break;
 
-     case (Stato::INFETTO):
-       popolazione.m_infetti++;
-       break;
+    case (Stato::INFETTO):
+      popolazione.m_infetti++;
+      break;
 
-     case (Stato::GUARITO):
-       popolazione.m_guariti++;
-
-  default:
-  popolazione.m_morti++;
+    case (Stato::GUARITO):
+      popolazione.m_guariti++;
+      break;
+    case (Stato::MORTO):
+      popolazione.m_morti++;
+      break;
   }
- }
+}
 class Bordi : public sf::Drawable {
  protected:
   sf::RectangleShape m_rettangolo;
@@ -203,8 +203,8 @@ class Paletta : public sf::Drawable {
   Textbox m_testo_blu;
   Textbox m_testo_bianco;
 
-  bool m_is_active;
-  bool m_inserimento_attivo;
+  bool m_is_active;           // si intende se si può cliccare
+  bool m_inserimento_attivo;  // se hai preso il rettangolo
   bool m_verde_visibile;
   bool m_rosso_visibile;
   bool m_blu_visibile;
@@ -267,10 +267,13 @@ class Paletta : public sf::Drawable {
 
     m_rettangolo_opaco.setPosition(t_posizione_centro);
 
-    m_box_verde.set_posizione(sf::Vector2f(t_posizione_centro.x, m_riquadro_esterno.getlimiti().top +(m_riquadro_esterno.getlimiti().height / 5) * 1));
-    m_box_rosso.set_posizione(sf::Vector2f(t_posizione_centro.x, m_riquadro_esterno.getlimiti().top + (m_riquadro_esterno.getlimiti().height / 5) * 2));
+    m_box_verde.set_posizione(
+        sf::Vector2f(t_posizione_centro.x, m_riquadro_esterno.getlimiti().top + (m_riquadro_esterno.getlimiti().height / 5) * 1));
+    m_box_rosso.set_posizione(
+        sf::Vector2f(t_posizione_centro.x, m_riquadro_esterno.getlimiti().top + (m_riquadro_esterno.getlimiti().height / 5) * 2));
     m_box_blu.set_posizione(sf::Vector2f(t_posizione_centro.x, m_riquadro_esterno.getlimiti().top + (m_riquadro_esterno.getlimiti().height / 5) * 3));
-    m_box_bianco.set_posizione(sf::Vector2f(t_posizione_centro.x, m_riquadro_esterno.getlimiti().top+ (m_riquadro_esterno.getlimiti().height / 5) *4));
+    m_box_bianco.set_posizione(
+        sf::Vector2f(t_posizione_centro.x, m_riquadro_esterno.getlimiti().top + (m_riquadro_esterno.getlimiti().height / 5) * 4));
 
     m_testo_verde.set_posizione(sf::Vector2f(t_posizione_centro.x, m_box_verde.getlimiti().top - 10));
     m_testo_rosso.set_posizione(sf::Vector2f(t_posizione_centro.x, m_box_rosso.getlimiti().top - 10));
@@ -346,6 +349,20 @@ class Paletta : public sf::Drawable {
   void AttivaInserimento() { m_inserimento_attivo = true; }
   void DisattivaInserimento() { m_inserimento_attivo = false; }
 
+  Stato RitornaStatoRettangoloInserendo() {
+    if (m_verde_visibile) {
+      return Stato::VULNERABILE;
+    } else if (m_rosso_visibile) {
+      return Stato::INFETTO;
+    } else if (m_blu_visibile) {
+      return Stato::GUARITO;
+    } else if (m_bianco_visibile) {
+      return Stato::MORTO;
+    } else {
+      throw std::runtime_error("non stai inserendo nessun rettangolo");
+    }
+  }
+
   void AttivaVerde() {
     m_verde_visibile = true;
     m_rosso_visibile = false;
@@ -403,10 +420,12 @@ class Plot : public sf::Drawable {
   std::vector<sf::Color> m_colori_linee;
   float m_max_value_y;
 
+  bool da_svuotare;
+
   sf::VertexArray m_assi;
 
  public:
-  Plot(sf::Vector2f t_dimensione_grafico, sf::Vector2f t_posizione_alto_destra) : m_max_value_y{0} {
+  Plot(sf::Vector2f t_dimensione_grafico, sf::Vector2f t_posizione_alto_destra) : m_max_value_y{0}, da_svuotare{false} {
     m_sfondo.setFillColor(sf::Color(128, 128, 128));
     m_sfondo.setOutlineColor(sf::Color::White);
     m_sfondo.setOutlineThickness(3.f);
@@ -459,11 +478,22 @@ class Plot : public sf::Drawable {
   void DefinisciColoreLinea(int t_linea, sf::Color t_colore) { m_colori_linee[t_linea] = t_colore; }
 
   void AggiungiPunto(int numero_linea, float t_valore) {
+    /* if (da_svuotare) {
+      m_lista_linee[numero_linea].first.resize(0);
+      m_lista_linee[numero_linea].first.append(
+          sf::Vertex(sf::Vector2f(m_lista_linee[numero_linea].second.size(), t_valore), m_colori_linee[numero_linea]));
+      m_lista_linee[numero_linea].second.clear();
+      m_lista_linee[numero_linea].second.push_back(t_valore);
+      m_max_value_y = std::max(m_max_value_y, t_valore);
+      RiscalaPunti();
+      da_svuotare=false; */
+    /*  } else { */
     m_lista_linee[numero_linea].first.append(
         sf::Vertex(sf::Vector2f(m_lista_linee[numero_linea].second.size(), t_valore), m_colori_linee[numero_linea]));
     m_lista_linee[numero_linea].second.push_back(t_valore);
     m_max_value_y = std::max(m_max_value_y, t_valore);
     RiscalaPunti();
+    /* } */
   }
 
   void RiscalaPunti() {
@@ -487,7 +517,12 @@ class Plot : public sf::Drawable {
   }
 
   void Svuota() {
-    m_lista_linee.clear();
+    /* for (int i = 0; i < m_lista_linee.size(); i++) {
+      m_lista_linee[i].first.clear();
+      m_lista_linee[i].second.clear();
+    } */
+    /*  m_lista_linee.clear(); */
+    da_svuotare = true;
     m_max_value_y = 0;
   }
 };
@@ -505,13 +540,18 @@ class Informazioni : public sf::Drawable {
 
   bool m_automa_attivo;
   bool m_animazione_attiva;
+  bool m_appena_azzerato;
 
   std::vector<Censimento> m_successione_stati_automa;
   std::vector<Censimento> m_successione_stati_animazione;
 
  public:
   Informazioni(sf::Vector2f t_dimensioni, /* sf::Vector2f t_posizione_alto_dx, */ sf::Font* t_font)
-      : m_grafico_automa{t_dimensioni}, m_grafico_animazione{t_dimensioni}, m_animazione_attiva{true}, m_automa_attivo{false} {
+      : m_grafico_automa{t_dimensioni},
+        m_grafico_animazione{t_dimensioni},
+        m_animazione_attiva{true},
+        m_automa_attivo{false},
+        m_appena_azzerato{false} {
     m_riquadro_esterno.setFillColor(sf::Color(128, 128, 128));
     m_riquadro_esterno.setOutlineColor(sf::Color::White);
     m_riquadro_esterno.setOutlineThickness(3.f);
@@ -569,16 +609,23 @@ class Informazioni : public sf::Drawable {
                                            t_posizione_in_alto_dx.y + (m_riquadro_esterno.getSize().y / 5) * 4));
     m_grafico_animazione.AggiornaPosizioni(sf::Vector2f(t_posizione_in_alto_dx.x, t_posizione_in_alto_dx.y + m_riquadro_esterno.getSize().y));
     m_grafico_automa.AggiornaPosizioni(sf::Vector2f(t_posizione_in_alto_dx.x, t_posizione_in_alto_dx.y + m_riquadro_esterno.getSize().y));
-  
-  
   }
 
   void AggiungiStatoAutoma(Censimento t_stato_automa) {
-    m_successione_stati_automa.push_back(t_stato_automa);
-    m_grafico_automa.AggiungiPunto(0, t_stato_automa.m_suscettibili);
-    m_grafico_automa.AggiungiPunto(1, t_stato_automa.m_infetti);
-    m_grafico_automa.AggiungiPunto(2, t_stato_automa.m_guariti);
-    m_grafico_automa.AggiungiPunto(3, t_stato_automa.m_morti);
+    if (m_appena_azzerato) {
+      m_successione_stati_automa[0] = t_stato_automa;
+      m_grafico_automa.AggiungiPunto(0, t_stato_automa.m_suscettibili);
+      m_grafico_automa.AggiungiPunto(1, t_stato_automa.m_infetti);
+      m_grafico_automa.AggiungiPunto(2, t_stato_automa.m_guariti);
+      m_grafico_automa.AggiungiPunto(3, t_stato_automa.m_morti);
+      m_appena_azzerato = false;
+    } else {
+      m_successione_stati_automa.push_back(t_stato_automa);
+      m_grafico_automa.AggiungiPunto(0, t_stato_automa.m_suscettibili);
+      m_grafico_automa.AggiungiPunto(1, t_stato_automa.m_infetti);
+      m_grafico_automa.AggiungiPunto(2, t_stato_automa.m_guariti);
+      m_grafico_automa.AggiungiPunto(3, t_stato_automa.m_morti);
+    }
   }
 
   void AggiungiStatoAnimazione(Censimento t_stato_animazione) {
@@ -617,10 +664,12 @@ class Informazioni : public sf::Drawable {
   void AzzeraAnimazione() {
     m_grafico_animazione.Svuota();
     m_successione_stati_animazione.clear();
+    m_appena_azzerato = true;
   }
   void AzzeraAutoma() {
     m_grafico_automa.Svuota();
     m_successione_stati_automa.clear();
+    m_appena_azzerato = true;
   }
   void draw(sf::RenderTarget& target, sf::RenderStates states) const {
     target.draw(m_riquadro_esterno);
@@ -679,19 +728,15 @@ class GUI : public sf::Drawable {
   void check_mouse_position(sf::Vector2f t_coordinate_mouse) {
     if (m_casella_animazione.getlimiti().contains(t_coordinate_mouse)) {
       m_posizione_mouse = MousePos::CheckboxAnimazione;
-      std::cout << "sei sopra la casella animazione" << '\n';
 
     } else if (m_casella_automa.getlimiti().contains(t_coordinate_mouse)) {
       m_posizione_mouse = MousePos::CheckboxAutoma;
-      std::cout << "sei sopra la casella automa" << '\n';
 
     } else if (m_pulsante_play.getlimiti().contains(t_coordinate_mouse)) {
       m_posizione_mouse = MousePos::PulsantePlay;
-      std::cout << "sei sopra la casella play" << '\n';
 
     } else if (m_pulsante_pausa.getlimiti().contains(t_coordinate_mouse)) {
       m_posizione_mouse = MousePos::PulsantePausa;
-      std::cout << "sei sopra la casella pausa" << '\n';
     } else if (m_paletta_colori.RitornaVerde().getlimiti().contains(t_coordinate_mouse)) {
       m_posizione_mouse = MousePos::PalettaVulnerabile;
     } else if (m_paletta_colori.RitornaRosso().getlimiti().contains(t_coordinate_mouse)) {
@@ -702,7 +747,6 @@ class GUI : public sf::Drawable {
       m_posizione_mouse = MousePos::PalettaMorti;
     } else {
       m_posizione_mouse = MousePos::None;
-      std::cout << "nope" << '\n';
     }
   }
 
@@ -834,6 +878,7 @@ class GUI : public sf::Drawable {
     } else if (m_posizione_mouse == MousePos::PalettaVulnerabile && m_paletta_colori.IsActive()) {
       m_paletta_colori.AttivaInserimento();
       m_paletta_colori.AttivaVerde();
+
       return m_posizione_mouse;
     } else if (m_posizione_mouse == MousePos::PalettaInfetto && m_paletta_colori.IsActive()) {
       m_paletta_colori.AttivaInserimento();
@@ -847,6 +892,7 @@ class GUI : public sf::Drawable {
       m_paletta_colori.AttivaInserimento();
       m_paletta_colori.AttivaBianco();
       return m_posizione_mouse;
+
     } else {
       m_paletta_colori.DisattivaInserimento();
       return m_posizione_mouse;
@@ -862,7 +908,11 @@ class GUI : public sf::Drawable {
       return false;
     }
   }
-  Informazioni* GetPointerRiquadro(){return &m_riquadro_informazioni;}
+
+  Paletta* GetPointerPaletta() { return &m_paletta_colori; }
+  Informazioni* GetPointerRiquadro() { return &m_riquadro_informazioni; }
+
+  bool IsInserimentoAttivo() { return m_paletta_colori.IsInserimentoAttivo(); }
 };
 
 // QUI INIZIA LA PARTE SIMULAZIONE   ################################################
@@ -878,8 +928,6 @@ class GUI : public sf::Drawable {
 // QUI INIZIA LA PARTE SIMULAZIONE   ################################################
 
 // QUI INIZIA LA PARTE SIMULAZIONE   ################################################
-
-
 
 int Casuale();
 

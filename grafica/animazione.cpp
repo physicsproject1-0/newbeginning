@@ -42,7 +42,7 @@ void Animazione::Conteggio_contatti() {
     for (int j = 0; j < m_popolazione.size(); j++) {
       Persona& PallinaB = m_popolazione[j];
       if ((i != j) && (PallinaA.m_S == Stato::INFETTO)) {
-        if ((Modulo(PallinaA.m_centro - PallinaB.m_centro) >= 1.48f * PallinaB.m_raggio) &&
+        if ((Modulo(PallinaA.m_centro - PallinaB.m_centro) >=PallinaB.m_raggio) &&
             (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.51f * PallinaB.m_raggio)) {
           PallinaA.m_numero_contatti++;
         }
