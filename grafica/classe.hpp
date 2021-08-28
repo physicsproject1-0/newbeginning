@@ -13,9 +13,10 @@
 #include <stdexcept>
 #include <string>
 
+#include "animazione.hpp"
+#include "automa.hpp"
 #include "finestra.hpp"
 #include "gui.hpp"
-#include "animazione.hpp"
 
 #ifndef CLASSE_HPP
 #define CLASSE_HPP
@@ -51,7 +52,6 @@ class Mondo /* : public sf::Drawable  */ {
 
   // funzioni da usare nel main
 
-
   Finestra* Prendi_finestra() { return &m_window; }
 
   void Gestisci_input() {
@@ -62,14 +62,13 @@ class Mondo /* : public sf::Drawable  */ {
   }
 
   void Aggiorna() {
-    if (m_window.GetVista() == Vista::Animazione ) {
-      
-      if(!m_dinamica.IsStopped()){
-      m_dinamica.Aggiorna_Generale();
-      std::cout << "Aggiorno dinamica" << '\n';
-      m_statica.AzzeraOrologio();
+    if (m_window.GetVista() == Vista::Animazione) {
+      if (!m_dinamica.IsStopped()) {
+        m_dinamica.Aggiorna_Generale();
+        std::cout << "Aggiorno dinamica" << '\n';
+        m_statica.AzzeraOrologio();
       }
-      
+
     } else {
       m_statica.Avanza();
       std::cout << "Aggiorno statica" << '\n';

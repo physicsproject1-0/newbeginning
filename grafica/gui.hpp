@@ -92,7 +92,7 @@ class Textbox : public Bordi {  // origine al centro //chiamare pprima scrivi e 
 
     m_rettangolo.setOutlineThickness(1);  // lo spessore più piccolo altrimenti non si vede
   }
-  
+
   void set_posizione(sf::Vector2f posizione) {
     m_rettangolo.setPosition(posizione);
     m_testo.setPosition(posizione);
@@ -1120,7 +1120,7 @@ class Animazione : public sf::Drawable {
 
 // QUI INIZIA LA PARTE AUTOMA   ################################################
 
-class Cellula : public Bordi {  // se è una struct non funziona l'inheritance?
+/* class Cellula : public Bordi {  // se è una struct non funziona l'inheritance?
                                 // metterci anche states altrimenti rompe il casso
                                 // non posso loadare un font qui dentro direttamente
 
@@ -1161,7 +1161,7 @@ class Cellula : public Bordi {  // se è una struct non funziona l'inheritance?
 };
 
 class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUERE I MORTI DAI GUARITI
-  /* sf::Font font; */
+  // sf::Font font;
 
   // mettere errori per m_dimensioni minori di 0?
   std::vector<std::vector<Cellula>> m_grid;
@@ -1209,200 +1209,203 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
     /* if (!font.loadFromFile("Arial.ttf")) {
       throw std::runtime_error{"texture loading failed"};
     } */
-    /*  try {
-       if (!font.loadFromFile("Arial.ttf")) {
-         throw std::runtime_error{"denominator is zero"};
-       }
-     } catch (std::runtime_error const& e) {
-       std::cerr << e.what() << '\n';  //
-     } */
-
-    float t_lunghezza_x = m_dimensioni.x / m_numero_lato;
-
-    float t_lunghezza_y = m_dimensioni.y / m_numero_lato;
-
-    for (int i = 0; i < m_numero_lato; i++) {
-      std::vector<Cellula> riga;
-      for (int j = 0; j < m_numero_lato; j++) {
-        sf::Vector2f m_posizionemovente(m_posizione.x + j * t_lunghezza_x, m_posizione.y + i * t_lunghezza_y);
-        Cellula riempi(m_posizionemovente, sf::Vector2f(t_lunghezza_x, t_lunghezza_y) /* , &font */);
-
-        riga.push_back(riempi);
-
-        // i per le righe, j per le colonne
-      }
-      m_grid.push_back(riga);
-    }
-    Genera(infetti, rimossi);
-  }
-
-  Bordi get_bordi() { return limiti; }
-
-  void Genera(int infette, int rimosse) {
-    assert(infette + rimosse < m_numero_lato * m_numero_lato);
-    srand(time(NULL));
-
-    for (int a = 0; a < infette; a++) {
-      int riga = rand() % m_numero_lato;
-      int colonna = rand() % m_numero_lato;
-      if (m_grid[riga][colonna].m_S != Stato::VULNERABILE) {
-        a--;
-        continue;
-      }
-      m_grid[riga][colonna].m_S = Stato::INFETTO;
-      m_grid[riga][colonna].Aggiorna_colore();
-    }
-
-    for (int a = 0; a < rimosse; a++) {
-      int riga = rand() % m_numero_lato;
-      int colonna = rand() % m_numero_lato;
-      if (m_grid[riga][colonna].m_S != Stato::VULNERABILE) {
-        a--;
-        continue;
-      }
-      m_grid[riga][colonna].m_S = Stato::RIMOSSO;
-      m_grid[riga][colonna].Aggiorna_colore();
-    }
-  }
-
-  bool Esiste(int i, int j) {
-    if (i < 0 || i >= m_numero_lato || j < 0 || j >= m_numero_lato) {
-      return false;
-    }
-    return true;
-  }
-  /* template <typename C>
-  void censimento (C const& cell) {
-    switch (cell.m_S) {
-
- Censimento censimento(Cellula const& cell) {
-   popolazione = {0, 0, 0, 0};
-   switch (cell.S) {
-     case (Stato::VULNERABILE):
-       popolazione.m_suscettibili++;
-       break;
-
-     case (Stato::INFETTO):
-       popolazione.m_infetti++;
-       break;
-
-     case (Stato::GUARITO):
-       popolazione.m_guariti++;
-
-  default:
-  popolazione.m_morti++;
-  }
+/*  try {
+   if (!font.loadFromFile("Arial.ttf")) {
+     throw std::runtime_error{"denominator is zero"};
+   }
+ } catch (std::runtime_error const& e) {
+   std::cerr << e.what() << '\n';  //
  } */
 
-  void Aggiorna_counter(int i, int j) {
-    Cellula& cell = m_grid[i][j];
+/*
 
-    for (int a = 0; a <= 2; a++) {
-      if (Esiste(i - 1, j - 1 + a)) {
-        if (m_grid[i - 1][j - 1 + a].m_S == Stato::INFETTO) {
-          cell.m_counter++;
-        }
-      }
-      if (Esiste(i + 1, j - 1 + a)) {
-        if (m_grid[i + 1][j - 1 + a].m_S == Stato::INFETTO) {
-          cell.m_counter++;
-        }
-      }
-    }
-    if (Esiste(i, j - 1)) {
-      if (m_grid[i][j - 1].m_S == Stato::INFETTO) {
-        cell.m_counter++;
-      }
-    }
-    if (Esiste(i, j + 1)) {
-      if (m_grid[i][j + 1].m_S == Stato::INFETTO) {
-        cell.m_counter++;
-      }
-    }
-  }
+float t_lunghezza_x = m_dimensioni.x / m_numero_lato;
 
-  void Aggiorna() {
-    srand(time(NULL));
-    m_giorni++;
-    popolazione = {0, 0, 0, 0};
-    for (int i = 0; i < m_numero_lato; i++) {
-      for (int j = 0; j < m_numero_lato; j++) {
-        Cellula& cell = m_grid[i][j];
-        /*  censimento(cell); */
+float t_lunghezza_y = m_dimensioni.y / m_numero_lato;
 
-        if (cell.m_S == Stato::VULNERABILE) {
-          int esponente = cell.m_counter;
-          // cell.m_numero.setString(std::to_string(esponente));
-          if (esponente == 0) {
-            continue;
-          } else {
-            float prob_sano = pow(1 - m_probabilita_contagio, esponente);  // beta o gamma? beta sicuro
+for (int i = 0; i < m_numero_lato; i++) {
+ std::vector<Cellula> riga;
+ for (int j = 0; j < m_numero_lato; j++) {
+   sf::Vector2f m_posizionemovente(m_posizione.x + j * t_lunghezza_x, m_posizione.y + i * t_lunghezza_y);
+   Cellula riempi(m_posizionemovente, sf::Vector2f(t_lunghezza_x, t_lunghezza_y) /* , &font );
 
-            float estrazione = (rand() % 101) / 100.f;  // IL .F è FONDAMENTALE
+  /* riga.push_back(riempi);
 
-            if (estrazione > prob_sano) {
-              cell.m_S = Stato::INFETTO;
+   // i per le righe, j per le colonne
+ }
+ m_grid.push_back(riga);
+}
+Genera(infetti, rimossi);
+}
 
-              cell.Aggiorna_colore();
-            }
-          }
-        }
+Bordi get_bordi() { return limiti; }
 
-        else if (cell.m_S == Stato::INFETTO) {
-          cell.m_infection_days++;
-          if ((rand() % 100) / 100.f < m_probabilita_guarigione) {
-            cell.m_S = Stato::RIMOSSO;
-            cell.Aggiorna_colore();
-            // qua forse ci sta fare così
-          }
-        }
+void Genera(int infette, int rimosse) {
+assert(infette + rimosse < m_numero_lato * m_numero_lato);
+srand(time(NULL));
 
-        cell.m_counter = 0;
-      }
-    }
-  }
+for (int a = 0; a < infette; a++) {
+ int riga = rand() % m_numero_lato;
+ int colonna = rand() % m_numero_lato;
+ if (m_grid[riga][colonna].m_S != Stato::VULNERABILE) {
+   a--;
+   continue;
+ }
+ m_grid[riga][colonna].m_S = Stato::INFETTO;
+ m_grid[riga][colonna].Aggiorna_colore();
+}
 
-  /*void contatore (){
-    stampa il censimento, non so come si fa. Edo aiutami tu
+for (int a = 0; a < rimosse; a++) {
+ int riga = rand() % m_numero_lato;
+ int colonna = rand() % m_numero_lato;
+ if (m_grid[riga][colonna].m_S != Stato::VULNERABILE) {
+   a--;
+   continue;
+ }
+ m_grid[riga][colonna].m_S = Stato::RIMOSSO;
+ m_grid[riga][colonna].Aggiorna_colore();
+}
+}
 
-  } */
+bool Esiste(int i, int j) {
+if (i < 0 || i >= m_numero_lato || j < 0 || j >= m_numero_lato) {
+ return false;
+}
+return true;
+}
+/* template <typename C>
+void censimento (C const& cell) {
+switch (cell.m_S) {
 
-  void Avanza() {
-    if (m_orologio.getElapsedTime().asSeconds() > 3) {
-      for (int i = 0; i < m_numero_lato; i++) {
-        for (int j = 0; j < m_numero_lato; j++) {
-          Aggiorna_counter(i, j);
-        }
-      }
-      Aggiorna();
-      // contatore();
-      m_orologio.restart();
-    }
-  }
+Censimento censimento(Cellula const& cell) {
+popolazione = {0, 0, 0, 0};
+switch (cell.S) {
+ case (Stato::VULNERABILE):
+   popolazione.m_suscettibili++;
+   break;
 
-  std::pair<int, int> CheckMousePosition(sf::Vector2f t_coordinate_mouse) {
-    for (int i = 0; i < m_numero_lato; i++) {
-      for (int j = 0; j < m_numero_lato; j++) {
-        if (m_grid[i][j].getlimiti().contains(t_coordinate_mouse)) {
-          return std::pair<int, int>{i, j};
-        }
-      }
-    }
-    return std::pair<int, int>{-1, -1};
-  }
+ case (Stato::INFETTO):
+   popolazione.m_infetti++;
+   break;
 
-  void ChangeStatus(std::pair<int, int> t_coordinate, Stato t_stato) { m_grid[t_coordinate.first][t_coordinate.second].m_S = t_stato; }
+ case (Stato::GUARITO):
+   popolazione.m_guariti++;
 
-  void AzzeraOrologio() { m_orologio.restart(); }
+default:
+popolazione.m_morti++;
+}
+}
 
-  void StopAutoma() { m_is_stopped = true; }
+void Aggiorna_counter(int i, int j) {
+Cellula& cell = m_grid[i][j];
 
-  void StartAutoma() {
-    m_is_stopped = false;
-    m_orologio.restart();
-  }
+for (int a = 0; a <= 2; a++) {
+ if (Esiste(i - 1, j - 1 + a)) {
+   if (m_grid[i - 1][j - 1 + a].m_S == Stato::INFETTO) {
+     cell.m_counter++;
+   }
+ }
+ if (Esiste(i + 1, j - 1 + a)) {
+   if (m_grid[i + 1][j - 1 + a].m_S == Stato::INFETTO) {
+     cell.m_counter++;
+   }
+ }
+}
+if (Esiste(i, j - 1)) {
+ if (m_grid[i][j - 1].m_S == Stato::INFETTO) {
+   cell.m_counter++;
+ }
+}
+if (Esiste(i, j + 1)) {
+ if (m_grid[i][j + 1].m_S == Stato::INFETTO) {
+   cell.m_counter++;
+ }
+}
+}
 
-  bool IsStopped() { return m_is_stopped; }
+void Aggiorna() {
+srand(time(NULL));
+m_giorni++;
+popolazione = {0,0,0,0};
+for (int i = 0; i < m_numero_lato; i++) {
+ for (int j = 0; j < m_numero_lato; j++) {
+   Cellula& cell = m_grid[i][j];
+  /*  censimento(cell);
+
+   if (cell.m_S == Stato::VULNERABILE) {
+     int esponente = cell.m_counter;
+     // cell.m_numero.setString(std::to_string(esponente));
+     if (esponente == 0) {
+       continue;
+     } else {
+       float prob_sano = pow(1 - m_probabilita_contagio, esponente);  // beta o gamma? beta sicuro
+
+       float estrazione = (rand() % 101) / 100.f;  // IL .F è FONDAMENTALE
+
+       if (estrazione > prob_sano) {
+         cell.m_S = Stato::INFETTO;
+
+         cell.Aggiorna_colore();
+       }
+     }
+   }
+
+   else if (cell.m_S == Stato::INFETTO) {
+     cell.m_infection_days++;
+     if ((rand() % 100) / 100.f < m_probabilita_guarigione) {
+       cell.m_S = Stato::RIMOSSO;
+       cell.Aggiorna_colore();
+       // qua forse ci sta fare così
+     }
+   }
+
+   cell.m_counter = 0;
+ }
+}
+}
+
+/*void contatore (){
+stampa il censimento, non so come si fa. Edo aiutami tu
+
+}
+
+void Avanza() {
+if (m_orologio.getElapsedTime().asSeconds() > 3) {
+ for (int i = 0; i < m_numero_lato; i++) {
+   for (int j = 0; j < m_numero_lato; j++) {
+     Aggiorna_counter(i, j);
+   }
+ }
+ Aggiorna();
+ //contatore();
+ m_orologio.restart();
+}
+}
+
+std::pair<int, int> CheckMousePosition(sf::Vector2f t_coordinate_mouse) {
+for (int i = 0; i < m_numero_lato; i++) {
+ for (int j = 0; j < m_numero_lato; j++) {
+   if (m_grid[i][j].getlimiti().contains(t_coordinate_mouse)) {
+     return std::pair<int, int>{i, j};
+   }
+ }
+}
+return std::pair<int, int>{-1, -1};
+}
+
+void ChangeStatus(std::pair<int, int> t_coordinate, Stato t_stato) { m_grid[t_coordinate.first][t_coordinate.second].m_S = t_stato; }
+
+void AzzeraOrologio() { m_orologio.restart(); }
+
+void StopAutoma() { m_is_stopped = true; }
+
+void StartAutoma() {
+m_is_stopped = false;
+m_orologio.restart();
+}
+
+bool IsStopped() { return m_is_stopped; }
 };
+*/
 
 #endif

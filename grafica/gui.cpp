@@ -111,15 +111,17 @@ void GUI::aggiorna_posizione(sf::Vector2f punto_in_altosx, sf::Vector2f dimensio
 
   m_casella_animazione.set_posizione(
       sf::Vector2f(punto_in_altosx.x + t_larghezza_sfondo_grigio / 2, t_posizione_aggancio_alto_sx.y + t_altezza_sfondo_grigio / 6));
-  m_casella_automa.set_posizione(sf::Vector2f(punto_in_altosx.x + t_larghezza_sfondo_grigio / 2, t_posizione_aggancio_alto_sx.y + t_altezza_sfondo_grigio / 3));
+  m_casella_automa.set_posizione(
+      sf::Vector2f(punto_in_altosx.x + t_larghezza_sfondo_grigio / 2, t_posizione_aggancio_alto_sx.y + t_altezza_sfondo_grigio / 3));
 
   m_testo_animazione.set_posizione(
       sf::Vector2f(punto_in_altosx.x + t_larghezza_sfondo_grigio / 2, m_casella_animazione.getlimiti().top - 10));  // riferiti alle checkbox
   m_testo_automa.set_posizione(sf::Vector2f(punto_in_altosx.x + t_larghezza_sfondo_grigio / 2, m_casella_automa.getlimiti().top - 10));
 
-  m_pulsante_play.set_posizione(sf::Vector2f(t_posizione_aggancio_alto_sx.x + t_larghezza_sfondo_grigio / 4, t_posizione_aggancio_alto_sx.y + t_altezza_sfondo_grigio / 2));
-  m_pulsante_pausa.set_posizione(
-      sf::Vector2f(t_posizione_aggancio_alto_sx.x + (t_larghezza_sfondo_grigio / 4) * 3, t_posizione_aggancio_alto_sx.y + t_altezza_sfondo_grigio / 2));
+  m_pulsante_play.set_posizione(
+      sf::Vector2f(t_posizione_aggancio_alto_sx.x + t_larghezza_sfondo_grigio / 4, t_posizione_aggancio_alto_sx.y + t_altezza_sfondo_grigio / 2));
+  m_pulsante_pausa.set_posizione(sf::Vector2f(t_posizione_aggancio_alto_sx.x + (t_larghezza_sfondo_grigio / 4) * 3,
+                                              t_posizione_aggancio_alto_sx.y + t_altezza_sfondo_grigio / 2));
 
   m_paletta_colori.ImpostaPosizione(sf::Vector2f(t_posizione_aggancio_alto_sx.x+t_larghezza_sfondo_grigio/2, t_posizione_aggancio_alto_sx.y +(t_altezza_sfondo_grigio/4)*3));
 
@@ -127,7 +129,7 @@ void GUI::aggiorna_posizione(sf::Vector2f punto_in_altosx, sf::Vector2f dimensio
 
 }
 
-/* double Animazione::Modulo(sf::Vector2f const& vettore) { return sqrt(pow(vettore.x, 2) + pow(vettore.y, 2)); }
+/*
 
 int Animazione::Check_occur(Persona const& persona, int raggio) {  // decidere un raggio accettabile
   int occur = 0;

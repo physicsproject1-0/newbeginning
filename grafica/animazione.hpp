@@ -12,9 +12,8 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+
 #include "gui.hpp"
-
-
 
 #ifndef ANIMAZIONE_HPP
 #define ANIMAZIONE_HPP
@@ -103,7 +102,6 @@ class Animazione : public sf::Drawable {
   void StopAnimazione();
   void StartAnimazione();
   bool IsStopped();
-
   void Aggiorna_Generale();
 };
 

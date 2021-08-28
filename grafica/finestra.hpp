@@ -1,5 +1,7 @@
 #include <SFML/Graphics.hpp>
+
 #include "animazione.hpp"
+#include "automa.hpp"
 #include "gui.hpp"
 
 #ifndef FINESTRA_HPP
@@ -12,7 +14,7 @@ class Finestra {
   std::string v_titolo;
   sf::Vector2u v_dimensioni;
 
-  sf::Vector2u v_dimensioni_minime; //quelle con cui viene creata
+  sf::Vector2u v_dimensioni_minime;  // quelle con cui viene creata
 
   sf::RenderWindow v_mainfinestra;
   bool v_Isclosed;
@@ -29,7 +31,6 @@ class Finestra {
   GUI* v_overlay;
   Animazione* m_dinamico;
   Automa* m_statico;
-  
 
   void Setup(const std::string& titolo, const sf::Vector2u& dimensione);
   void Create();
@@ -37,7 +38,8 @@ class Finestra {
 
  public:
   Finestra();  // di default facciamo che la dimensione è 1280*720
-  Finestra(const std::string& titolo, const sf::Vector2u& dimensione, GUI* overlay, Animazione* t_dinamico, Automa* t_statico, const Bordi& t_bordo_animazione,
+  Finestra(const std::string& titolo, const sf::Vector2u& dimensione, GUI* overlay, Animazione* t_dinamico, Automa* t_statico,
+           const Bordi& t_bordo_animazione,
            const Bordi& t_bordo_automa);  // passo tipi strani, quindi passo by ref
   ~Finestra();
 
@@ -60,9 +62,7 @@ class Finestra {
   bool Isfullscreen();
 
   void SetVista(sf::View vista);
-  Vista GetVista( ){
-    return v_vista;
-  };
+  Vista GetVista() { return v_vista; };
 };
 
 #endif
