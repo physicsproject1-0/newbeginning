@@ -21,34 +21,36 @@
 #ifndef CLASSE_HPP
 #define CLASSE_HPP
 
-// per disegnare altre cose oltre il vertex array
-/* class Rappresentazione : public sf::Drawable { */
+struct Inserimento {
+  int m_d_numero_persone;
+  float m_d_parametro_beta;  // probabilita contagio
+  float m_d_parametro_gamma;
+  int m_d_infetti_iniziali;
+  int m_d_rimossi_iniziali;
 
-class Mondo /* : public sf::Drawable  */ {
- private:  // la draw non va nel protected??
-  /* sf::VertexArray Griglia; */
+  int m_s_dimensione_lato;
+  float m_s_parametro_beta;   // probabilita contagio
+  float m_s_parametro_gamma;  // probabilita guarigione
+  float m_s_parametro_eta;    // probabilita morte
+  int m_s_infetti_iniziali;
+  int m_s_rimossi_iniziali;
+
+  Inserimento();
+    
+};
+
+class Mondo {
+ private:
   GUI m_overlay;
 
-  Animazione m_dinamica;  // fare altra classe che contiene sia griglia sia bordi, gestire tutto lì
+  Animazione m_dinamica;
 
   Automa m_statica;
-  // non ho capito perhcè qui dentro non ci posso mettere il costruttore;
 
   Finestra m_window;
-  /* virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    states.texture = &m_ominoprova;
-    // capire che madonna succede qui dentro!!!
-    target.draw(Griglia, states);
-  } */
-
-  /* void settexture(); */
-
-  // perchè la devo mettere qua
-  // virtual qua non ce lo devo mettere, giusto? tanto non creerò classi derivate da questa
-  // poi come fa window.draw(entity) a chiamare internamente entity.draw se è nella parte privata?!
 
  public:
-  Mondo();
+  Mondo(Inserimento t_inserimento);
 
   // funzioni da usare nel main
 
@@ -65,15 +67,15 @@ class Mondo /* : public sf::Drawable  */ {
     if (m_window.GetVista() == Vista::Animazione) {
       if (!m_dinamica.IsStopped()) {
         m_dinamica.Aggiorna_Generale();
-      
+
         m_statica.AzzeraOrologio();
       }
 
     } else {
       if (!m_statica.IsStopped()) {
-      m_statica.Avanza();
-   
-      m_dinamica.AzzeraOrologio();
+        m_statica.Avanza();
+
+        m_dinamica.AzzeraOrologio();
       }
     }
   }
@@ -82,11 +84,9 @@ class Mondo /* : public sf::Drawable  */ {
     m_window.Pulisci();
     if (m_window.GetVista() == Vista::Animazione) {
       m_window.Disegna(m_dinamica);
-    
 
     } else {
       m_window.Disegna(m_statica);
-   
     }
 
     m_window.Disegna(m_overlay);

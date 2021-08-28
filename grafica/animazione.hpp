@@ -37,6 +37,12 @@ class Animazione : public sf::Drawable {
   sf::VertexArray m_struttura;
   std::map<int, Persona> m_popolazione;  // vedere se meglio vector
 
+  int m_d_numero_persone;
+  float m_d_parametro_beta;  // probabilita contagio
+  float m_d_parametro_gamma;
+  int m_d_infetti_iniziali;
+  int m_d_rimossi_iniziali;
+
   // Nel momento in cui collidono due persone, se una era infetta, cambia lo stato anche dell' altra
   void Collisione();
   void Conteggio_contatti();
@@ -50,7 +56,6 @@ class Animazione : public sf::Drawable {
 
   // Ho immaginato che al 30% muoiano e al 70% guariscono, si possono cambiare le probabilita' of course
   // Funzione in cui carico sullo stato MORTO al 30% la texture grigia e al 70% quella azzurra
-  // void SetWhiteTextures();
   void SetAllTextures();
   virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.texture = &m_ominoprova;
@@ -59,15 +64,23 @@ class Animazione : public sf::Drawable {
   }
 
  public:
-  Animazione(int n) : m_limiti(sf::Vector2f(600, 400), sf::Vector2f(100, 100)), m_is_stopped{true}, popolazione{n - 1, 1, 0, 0} {
+  Animazione(int a, int b, int c, float t_d_parametro_beta, float t_d_parametro_gamma)
+      : m_limiti(sf::Vector2f(600, 400), sf::Vector2f(100, 100)),
+        m_is_stopped{true},
+        popolazione{a - b - c, b, c, 0},
+        m_d_parametro_beta{t_d_parametro_beta},
+        m_d_parametro_gamma{t_d_parametro_gamma} {
     if (!m_ominoprova.loadFromFile("uomini.png")) {
       throw std::runtime_error{"texture loading failed"};  // catcharlo
     }
 
     Persona m_prova;
 
+    srand(time(NULL));
+    int totale = a + b + c;
+
     // Riempio la mappa (m_popolazione) di persone
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < totale; i++) {
       m_prova.m_raggio = 13.f;
       m_prova.m_centro =
           sf::Vector2f(rand() % static_cast<int>(m_limiti.getlimiti().width - 2 * m_prova.m_raggio) + m_limiti.getlimiti().left + m_prova.m_raggio,

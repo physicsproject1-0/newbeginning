@@ -5,7 +5,9 @@
 
 int main() {
   
-  Mondo map;
+  Inserimento inserimento_dati;
+
+  Mondo map(inserimento_dati);
 
   while (!map.Prendi_finestra()->Isclosed()) {
     // handle events

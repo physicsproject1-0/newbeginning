@@ -41,7 +41,9 @@ void Animazione::Conteggio_contatti() {
       if ((i != j) && (PallinaA.m_S == Stato::INFETTO)) {
         if ((Modulo(PallinaA.m_centro - PallinaB.m_centro) >= PallinaB.m_raggio) &&
             (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.51f * PallinaB.m_raggio)) {
-          PallinaA.m_numero_contatti++;
+          if (Casuale() / 100 < m_d_parametro_gamma) {
+            PallinaA.m_numero_contatti++;
+          }
         }
       } else {
         continue;
@@ -90,15 +92,14 @@ void Animazione::SetRedTextures() {
   }
 }
 
-
 void Animazione::SetAllTextures() {
   for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
     sf::Vertex* iter = &m_struttura[i * 3];
-    
+
     switch (PallinaA.m_S) {
       case Stato::VULNERABILE:
-        
+
         iter[0].texCoords = sf::Vector2f(110.f, 20.f);  // coordinate pupini verdi
         iter[1].texCoords = sf::Vector2f(20.f, 210.f);
         iter[2].texCoords = sf::Vector2f(205.f, 210.f);
