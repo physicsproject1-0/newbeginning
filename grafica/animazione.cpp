@@ -1,6 +1,7 @@
 #include "animazione.hpp"
 
-
+#include "classe.hpp"
+#include "finestra.hpp"
 #include "gui.hpp"
 
 void Animazione::Collisione() {
@@ -151,7 +152,8 @@ void Animazione::Check_borders() {
     }
   }
 }
-
+void Animazione::AzzeraOrologio() { m_orologio2.restart(); }
+double Animazione::Modulo(sf::Vector2f const& vettore) { return sqrt(pow(vettore.x, 2) + pow(vettore.y, 2)); }
 void Animazione::StopAnimazione() { m_is_stopped = true; }
 void Animazione::StartAnimazione() {
   m_is_stopped = false;
@@ -172,18 +174,4 @@ void Animazione::Aggiorna_Generale() {
   Aggiorna_lista();
 
   Aggiorna_griglia();
-}
-
-void Animazione::AzzeraOrologio() { m_orologio2.restart(); }
-
-double Animazione::Modulo(sf::Vector2f const& vettore) { return sqrt(pow(vettore.x, 2) + pow(vettore.y, 2)); }
-
-int Animazione::Check_occur(Persona const& persona, int raggio) {  // decidere un raggio accettabile
-  int occur = 0;
-  for (int i = 0; i < m_popolazione.size(); i++) {
-    if (Modulo(persona.m_centro - m_popolazione[i].m_centro) <= raggio) {
-      occur++;
-    }
-  }
-  return occur;
 }

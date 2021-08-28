@@ -70,7 +70,7 @@ GUI::GUI(sf::Vector2f dimensione)
       m_casella_automa(sf::Vector2f(40, 40)),
       m_pulsante_play(30, TipoPulsante::Play),
       m_pulsante_pausa(30, TipoPulsante::Pausa),
-      m_paletta_colori(sf::Vector2f(dimensione.x / 1.3, dimensione.y*0.4), &m_font), 
+      m_paletta_colori(sf::Vector2f(dimensione.x / 1.3, dimensione.y * 0.4), &m_font),
       m_posizione_mouse(MousePos::None) {
   if (!m_font.loadFromFile("Arial.ttf")) {
     throw std::runtime_error("font non caricato");
@@ -109,20 +109,23 @@ void GUI::aggiorna_posizione(sf::Vector2f punto_in_altosx, sf::Vector2f dimensio
 
   m_casella_animazione.set_posizione(
       sf::Vector2f(punto_in_altosx.x + t_larghezza_sfondo_grigio / 2, t_posizione_aggancio_alto_sx.y + t_altezza_sfondo_grigio / 6));
-  m_casella_automa.set_posizione(sf::Vector2f(punto_in_altosx.x + t_larghezza_sfondo_grigio / 2, t_posizione_aggancio_alto_sx.y + t_altezza_sfondo_grigio / 3));
+  m_casella_automa.set_posizione(
+      sf::Vector2f(punto_in_altosx.x + t_larghezza_sfondo_grigio / 2, t_posizione_aggancio_alto_sx.y + t_altezza_sfondo_grigio / 3));
 
   m_testo_animazione.set_posizione(
       sf::Vector2f(punto_in_altosx.x + t_larghezza_sfondo_grigio / 2, m_casella_animazione.getlimiti().top - 10));  // riferiti alle checkbox
   m_testo_automa.set_posizione(sf::Vector2f(punto_in_altosx.x + t_larghezza_sfondo_grigio / 2, m_casella_automa.getlimiti().top - 10));
 
-  m_pulsante_play.set_posizione(sf::Vector2f(t_posizione_aggancio_alto_sx.x + t_larghezza_sfondo_grigio / 4, t_posizione_aggancio_alto_sx.y + t_altezza_sfondo_grigio / 2));
-  m_pulsante_pausa.set_posizione(
-      sf::Vector2f(t_posizione_aggancio_alto_sx.x + (t_larghezza_sfondo_grigio / 4) * 3, t_posizione_aggancio_alto_sx.y + t_altezza_sfondo_grigio / 2));
+  m_pulsante_play.set_posizione(
+      sf::Vector2f(t_posizione_aggancio_alto_sx.x + t_larghezza_sfondo_grigio / 4, t_posizione_aggancio_alto_sx.y + t_altezza_sfondo_grigio / 2));
+  m_pulsante_pausa.set_posizione(sf::Vector2f(t_posizione_aggancio_alto_sx.x + (t_larghezza_sfondo_grigio / 4) * 3,
+                                              t_posizione_aggancio_alto_sx.y + t_altezza_sfondo_grigio / 2));
 
-  m_paletta_colori.ImpostaPosizione(sf::Vector2f(t_posizione_aggancio_alto_sx.x+t_larghezza_sfondo_grigio/2, t_posizione_aggancio_alto_sx.y +(t_altezza_sfondo_grigio/4)*3));
+  m_paletta_colori.ImpostaPosizione(sf::Vector2f(t_posizione_aggancio_alto_sx.x + t_larghezza_sfondo_grigio / 2,
+                                                 t_posizione_aggancio_alto_sx.y + (t_altezza_sfondo_grigio / 4) * 3));
 }
 
-/* double Animazione::Modulo(sf::Vector2f const& vettore) { return sqrt(pow(vettore.x, 2) + pow(vettore.y, 2)); }
+/*
 
 int Animazione::Check_occur(Persona const& persona, int raggio) {  // decidere un raggio accettabile
   int occur = 0;

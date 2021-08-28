@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "animazione.hpp"
+#include "automa.hpp"
 #include "gui.hpp"
 
 sf::Vector2f converti(sf::Vector2u vettore) { return sf::Vector2f(vettore.x, vettore.y); }
@@ -47,12 +48,11 @@ void Finestra::Update() {
       v_Isclosed = true;
     }
     if (evento.type == sf::Event::Resized) {
-      
       sf::Vector2u dimensioni_nuove = v_mainfinestra.getSize();
-      if (dimensioni_nuove.x<v_dimensioni_minime.x||dimensioni_nuove.y<v_dimensioni_minime.y){
-        dimensioni_nuove=v_dimensioni_minime;
+      if (dimensioni_nuove.x < v_dimensioni_minime.x || dimensioni_nuove.y < v_dimensioni_minime.y) {
+        dimensioni_nuove = v_dimensioni_minime;
         v_mainfinestra.setSize(dimensioni_nuove);
-        }
+      }
       v_dimensioni = dimensioni_nuove;
 
       vista_animazione.setSize(converti(dimensioni_nuove));  // le dimensioni si devono aggiornare per entrambe le viste ad ogni resize
