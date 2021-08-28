@@ -53,7 +53,7 @@ class Animazione : public sf::Drawable {
   void SetRedTextures();
 
   // Ho immaginato che al 30% muoiano e al 70% guariscono, si possono cambiare le probabilita' of course
-  // Funzione in cui carico sullo stato RIMOSSO al 30% la texture grigia e al 70% quella azzurra
+  // Funzione in cui carico sullo stato MORTO al 30% la texture grigia e al 70% quella azzurra
   void SetWhiteTextures();
   virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.texture = &m_ominoprova;

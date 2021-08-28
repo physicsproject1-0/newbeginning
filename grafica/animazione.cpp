@@ -54,7 +54,7 @@ void Animazione::Morte_persona() {
   for (int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
     if ((PallinaA.m_S == Stato::INFETTO) && (PallinaA.m_numero_contatti == 35)) {
-      PallinaA.m_S = Stato::RIMOSSO;
+      PallinaA.m_S = Stato::MORTO;
       SetWhiteTextures();
     } else {
       continue;
@@ -93,9 +93,8 @@ void Animazione::SetRedTextures() {
 void Animazione::SetWhiteTextures() {
   for (int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
-    if (PallinaA.m_S == Stato::RIMOSSO) {  // Aggiungere stato guarito/morto      
+    if (PallinaA.m_S == Stato::MORTO) {  // Aggiungere stato guarito/morto      
       if (Casuale() < 30) {
-        PallinaA.m_S = Stato::MORTO;
         sf::Vertex* iter = &m_struttura[i * 3];
         iter[0].texCoords = sf::Vector2f(520.f, 20.f);  // coordinate pupini grigi
         iter[1].texCoords = sf::Vector2f(430.f, 210.f);

@@ -8,17 +8,19 @@ void Cellula::Aggiorna_colore() {
   switch (m_S) {
     case (Stato::INFETTO):  // Carichiamo la red texture...
       m_rettangolo.setFillColor(sf::Color::Red);
-      std::cout << "sto Aggiornando il rosso" << '\n';
-
       break;
 
-    case (Stato::RIMOSSO):  // carichiamo la white texture
+    case (Stato::GUARITO):  // carichiamo la white texture
       m_rettangolo.setFillColor(sf::Color::Cyan);
       break;
 
     case (Stato::VULNERABILE):  // carichiamo la green texture
 
       m_rettangolo.setFillColor(sf::Color::Green);
+      break;
+    
+    case (Stato::MORTO):
+      m_rettangolo.setFillColor(sf::Color::White);
       break;
   }
 }
@@ -44,7 +46,7 @@ void Automa::Genera(int infette, int rimosse) {
       a--;
       continue;
     }
-    m_grid[riga][colonna].m_S = Stato::RIMOSSO;
+    m_grid[riga][colonna].m_S = Stato::GUARITO;
     m_grid[riga][colonna].Aggiorna_colore();
   }
 }
@@ -112,7 +114,8 @@ void Automa::Aggiorna() {
       else if (cell.m_S == Stato::INFETTO) {
         cell.m_infection_days++;
         if (Casuale() / 100.f < m_probabilita_guarigione) {
-          cell.m_S = Stato::RIMOSSO;
+          {cell.m_S = Stato::MORTO;}
+          
           cell.Aggiorna_colore();
           // qua forse ci sta fare così
         }

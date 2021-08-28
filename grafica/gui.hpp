@@ -857,7 +857,7 @@ class GUI : public sf::Drawable {
 
 // QUI INIZIA LA PARTE SIMULAZIONE   ################################################
 
-enum class Stato { VULNERABILE, INFETTO, RIMOSSO, MORTO, GUARITO };
+enum class Stato { VULNERABILE, INFETTO, MORTO, GUARITO };
 
 int Casuale();
 
