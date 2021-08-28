@@ -50,11 +50,14 @@ void Animazione::Conteggio_contatti() {
   }
 }
 
-void Animazione::Morte_persona() {
+void Animazione::Morte_persona() {                                //al 30 % la persona muore, al 70% guarisce
   for (int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
     if ((PallinaA.m_S == Stato::INFETTO) && (PallinaA.m_numero_contatti == 35)) {
       PallinaA.m_S = Stato::MORTO;
+      if (Casuale() > 30) {
+        PallinaA.m_S = Stato::GUARITO;
+      }
     } else {
       continue;
     }
@@ -87,29 +90,6 @@ void Animazione::SetRedTextures() {
   }
 }
 
-// Ho immaginato che al 30% muoiano e al 70% guariscono, si possono cambiare le probabilita' of course
-// Funzione in cui carico sullo stato RIMOSSO al 30% la texture grigia e al 70% quella azzurra
-/*void Animazione::SetWhiteTextures() {
-  for (int i = 0; i < m_popolazione.size(); i++) {
-    Persona& PallinaA = m_popolazione[i];
-    if (PallinaA.m_S == Stato::MORTO) {  // Aggiungere stato guarito/morto
-      if (Casuale() < 30) {
-        sf::Vertex* iter = &m_struttura[i * 3];
-        iter[0].texCoords = sf::Vector2f(520.f, 20.f);  // coordinate pupini grigi
-        iter[1].texCoords = sf::Vector2f(430.f, 210.f);
-        iter[2].texCoords = sf::Vector2f(615.f, 210.f);
-      } else {
-        PallinaA.m_S = Stato::GUARITO;
-        sf::Vertex* iter = &m_struttura[i * 3];
-        iter[0].texCoords = sf::Vector2f(730.f, 20.f);  // coordinate pupini azzurri
-        iter[1].texCoords = sf::Vector2f(635.f, 210.f);
-        iter[2].texCoords = sf::Vector2f(825.f, 210.f);
-      }
-    } else {
-      continue;
-    }
-  }
-}*/
 
 void Animazione::SetAllTextures() {
   for (int i = 0; i < m_popolazione.size(); i++) {
@@ -205,7 +185,5 @@ void Animazione::Aggiorna_Generale() {
 
   Aggiorna_griglia();
 
-  // SetRedTextures();
   SetAllTextures();
-  // SetWhiteTextures();
 }
