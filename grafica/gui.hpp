@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <random>
 #include <stdexcept>
 #include <string>
 
@@ -857,6 +858,8 @@ class GUI : public sf::Drawable {
 // QUI INIZIA LA PARTE SIMULAZIONE   ################################################
 
 enum class Stato { VULNERABILE, INFETTO, RIMOSSO, MORTO, GUARITO };
+
+int Casuale();
 
 /* struct Persona {
   sf::Vector2f m_centro;

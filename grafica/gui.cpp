@@ -129,6 +129,15 @@ void GUI::aggiorna_posizione(sf::Vector2f punto_in_altosx, sf::Vector2f dimensio
 
 }
 
+
+int Casuale() {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> dist(1, 100);
+
+  return dist(gen);
+}
+
 /*
 
 int Animazione::Check_occur(Persona const& persona, int raggio) {  // decidere un raggio accettabile

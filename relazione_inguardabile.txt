@@ -23,13 +23,15 @@ quantitativo: entrambe ritornano uno standard vector di ‘State’, il primo co
 Grazie ad un ciclo for, ‘riempimento’ inserisce i dati nell’algoritmo per generare la giornata successiva e con pushback() riempie il vettore.
 Sempre con un ciclo for, ‘convertitore’ (che ha come oggetto il vettore appena creato) approssima all’unità il numero di S, I, R  
 in modo da rispettare i seguenti criteri: 
-- il numero di suscettibili non può aumentare
-- il numero di rimossi non può diminuire
+- il numero di suscettibili non può aumentare rispetto alla giornata precedente
+- il numero di rimossi non può diminuire rispetto alla giornata precedente
 - se il numero di infetti è zero la situazione si stabilizza e i valori si mantengono inalterati il giorno seguente
+- quando tali condizioni sono soddisfatte, il sistema approssima per eccesso i valori con decimale più alto in modo da mantenere S+I+R=N
+
 Per verificare il corretto funzionamento di queste funzioni abbiamo scritto un file di test (doctest) per situazioni particolari facilmente
 intuibili a priori. 
 L'output è rappresentato dalla storia della simulazione, stampata su standard output, e da un grafico gnuplot che riporta le curve di andamento della popolazione.
-
+Per visualizzare il grafico è necessario gnuplot installato abbinato ad un xserver per l'apertura della finestra grafica.
 
 
 
