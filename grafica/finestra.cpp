@@ -3,6 +3,7 @@
 #include <SFML/Window.hpp>
 #include <iostream>
 
+#include "animazione.hpp"
 #include "gui.hpp"
 
 sf::Vector2f converti(sf::Vector2u vettore) { return sf::Vector2f(vettore.x, vettore.y); }

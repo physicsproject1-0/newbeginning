@@ -122,7 +122,7 @@ void GUI::aggiorna_posizione(sf::Vector2f punto_in_altosx, sf::Vector2f dimensio
   m_paletta_colori.ImpostaPosizione(sf::Vector2f(t_posizione_aggancio_alto_sx.x+t_larghezza_sfondo_grigio/2, t_posizione_aggancio_alto_sx.y +(t_altezza_sfondo_grigio/4)*3));
 }
 
-double Animazione::Modulo(sf::Vector2f const& vettore) { return sqrt(pow(vettore.x, 2) + pow(vettore.y, 2)); }
+/* double Animazione::Modulo(sf::Vector2f const& vettore) { return sqrt(pow(vettore.x, 2) + pow(vettore.y, 2)); }
 
 int Animazione::Check_occur(Persona const& persona, int raggio) {  // decidere un raggio accettabile
   int occur = 0;
@@ -132,4 +132,4 @@ int Animazione::Check_occur(Persona const& persona, int raggio) {  // decidere u
     }
   }
   return occur;
-}
+} */

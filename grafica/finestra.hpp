@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-
+#include "animazione.hpp"
 #include "gui.hpp"
 
 #ifndef FINESTRA_HPP

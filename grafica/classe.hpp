@@ -15,6 +15,7 @@
 
 #include "finestra.hpp"
 #include "gui.hpp"
+#include "animazione.hpp"
 
 #ifndef CLASSE_HPP
 #define CLASSE_HPP

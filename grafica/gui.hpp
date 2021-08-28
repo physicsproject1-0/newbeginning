@@ -551,8 +551,9 @@ struct Censimento {
   int m_infetti;
   int m_guariti;
   int m_morti;
+  
 };
-struct Persona {
+/* struct Persona {
   sf::Vector2f m_centro;
   float m_raggio;
   sf::Vector2f m_vel;
@@ -801,7 +802,7 @@ class Animazione : public sf::Drawable {
     Aggiorna_griglia();
   }
 };
-
+ */
 // QUI INIZIA LA PARTE AUTOMA   ################################################
 
 // QUI INIZIA LA PARTE AUTOMA   ################################################

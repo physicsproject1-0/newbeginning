@@ -1,6 +1,3 @@
-#ifndef ANIMAZIONE_HPP
-#define ANIMAZIONE_HPP
-
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
@@ -15,15 +12,13 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include "gui.hpp"
 
-enum class Stato { VULNERABILE, INFETTO, RIMOSSO, MORTO, GUARITO };
 
-struct Censimento {
-  int m_suscettibili;
-  int m_infetti;
-  int m_guariti;
-  int m_morti;
-};
+
+#ifndef ANIMAZIONE_HPP
+#define ANIMAZIONE_HPP
+
 struct Persona {
   sf::Vector2f m_centro;
   float m_raggio;
