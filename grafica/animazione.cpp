@@ -13,10 +13,8 @@ void Animazione::Collisione() {
 
         // Contagiosita' del 40%
         if ((i != j) && (PallinaB.m_S == Stato::INFETTO)) {
-          if (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.5 * PallinaB.m_raggio) {
-            srand(time(NULL));
-            int a = rand() % 100 + 1;
-            if (a < 40) {
+          if (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.5 * PallinaB.m_raggio) {            
+            if (Casuale() < 40) {
               PallinaA.m_S = Stato::INFETTO;
               SetRedTextures();
             } else {
@@ -32,6 +30,8 @@ void Animazione::Collisione() {
     }
   }
 }
+
+
 
 void Animazione::Conteggio_contatti() {
   for (int i = 0; i < m_popolazione.size(); i++) {
@@ -93,10 +93,8 @@ void Animazione::SetRedTextures() {
 void Animazione::SetWhiteTextures() {
   for (int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
-    if (PallinaA.m_S == Stato::RIMOSSO) {  // Aggiungere stato guarito/morto
-      srand(time(NULL));
-      int a = rand() % 100 + 1;
-      if (a < 30) {
+    if (PallinaA.m_S == Stato::RIMOSSO) {  // Aggiungere stato guarito/morto      
+      if (Casuale() < 30) {
         PallinaA.m_S = Stato::MORTO;
         sf::Vertex* iter = &m_struttura[i * 3];
         iter[0].texCoords = sf::Vector2f(520.f, 20.f);  // coordinate pupini grigi
@@ -158,7 +156,7 @@ void Animazione::StopAnimazione() { m_is_stopped = true; }
 void Animazione::StartAnimazione() {
   m_is_stopped = false;
   m_orologio2.restart();
-}
+} 
 
 bool Animazione::IsStopped() { return m_is_stopped; }
 
