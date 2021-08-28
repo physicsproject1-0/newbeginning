@@ -91,6 +91,9 @@ void Finestra::Update() {
       /* std::cout << posizione_mouse.x << " " << posizione_mouse.y << '\n'; */
       v_overlay->check_color(sf::Color::Yellow);
 
+      v_overlay->AggiornaPosizioneRettangoliPaletta(posizione_mouse);
+      
+
       if (evento.type == sf::Event::MouseButtonPressed && evento.mouseButton.button == sf::Mouse::Left) {
         switch (v_overlay->mouse_clicked()) {
           case MousePos::CheckboxAnimazione:
@@ -117,6 +120,11 @@ void Finestra::Update() {
             v_overlay->AttivaInserimento();
             break;
         }
+
+        if (m_statico->IsStopped()){
+        m_statico->CheckMousePosition(posizione_mouse);
+      }
+
         upd_vista();
       }
     }

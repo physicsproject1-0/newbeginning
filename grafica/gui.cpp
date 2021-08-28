@@ -60,6 +60,7 @@ void GUI::draw(sf::RenderTarget& target, sf::RenderStates states) const {
   target.draw(m_pulsante_play);
   target.draw(m_pulsante_pausa);
   target.draw(m_paletta_colori);
+  target.draw(m_riquadro_informazioni);
 }
 
 GUI::GUI(sf::Vector2f dimensione)
@@ -70,7 +71,8 @@ GUI::GUI(sf::Vector2f dimensione)
       m_casella_automa(sf::Vector2f(40, 40)),
       m_pulsante_play(30, TipoPulsante::Play),
       m_pulsante_pausa(30, TipoPulsante::Pausa),
-      m_paletta_colori(sf::Vector2f(dimensione.x / 1.3, dimensione.y*0.4), &m_font), 
+      m_paletta_colori(sf::Vector2f(dimensione.x / 1.3, dimensione.y*0.4), &m_font),
+      m_riquadro_informazioni(sf::Vector2f(dimensione.x*2, dimensione.y/4), &m_font),
       m_posizione_mouse(MousePos::None) {
   if (!m_font.loadFromFile("Arial.ttf")) {
     throw std::runtime_error("font non caricato");
@@ -120,6 +122,9 @@ void GUI::aggiorna_posizione(sf::Vector2f punto_in_altosx, sf::Vector2f dimensio
       sf::Vector2f(t_posizione_aggancio_alto_sx.x + (t_larghezza_sfondo_grigio / 4) * 3, t_posizione_aggancio_alto_sx.y + t_altezza_sfondo_grigio / 2));
 
   m_paletta_colori.ImpostaPosizione(sf::Vector2f(t_posizione_aggancio_alto_sx.x+t_larghezza_sfondo_grigio/2, t_posizione_aggancio_alto_sx.y +(t_altezza_sfondo_grigio/4)*3));
+
+  m_riquadro_informazioni.AggiornaPosizione(sf::Vector2f(punto_in_altosx.x+dimensioni_finestra.x, punto_in_altosx.y));
+
 }
 
 /* double Animazione::Modulo(sf::Vector2f const& vettore) { return sqrt(pow(vettore.x, 2) + pow(vettore.y, 2)); }
