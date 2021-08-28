@@ -114,10 +114,12 @@ void Automa::Aggiorna() {
       else if (cell.m_S == Stato::INFETTO) {
         cell.m_infection_days++;
         if (Casuale() / 100.f < m_probabilita_guarigione) {
-          {cell.m_S = Stato::MORTO;}
-          
+          if (Casuale() < 30){
+            cell.m_S = Stato::MORTO;
+            } else {
+              cell.m_S = Stato::GUARITO;
+            }
           cell.Aggiorna_colore();
-          // qua forse ci sta fare così
         }
       }
 
