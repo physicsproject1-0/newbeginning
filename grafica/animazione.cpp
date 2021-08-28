@@ -66,31 +66,6 @@ void Animazione::Morte_persona() {                                //al 30 % la p
   }
 }
 
-// Funzione con cui carico la Texture verde
-void Animazione::SetGreenTextures() {
-  for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
-    sf::Vertex* iter = &m_struttura[i * 3];
-
-    iter[0].texCoords = sf::Vector2f(110.f, 20.f);  // coordinate pupini verdi
-    iter[1].texCoords = sf::Vector2f(20.f, 210.f);
-    iter[2].texCoords = sf::Vector2f(205.f, 210.f);
-  }
-}
-
-void Animazione::SetRedTextures() {
-  for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
-    if (m_popolazione[i].m_S == Stato::INFETTO) {
-      sf::Vertex* iter = &m_struttura[i * 3];
-
-      iter[0].texCoords = sf::Vector2f(315.f, 20.f);  // coordinate pupini rossi
-      iter[1].texCoords = sf::Vector2f(230.f, 210.f);
-      iter[2].texCoords = sf::Vector2f(410.f, 210.f);
-
-    } else {
-      continue;
-    }
-  }
-}
 
 void Animazione::SetAllTextures() {
   for (long unsigned int i = 0; i < m_popolazione.size(); i++) {

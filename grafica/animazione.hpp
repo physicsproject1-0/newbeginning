@@ -48,11 +48,6 @@ class Animazione : public sf::Drawable {
   void Conteggio_contatti();
   void Morte_persona();
 
-  // Funzione con cui carico la Texture verde
-  void SetGreenTextures();
-
-  // Funzione in cui carico la Texture rossa sullo stato INFETTO
-  void SetRedTextures();
 
   // Ho immaginato che al 30% muoiano e al 70% guariscono, si possono cambiare le probabilita' of course
   // Funzione in cui carico sullo stato MORTO al 30% la texture grigia e al 70% quella azzurra
@@ -94,9 +89,7 @@ class Animazione : public sf::Drawable {
 
     m_struttura.setPrimitiveType(sf::Triangles);
 
-    // SetAllTextures();
-    SetGreenTextures();
-    SetRedTextures();
+    SetAllTextures();
     Aggiorna_griglia();  // chiamarlo almeno una volta sennò no good;
   }
 
