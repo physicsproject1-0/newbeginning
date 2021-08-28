@@ -13,6 +13,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <random>
 
 #ifndef GUI_HPP
 #define GUI_HPP
@@ -550,6 +551,10 @@ struct Censimento {
   int m_guariti;
   int m_morti;
 };
+
+int Casuale();
+
+
 /* struct Persona {
   sf::Vector2f m_centro;
   float m_raggio;

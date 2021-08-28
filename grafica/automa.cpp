@@ -25,11 +25,10 @@ void Cellula::Aggiorna_colore() {
 
 void Automa::Genera(int infette, int rimosse) {
   assert(infette + rimosse < m_numero_lato * m_numero_lato);
-  srand(time(NULL));
 
   for (int a = 0; a < infette; a++) {
-    int riga = rand() % m_numero_lato;
-    int colonna = rand() % m_numero_lato;
+    int riga = Casuale() % m_numero_lato;
+    int colonna = Casuale() % m_numero_lato;
     if (m_grid[riga][colonna].m_S != Stato::VULNERABILE) {
       a--;
       continue;
@@ -39,8 +38,8 @@ void Automa::Genera(int infette, int rimosse) {
   }
 
   for (int a = 0; a < rimosse; a++) {
-    int riga = rand() % m_numero_lato;
-    int colonna = rand() % m_numero_lato;
+    int riga = Casuale() % m_numero_lato;
+    int colonna = Casuale() % m_numero_lato;
     if (m_grid[riga][colonna].m_S != Stato::VULNERABILE) {
       a--;
       continue;
@@ -85,7 +84,6 @@ void Automa::Aggiorna_counter(int i, int j) {
 }
 
 void Automa::Aggiorna() {
-  srand(time(NULL));
   m_giorni++;
   popolazione = {0, 0, 0, 0};
   for (int i = 0; i < m_numero_lato; i++) {
@@ -101,7 +99,7 @@ void Automa::Aggiorna() {
         } else {
           float prob_sano = pow(1 - m_probabilita_contagio, esponente);  // beta o gamma? beta sicuro
 
-          float estrazione = (rand() % 101) / 100.f;  // IL .F è FONDAMENTALE
+          float estrazione = (Casuale() % 101) / 100.f;  // IL .F è FONDAMENTALE
 
           if (estrazione > prob_sano) {
             cell.m_S = Stato::INFETTO;
@@ -113,7 +111,7 @@ void Automa::Aggiorna() {
 
       else if (cell.m_S == Stato::INFETTO) {
         cell.m_infection_days++;
-        if ((rand() % 100) / 100.f < m_probabilita_guarigione) {
+        if (Casuale() / 100.f < m_probabilita_guarigione) {
           cell.m_S = Stato::RIMOSSO;
           cell.Aggiorna_colore();
           // qua forse ci sta fare così
