@@ -79,11 +79,12 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
          int rimossi)
       : m_posizione{t_posizione},
         m_dimensioni{t_dimensione},
-        m_numero_lato{t_numero},
+        m_numero_lato{t_numero},    //rimossi si considerano guariti
         m_probabilita_contagio{t_probabilita_contagio},
         m_probabilita_guarigione{t_probabilita_guarigione},
         limiti{t_dimensione, t_posizione},
-        m_is_stopped{true} {
+        m_is_stopped{true},
+        popolazione{t_numero*t_numero - infetti-rimossi, infetti, rimossi, 0} {
     assert(m_probabilita_contagio <= 1 && m_probabilita_contagio >= 0);  // mettere except
     /* if (!font.loadFromFile("Arial.ttf")) {
       throw std::runtime_error{"texture loading failed"};
@@ -132,6 +133,8 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
   void StopAutoma();
   void StartAutoma();
   bool IsStopped();
+  Censimento GetCensimento(){return popolazione;}
+
 };
 
 #endif

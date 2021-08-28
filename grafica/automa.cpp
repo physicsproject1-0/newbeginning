@@ -91,7 +91,7 @@ void Automa::Aggiorna() {
   for (int i = 0; i < m_numero_lato; i++) {
     for (int j = 0; j < m_numero_lato; j++) {
       Cellula& cell = m_grid[i][j];
-      /*  censimento(cell); */
+       censimento(cell, popolazione);
 
       if (cell.m_S == Stato::VULNERABILE) {
         int esponente = cell.m_counter;
@@ -164,3 +164,4 @@ void Automa::StartAutoma() {
 }
 
 bool Automa::IsStopped() { return m_is_stopped; }
+
