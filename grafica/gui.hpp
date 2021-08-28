@@ -556,8 +556,8 @@ struct Persona {
   sf::Vector2f m_centro;
   float m_raggio;
   sf::Vector2f m_vel;
-  // sf::Clock m_cambiom_velocita;   senza collisioni non serve più giusto???
-  Stato m_P;
+             //sf::Clock m_cambiom_velocita;   senza collisioni non serve più giusto???
+  Stato m_S;
   bool checked = false;
   int m_numero_contatti = 0;
 };
@@ -578,17 +578,17 @@ class Animazione : public sf::Drawable {
   void Collisione() {
     for (int i = 0; i < m_popolazione.size(); i++) {
       Persona& PallinaA = m_popolazione[i];
-      if (PallinaA.m_P == Stato::VULNERABILE) {
+      if (PallinaA.m_S == Stato::VULNERABILE) {
         for (int j = 0; j < m_popolazione.size(); j++) {
           Persona& PallinaB = m_popolazione[j];
 
           // Contagiosita' del 40%
-          if ((i != j) && (PallinaB.m_P == Stato::INFETTO)) {
+          if ((i != j) && (PallinaB.m_S == Stato::INFETTO)) {
             if (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.5 * PallinaB.m_raggio) {
               srand(time(NULL));
               int a = rand() % 100 + 1;
               if (a < 40) {
-                PallinaA.m_P = Stato::INFETTO;
+                PallinaA.m_S = Stato::INFETTO;
                 SetRedTextures();
               } else {
                 continue;
@@ -609,7 +609,7 @@ class Animazione : public sf::Drawable {
       Persona& PallinaA = m_popolazione[i];
       for (int j = 0; j < m_popolazione.size(); j++) {
         Persona& PallinaB = m_popolazione[j];
-        if ((i != j) && (PallinaA.m_P == Stato::INFETTO)) {
+        if ((i != j) && (PallinaA.m_S == Stato::INFETTO)) {
           if ((Modulo(PallinaA.m_centro - PallinaB.m_centro) >= PallinaB.m_raggio) &&
               (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.50f * PallinaB.m_raggio)) {
             PallinaA.m_numero_contatti++;
@@ -624,8 +624,8 @@ class Animazione : public sf::Drawable {
   void Morte_persona() {
     for (int i = 0; i < m_popolazione.size(); i++) {
       Persona& PallinaA = m_popolazione[i];
-      if ((PallinaA.m_P == Stato::INFETTO) && (PallinaA.m_numero_contatti == 35)) {
-        PallinaA.m_P = Stato::RIMOSSO;
+      if ((PallinaA.m_S == Stato::INFETTO) && (PallinaA.m_numero_contatti == 35)) {
+        PallinaA.m_S = Stato::RIMOSSO;
         SetWhiteTextures();
       } else {
         continue;
@@ -647,7 +647,7 @@ class Animazione : public sf::Drawable {
   // Funzione in cui carico la Texture rossa sullo stato INFETTO
   void SetRedTextures() {
     for (int i = 0; i < m_popolazione.size(); i++) {
-      if (m_popolazione[i].m_P == Stato::INFETTO) {
+      if (m_popolazione[i].m_S == Stato::INFETTO) {
         sf::Vertex* iter = &m_struttura[i * 3];
 
         iter[0].texCoords = sf::Vector2f(315.f, 20.f);  // coordinate pupini rossi
@@ -665,17 +665,17 @@ class Animazione : public sf::Drawable {
   void SetWhiteTextures() {
     for (int i = 0; i < m_popolazione.size(); i++) {
       Persona& PallinaA = m_popolazione[i];
-      if (PallinaA.m_P == Stato::RIMOSSO) {  // Aggiungere stato guarito/morto
+      if (PallinaA.m_S == Stato::RIMOSSO) {  // Aggiungere stato guarito/morto
         srand(time(NULL));
         int a = rand() % 100 + 1;
         if (a < 30) {
-          PallinaA.m_P = Stato::MORTO;
+          PallinaA.m_S = Stato::MORTO;
           sf::Vertex* iter = &m_struttura[i * 3];
           iter[0].texCoords = sf::Vector2f(520.f, 20.f);  // coordinate pupini grigi
           iter[1].texCoords = sf::Vector2f(430.f, 210.f);
           iter[2].texCoords = sf::Vector2f(615.f, 210.f);
         } else {
-          PallinaA.m_P = Stato::GUARITO;
+          PallinaA.m_S = Stato::GUARITO;
           sf::Vertex* iter = &m_struttura[i * 3];
           iter[0].texCoords = sf::Vector2f(730.f, 20.f);  // coordinate pupini azzurri
           iter[1].texCoords = sf::Vector2f(635.f, 210.f);
@@ -712,10 +712,10 @@ class Animazione : public sf::Drawable {
                        rand() % static_cast<int>(m_limiti.getlimiti().height - 2 * m_prova.m_raggio) + m_limiti.getlimiti().top + m_prova.m_raggio);
       m_prova.m_vel = sf::Vector2f(rand() % 50 - 25.f, rand() % 50 - 25.f);
       m_popolazione[i] = m_prova;
-      m_popolazione[i].m_P = Stato::VULNERABILE;
+      m_popolazione[i].m_S = Stato::VULNERABILE;
     }
 
-    m_popolazione[rand() % m_popolazione.size() + 1].m_P = Stato::INFETTO;
+    m_popolazione[rand() % m_popolazione.size() + 1].m_S = Stato::INFETTO;
 
     m_struttura.resize(m_popolazione.size() * 3);
 
@@ -824,7 +824,7 @@ class Cellula : public Bordi {  // se è una struct non funziona l'inheritance?
   // wtf
 
   void Aggiorna_colore() {
-    switch (S) {
+    switch (m_S) {
       case (Stato::INFETTO):  // Carichiamo la red texture...
         m_rettangolo.setFillColor(sf::Color::Red);
         std::cout << "sto Aggiornando il rosso" << '\n';
@@ -846,7 +846,7 @@ class Cellula : public Bordi {  // se è una struct non funziona l'inheritance?
 
   int m_infection_days;
 
-  Stato S = Stato::VULNERABILE;
+  Stato m_S = Stato::VULNERABILE;
 
   Cellula(sf::Vector2f m_posizione, sf::Vector2f dimensione) : Bordi(dimensione, m_posizione), m_counter(0), m_infection_days(0) {  // funzionerà
 
@@ -940,22 +940,22 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
     for (int a = 0; a < infette; a++) {
       int riga = rand() % m_numero_lato;
       int colonna = rand() % m_numero_lato;
-      if (m_grid[riga][colonna].S != Stato::VULNERABILE) {
+      if (m_grid[riga][colonna].m_S != Stato::VULNERABILE) {
         a--;
         continue;
       }
-      m_grid[riga][colonna].S = Stato::INFETTO;
+      m_grid[riga][colonna].m_S = Stato::INFETTO;
       m_grid[riga][colonna].Aggiorna_colore();
     }
 
     for (int a = 0; a < rimosse; a++) {
       int riga = rand() % m_numero_lato;
       int colonna = rand() % m_numero_lato;
-      if (m_grid[riga][colonna].S != Stato::VULNERABILE) {
+      if (m_grid[riga][colonna].m_S != Stato::VULNERABILE) {
         a--;
         continue;
       }
-      m_grid[riga][colonna].S = Stato::RIMOSSO;
+      m_grid[riga][colonna].m_S = Stato::RIMOSSO;
       m_grid[riga][colonna].Aggiorna_colore();
     }
   }
@@ -966,6 +966,9 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
     }
     return true;
   }
+   /* template <typename C>
+   void censimento (C const& cell) {
+     switch (cell.m_S) {
 
   Censimento censimento(Cellula const& cell) {
     popolazione = {0, 0, 0, 0};
@@ -981,34 +984,33 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
       case (Stato::GUARITO):
         popolazione.m_guariti++;
 
-      default:
-        popolazione.m_morti++;
-    }
-    return popolazione;
-  }
+   default:
+   popolazione.m_morti++;
+   }
+  } */
 
   void Aggiorna_counter(int i, int j) {
     Cellula& cell = m_grid[i][j];
 
     for (int a = 0; a <= 2; a++) {
       if (Esiste(i - 1, j - 1 + a)) {
-        if (m_grid[i - 1][j - 1 + a].S == Stato::INFETTO) {
+        if (m_grid[i - 1][j - 1 + a].m_S == Stato::INFETTO) {
           cell.m_counter++;
         }
       }
       if (Esiste(i + 1, j - 1 + a)) {
-        if (m_grid[i + 1][j - 1 + a].S == Stato::INFETTO) {
+        if (m_grid[i + 1][j - 1 + a].m_S == Stato::INFETTO) {
           cell.m_counter++;
         }
       }
     }
     if (Esiste(i, j - 1)) {
-      if (m_grid[i][j - 1].S == Stato::INFETTO) {
+      if (m_grid[i][j - 1].m_S == Stato::INFETTO) {
         cell.m_counter++;
       }
     }
     if (Esiste(i, j + 1)) {
-      if (m_grid[i][j + 1].S == Stato::INFETTO) {
+      if (m_grid[i][j + 1].m_S == Stato::INFETTO) {
         cell.m_counter++;
       }
     }
@@ -1017,12 +1019,13 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
   void Aggiorna() {
     srand(time(NULL));
     m_giorni++;
+    popolazione = {0,0,0,0};
     for (int i = 0; i < m_numero_lato; i++) {
       for (int j = 0; j < m_numero_lato; j++) {
         Cellula& cell = m_grid[i][j];
-        censimento(cell);
+       /*  censimento(cell); */
 
-        if (cell.S == Stato::VULNERABILE) {
+        if (cell.m_S == Stato::VULNERABILE) {
           int esponente = cell.m_counter;
           // cell.m_numero.setString(std::to_string(esponente));
           if (esponente == 0) {
@@ -1033,17 +1036,17 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
             float estrazione = (rand() % 101) / 100.f;  // IL .F è FONDAMENTALE
 
             if (estrazione > prob_sano) {
-              cell.S = Stato::INFETTO;
+              cell.m_S = Stato::INFETTO;
 
               cell.Aggiorna_colore();
             }
           }
         }
 
-        else if (cell.S == Stato::INFETTO) {
+        else if (cell.m_S == Stato::INFETTO) {
           cell.m_infection_days++;
           if ((rand() % 100) / 100.f < m_probabilita_guarigione) {
-            cell.S = Stato::RIMOSSO;
+            cell.m_S = Stato::RIMOSSO;
             cell.Aggiorna_colore();
             // qua forse ci sta fare così
           }
@@ -1054,6 +1057,11 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
     }
   }
 
+   /*void contatore (){
+     stampa il censimento, non so come si fa. Edo aiutami tu
+   
+   } */
+
   void Avanza() {
     if (m_orologio.getElapsedTime().asSeconds() > 3) {
       for (int i = 0; i < m_numero_lato; i++) {
@@ -1062,6 +1070,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
         }
       }
       Aggiorna();
+      //contatore();
       m_orologio.restart();
     }
   }
@@ -1077,7 +1086,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
     return std::pair<int, int>{-1, -1};
   }
 
-  void ChangeStatus(std::pair<int, int> t_coordinate, Stato t_stato) { m_grid[t_coordinate.first][t_coordinate.second].S = t_stato; }
+  void ChangeStatus(std::pair<int, int> t_coordinate, Stato t_stato) { m_grid[t_coordinate.first][t_coordinate.second].m_S = t_stato; }
 
   void AzzeraOrologio() { m_orologio.restart(); }
 
