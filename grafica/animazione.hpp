@@ -40,6 +40,9 @@ class Animazione : public sf::Drawable {
 
   Censimento popolazione;
 
+  float m_probabilita_rimosso;
+  float m_probabilita_infetto;
+
   // Nel momento in cui collidono due persone, se una era infetta, cambia lo stato anche dell' altra
   void Collisione();
   void Conteggio_contatti();
