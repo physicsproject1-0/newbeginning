@@ -11,6 +11,9 @@ sf::Vector2f converti(sf::Vector2i vettore);
 class Finestra {
   std::string v_titolo;
   sf::Vector2u v_dimensioni;
+
+  sf::Vector2u v_dimensioni_minime; //quelle con cui viene creata
+
   sf::RenderWindow v_mainfinestra;
   bool v_Isclosed;
   bool v_Isfullscreen;

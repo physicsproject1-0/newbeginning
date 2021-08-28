@@ -29,7 +29,7 @@ Finestra::Finestra() { Setup("Defaultwindow", sf::Vector2u(1280, 720)); }
 
 Finestra::Finestra(const std::string& titolo, const sf::Vector2u& dimensione, GUI* overlay, Animazione* t_dinamico, Automa* t_statico,
                    const Bordi& t_bordo_animazione, const Bordi& t_bordo_automa)
-    : v_vista(Vista::Animazione), v_overlay{overlay}, m_dinamico{t_dinamico}, m_statico{t_statico} {
+    : v_dimensioni_minime{dimensione}, v_vista(Vista::Animazione), v_overlay{overlay}, m_dinamico{t_dinamico}, m_statico{t_statico} {
   Setup(titolo, dimensione);
   specifiche_viste(Vista::Animazione, t_bordo_animazione.getlimiti());
   specifiche_viste(Vista::Automa, t_bordo_automa.getlimiti());
@@ -46,9 +46,12 @@ void Finestra::Update() {
       v_Isclosed = true;
     }
     if (evento.type == sf::Event::Resized) {
-      std::cout << " finestra resized" << '\n';
+      
       sf::Vector2u dimensioni_nuove = v_mainfinestra.getSize();
-      std::cout << "nuove dimensioni " << dimensioni_nuove.x << " " << dimensioni_nuove.y << '\n';
+      if (dimensioni_nuove.x<v_dimensioni_minime.x||dimensioni_nuove.y<v_dimensioni_minime.y){
+        dimensioni_nuove=v_dimensioni_minime;
+        v_mainfinestra.setSize(dimensioni_nuove);
+        }
       v_dimensioni = dimensioni_nuove;
 
       vista_animazione.setSize(converti(dimensioni_nuove));  // le dimensioni si devono aggiornare per entrambe le viste ad ogni resize
@@ -105,10 +108,12 @@ void Finestra::Update() {
 
             m_dinamico->StartAnimazione();
             m_statico->StartAutoma();
+            v_overlay->DisattivaInserimento();
             break;
           case MousePos::PulsantePausa:
             m_dinamico->StopAnimazione();
             m_statico->StopAutoma();
+            v_overlay->AttivaInserimento();
             break;
         }
         upd_vista();
