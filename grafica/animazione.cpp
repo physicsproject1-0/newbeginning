@@ -40,7 +40,7 @@ void Animazione::Conteggio_contatti() {
       Persona& PallinaB = m_popolazione[j];
       if ((i != j) && (PallinaA.m_S == Stato::INFETTO)) {
         if ((Modulo(PallinaA.m_centro - PallinaB.m_centro) >= PallinaB.m_raggio) &&
-            (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.51f * PallinaB.m_raggio)) {
+            (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.5f * PallinaB.m_raggio)) {
           if (Casuale() / 100 < m_d_parametro_gamma) {
             PallinaA.m_numero_contatti++;
           }

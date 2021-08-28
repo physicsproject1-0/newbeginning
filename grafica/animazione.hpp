@@ -41,7 +41,7 @@ class Animazione : public sf::Drawable {
   Censimento popolazione;
 
   int m_d_numero_persone;
-  float m_d_parametro_beta; //probabilita contagio
+  float m_d_parametro_beta;  // probabilita contagio
   float m_d_parametro_gamma;
   int m_d_infetti_iniziali;
   int m_d_rimossi_iniziali;
@@ -67,34 +67,37 @@ class Animazione : public sf::Drawable {
   }
 
  public:
-  Animazione(int a, int b, int c, float t_d_parametro_beta, float t_d_parametro_gamma ) : m_limiti(sf::Vector2f(600, 400), sf::Vector2f(100, 100)), m_is_stopped{true}, popolazione{a-b-c, b, c, 0}, m_d_parametro_beta{t_d_parametro_beta} , m_d_parametro_gamma{t_d_parametro_gamma} {
+  Animazione(int m_d_numero_persone, int m_d_infetti_iniziali, int c, float t_d_parametro_beta, float t_d_parametro_gamma)
+      : m_limiti(sf::Vector2f(600, 400), sf::Vector2f(100, 100)),
+        m_is_stopped{true},
+        popolazione{m_d_numero_persone - m_d_infetti_iniziali - c, m_d_infetti_iniziali, c, 0},
+        m_d_parametro_beta{t_d_parametro_beta},
+        m_d_parametro_gamma{t_d_parametro_gamma} {
     if (!m_ominoprova.loadFromFile("uomini.png")) {
       throw std::runtime_error{"texture loading failed"};  // catcharlo
     }
 
     Persona m_prova;
 
-    srand(time(NULL));
-    int totale = a+b+c;
-
     // Riempio la mappa (m_popolazione) di persone
-    for (int i = 0; i < totale; i++) {
+    for (int i = 0; i < m_d_numero_persone; i++) {
       m_prova.m_raggio = 13.f;
       m_prova.m_centro =
-          sf::Vector2f(rand() % static_cast<int>(m_limiti.getlimiti().width - 2 * m_prova.m_raggio) + m_limiti.getlimiti().left + m_prova.m_raggio,
-                       rand() % static_cast<int>(m_limiti.getlimiti().height - 2 * m_prova.m_raggio) + m_limiti.getlimiti().top + m_prova.m_raggio);
-      m_prova.m_vel = sf::Vector2f(rand() % 50 - 25.f, rand() % 50 - 25.f);
+          sf::Vector2f((Casuale()/100.f) * (m_limiti.getlimiti().width - 2 * m_prova.m_raggio) + m_limiti.getlimiti().left + m_prova.m_raggio,
+                       (Casuale()/100.f) * (m_limiti.getlimiti().height - 2 * m_prova.m_raggio) + m_limiti.getlimiti().top + m_prova.m_raggio);
+      m_prova.m_vel = sf::Vector2f(Casuale() % 50 - 25.f, Casuale() % 50 - 25.f);
       m_popolazione[i] = m_prova;
       m_popolazione[i].m_S = Stato::VULNERABILE;
     }
-
-    m_popolazione[rand() % m_popolazione.size() + 1].m_S = Stato::INFETTO;
+    for (int i = 0; i < m_d_infetti_iniziali; i++) {
+      m_popolazione[static_cast<int>((Casuale() / 100.f) * m_popolazione.size())].m_S = Stato::INFETTO;
+    }
 
     m_struttura.resize(m_popolazione.size() * 3);
 
     m_struttura.setPrimitiveType(sf::Triangles);
-    
-    //SetAllTextures();
+
+    // SetAllTextures();
     SetGreenTextures();
     SetRedTextures();
     Aggiorna_griglia();  // chiamarlo almeno una volta sennò no good;
