@@ -22,3 +22,42 @@ Le funzioni membro ‘riempimento’ e ‘convertitore’ sono chiamate per comp
 quantitativo: entrambe ritornano uno standard vector di ‘State’, il primo con dati grezzi, il secondo riporta approssimati all’unità i valori di S, I, R. 
 Grazie ad un ciclo for, ‘riempimento’ inserisce i dati nell’algoritmo per generare la giornata successiva e con pushback() riempie il vettore.
 Sempre con un ciclo for, ‘convertitore’ (che ha come oggetto il vettore appena creato) approssima all’unità il numero di S, I, R  
+
+
+
+
+
+
+
+
+
+
+Parte II: Simulazione grafica
+
+Per la seconda parte del progetto abbiamo deciso di realizzare due simulazioni grafiche stilizzate di una pandemia.
+
+Simulazione I
+
+La prima consiste in un campione di persone che si muovono all'interno di un territorio delimitato. Anche in questo caso abbiamo mantenuto l'idea 
+di distinguere soggetti suscettibili, inffetti e rimossi, con l'aggiunta che i rimossi si suddivideranno in deceduti e guariti. Lo stato dei soggetti si
+distingue grazie al loro colore: verde per i suscettibili, rosso per gli infetti, grigio per i deceduti e azzurro per i guariti.
+All'inizio di ogni simulazione uno a caso dei soggetti risulta positivo. Ogni persona si muove con una velocità casuale e nel momento in cui un infetto
+entra in contatto con un suscettibile ha una probabilità del 30% di infettarlo. Dopo che un soggetto infetto è entrato in contatto con 35 persone 
+diventa rimosso. A questo punto ha una probabilità del 30% di morire e una del 70% di guarire.
+
+A livello più tecnico i soggetti sono definiti dalla classe "Persona". Gli stati del modello SIR sono forniti da una "enum class Status" e la colorazione dei soggetti è data da una serie di funzioni come
+"setGreenTexure" che in base allo stato assegna la texture corretta. Le texture colorate sono contenute nello stesso file .png e vengono ritagliate 
+da queste funzioni. Il movimento delle persone è invece descritto dalle funzioni "Aggiorna_griglia" e "Aggiorna_lista". C'è poi una funzione che assicura
+che le persone non escano dai bordi della nostra simulazione: "Check_borders". Per verificare l'effettivo contagio dei soggetti abbiamo la funzione "Collisione"
+che controlla quando due soggetti entrano a contatto e, se uno dei due è infetto, rende infetto anche l'altro. La probabilità di contagio è stata ottenuta grazie al metodo
+rand(). Per passare allo stato "RIMOSSO" ci sono invece le funzioni "Conteggio_contatti" e "Morte_persona". La prima conta appunto il numero di contatti 
+con le altre persone che un soggetto ha avuto dal momento in cui è diventato infetto; la seconda invece cambia lo stato di un soggetto da infetto a rimosso
+nel momento in cui ha raggiunto 35 contatti. Nella funzione "SetWhiteTextures" abbiamo distinto i deceduti dai guariti in base a una probabilità data Sempre
+dalla funzione rand(). Tutte queste funzioni sono metodi di una stessa classe, la classe "Animazione".
+
+
+
+Simulazione II 
+
+La seconda simulazione consiste in un automa cellulare costituito da una griglia 
+
