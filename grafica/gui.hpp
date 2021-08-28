@@ -55,9 +55,12 @@ struct Censimento {
 
      case (Stato::GUARITO):
        popolazione.m_guariti++;
+       break;
 
-  default:
-  popolazione.m_morti++;
+     case (Stato::MORTO):
+       popolazione.m_morti++;
+       break;
+
   }
  }
 class Bordi : public sf::Drawable {
