@@ -2,7 +2,7 @@
 
 // Bordi
 
-void Bordi::draw(sf::RenderTarget& target, sf::RenderStates) const { target.draw(m_rettangolo); }  // metterci anche states altrimenti rompe il casso
+void Bordi::draw(sf::RenderTarget& target, sf::RenderStates) const { target.draw(m_rettangolo); }
 
 Bordi::Bordi(sf::Vector2f dimensione, sf::Vector2f posizione) {
   m_rettangolo.setSize(dimensione);
@@ -54,7 +54,7 @@ void Checkbox::set_posizione(sf::Vector2f posizione) {
   m_rettangolo.setPosition(posizione);
 
   m_rettangolo_esterno.left = posizione.x - m_rettangolo_esterno.width / 2;
-  m_rettangolo_esterno.top = posizione.y - m_rettangolo_esterno.height / 2;  // aggiustato cambio coordinate
+  m_rettangolo_esterno.top = posizione.y - m_rettangolo_esterno.height / 2;
 }
 bool Checkbox::return_status() { return m_clicked; }
 void Checkbox::change_status(bool var) { m_clicked = var; }
@@ -64,15 +64,14 @@ void Checkbox::ImpostaOrigine(sf::Vector2f t_nuova_origine) { m_rettangolo.setOr
 // Textbox
 
 Textbox::Textbox(int dimensione_carattere, sf::Font* t_font, sf::Color colore_testo)
-    : Bordi(sf::Vector2f(dimensione_carattere, dimensione_carattere)), m_font{t_font}, m_fattore_conversione{0.6} {  // chiamare il costruttore di
-                                                                                                                     // bordi
+    : Bordi(sf::Vector2f(dimensione_carattere, dimensione_carattere)), m_font{t_font}, m_fattore_conversione{0.6} {  
   m_testo.setFillColor(colore_testo);
   m_testo.setFont(*m_font);
-  m_testo.setCharacterSize(dimensione_carattere /* 4 */);
+  m_testo.setCharacterSize(dimensione_carattere);
 
   m_rettangolo.setFillColor(sf::Color(211, 211, 211));
 
-  m_rettangolo.setOutlineThickness(1);  // lo spessore più piccolo altrimenti non si vede
+  m_rettangolo.setOutlineThickness(1);  
 }
 
 void Textbox::set_posizione(sf::Vector2f posizione) {
@@ -83,7 +82,7 @@ void Textbox::set_posizione(sf::Vector2f posizione) {
 void Textbox::scrivi(std::string stringa) {
   m_testo.setString(stringa);
   sf::Vector2f dimensioni_testo(m_testo.getGlobalBounds().width + 1,    // fattore di conversione per dimensione x
-                                m_testo.getGlobalBounds().height + 3);  // ci sono anche le funzioni getlocal e... ma sono imprecise
+                                m_testo.getGlobalBounds().height + 3);  
   m_testo.setOrigin(dimensioni_testo.x / 2, dimensioni_testo.y / 2);
 
   ridimensiona(dimensioni_testo);
@@ -119,8 +118,6 @@ void Pulsante::set_posizione(sf::Vector2f posizione) {
   m_rettangolo_esterno.top = posizione.y - m_rettangolo_esterno.height / 2;
 }
 
-void Pulsante::AggiornaStato() {  // se cliccato
-}
 void Pulsante::draw(sf::RenderTarget& target, sf::RenderStates) const {
   target.draw(m_rettangolo);
   target.draw(m_simbolo);

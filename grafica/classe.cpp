@@ -10,10 +10,7 @@ Mondo::Mondo(Inserimento t_inserimento)
       m_statica(sf::Vector2f(1800, 1800), sf::Vector2f(500, 500), t_inserimento.m_s_dimensione_lato, t_inserimento.m_s_parametro_beta,
                 t_inserimento.m_s_parametro_gamma, t_inserimento.m_s_parametro_eta, t_inserimento.m_s_infetti_iniziali,
                 t_inserimento.m_s_rimossi_iniziali),
-      m_window("test", sf::Vector2u(900, 600), &m_overlay, &m_dinamica, &m_statica, m_dinamica.get_bordi(), m_statica.get_bordi()) {
-
-
-      }
+      m_window("test", sf::Vector2u(900, 600), &m_overlay, &m_dinamica, &m_statica, m_dinamica.get_bordi(), m_statica.get_bordi()) {}
 
 template <class T>
 bool IsInputGood(T& a) {
@@ -22,9 +19,8 @@ bool IsInputGood(T& a) {
     std::stringstream ss(line);
 
     if ((ss >> a) && ss.eof()) {
-      std::cout << a <<'\n';
+      std::cout << a << '\n';
       return true;
-
     }
   }
   return false;
@@ -36,12 +32,11 @@ Inserimento::Inserimento() {
   std::cout << "Automa Cellulare: \n";
 
   std::cout << "Numero di cellule per ogni lato >> ";
-  
-  if (!IsInputGood(m_s_dimensione_lato)|| m_s_dimensione_lato < 0 || m_s_dimensione_lato > 10 ) {
 
+  if (!IsInputGood(m_s_dimensione_lato) || m_s_dimensione_lato < 0 || m_s_dimensione_lato > 10) {
     throw std::runtime_error{"Il parametro dimensione lato deve essere un intero compreso tra 0 e 10"};
   }
-std::cout << "dimensione lato"<< m_s_dimensione_lato <<'\n';
+  std::cout << "dimensione lato" << m_s_dimensione_lato << '\n';
 
   std::cout << "Parametro beta(relativo alla probabilità di contagio) >> ";
   if (!IsInputGood(m_s_parametro_beta) || m_s_parametro_beta < 0 || m_s_parametro_beta > 1) {
@@ -98,4 +93,48 @@ std::cout << "dimensione lato"<< m_s_dimensione_lato <<'\n';
     throw std::runtime_error{
         "Il numero di soggetti rimossi(guariti) deve essere un intero positivo e minore del numero massimo di persone ancora infettabili"};
   }
+}
+
+Finestra* Mondo::Prendi_finestra() { return &m_window; }
+
+void Mondo::Gestisci_input() {
+  m_window.Update();  // gestisce gli eventi
+  if (m_window.Isclosed()) {
+    m_window.~Finestra();
+  }
+}
+
+// Va avanti solo la simulazione inquadrata, l'altra si stoppa
+void Mondo::Aggiorna() {
+  if (m_window.GetVista() == Vista::Animazione) {
+    if (!m_dinamica.IsStopped()) {
+      m_dinamica.Aggiorna_Generale();
+
+      m_statica.AzzeraOrologio();
+    }
+
+  } else {
+    if (!m_statica.IsStopped()) {
+      m_statica.Avanza();
+
+      m_dinamica.AzzeraOrologio();
+    }
+  }
+}
+
+// Se la vista è sull'animazione disegna dinamica, sennò statica
+void Mondo::Disegna() {
+  m_window.Pulisci();
+  if (m_window.GetVista() == Vista::Animazione) {
+    m_window.Disegna(m_dinamica);
+
+  } else {
+    m_window.Disegna(m_statica);
+  }
+
+  // disegna la GUI
+  m_window.Disegna(m_overlay);
+
+  // finestra.display
+  m_window.Mostra();
 }

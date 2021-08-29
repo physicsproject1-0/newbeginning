@@ -1,18 +1,12 @@
-/* #include "classe.hpp"
-#include "finestra.hpp" */
-
-#include "gui.hpp"
-
-
 #include "automa.hpp"
 
 void Cellula::Aggiorna_colore() {
   switch (m_S) {
-    case (Stato::INFETTO):  // Carichiamo la red texture...
+    case (Stato::INFETTO):  // Carichiamo la red texture
       m_rettangolo.setFillColor(sf::Color::Red);
       break;
 
-    case (Stato::GUARITO):  // carichiamo la white texture
+    case (Stato::GUARITO):  // carichiamo la blue texture
       m_rettangolo.setFillColor(sf::Color::Cyan);
       break;
 
@@ -21,12 +15,15 @@ void Cellula::Aggiorna_colore() {
       m_rettangolo.setFillColor(sf::Color::Green);
       break;
 
-    case (Stato::MORTO):
+    case (Stato::MORTO):  // carichiamo la white texture
       m_rettangolo.setFillColor(sf::Color::White);
       break;
   }
 }
 
+Bordi Automa::get_bordi() { return limiti; }
+
+// Posiziona randomicamente gli infetti e i rimossi sulla griglia
 void Automa::Genera(int infette, int rimosse) {
   assert(infette + rimosse < m_numero_lato * m_numero_lato);
 
@@ -60,6 +57,7 @@ bool Automa::Esiste(int i, int j) {
   return true;
 }
 
+// Conteggio degli infetti vicini, sono controllate le otto cellule adiacenti
 void Automa::Aggiorna_counter(int i, int j) {
   Cellula& cell = m_grid[i][j];
 
@@ -87,27 +85,22 @@ void Automa::Aggiorna_counter(int i, int j) {
   }
 }
 
+// Algoritmo per evolvere la griglia
 void Automa::Aggiorna() {
   m_giorni++;
-  popolazione = {0, 0, 0, 0};
+  m_censimento = {0, 0, 0, 0};
   for (int i = 0; i < m_numero_lato; i++) {
     for (int j = 0; j < m_numero_lato; j++) {
       Cellula& cell = m_grid[i][j];
-      
 
       if (cell.m_S == Stato::VULNERABILE) {
         int esponente = cell.m_counter;
-        // cell.m_numero.setString(std::to_string(esponente));
         if (esponente == 0) {
-          
         } else {
-          float prob_sano = pow(1 - m_probabilita_contagio, esponente);  // beta o gamma? beta sicuro
-
-          float estrazione = (Casuale() % 101) / 100.f;  // IL .F è FONDAMENTALE
-
+          float prob_sano = pow(1 - m_probabilita_contagio, esponente);
+          float estrazione = Casuale() / 100.f;
           if (estrazione > prob_sano) {
             cell.m_S = Stato::INFETTO;
-
             cell.Aggiorna_colore();
           }
         }
@@ -117,23 +110,18 @@ void Automa::Aggiorna() {
         float estrazione = Casuale() / 100.f;
         if (estrazione < m_probabilita_guarigione) {
           cell.m_S = Stato::GUARITO;
-
         } else if (estrazione > m_probabilita_guarigione && estrazione < m_probabilita_guarigione + m_probabilita_morte) {
           cell.m_S = Stato::MORTO;
-        } 
+        }
         cell.Aggiorna_colore();
       }
-
-      censimento(cell, popolazione);
-
+      censimento(cell, m_censimento);
       cell.m_counter = 0;
     }
-
-    
   }
 }
 
-
+// Aggiorna lo stato dell'automa ogni 3 secondi
 void Automa::Avanza() {
   if (m_orologio.getElapsedTime().asSeconds() > 3) {
     for (int i = 0; i < m_numero_lato; i++) {
@@ -142,7 +130,6 @@ void Automa::Avanza() {
       }
     }
     Aggiorna();
-    // contatore();
     m_orologio.restart();
   }
 }
@@ -158,6 +145,7 @@ std::pair<int, int> Automa::CheckMousePosition(sf::Vector2f t_coordinate_mouse) 
   return std::pair<int, int>{-1, -1};
 }
 
+// Permette il cambio stato delle singole cellule da parte dell'utente
 void Automa::ChangeStatus(std::pair<int, int> t_coordinate, Stato t_stato) { m_grid[t_coordinate.first][t_coordinate.second].m_S = t_stato; }
 
 void Automa::AzzeraOrologio() { m_orologio.restart(); }
@@ -170,3 +158,17 @@ void Automa::StartAutoma() {
 }
 
 bool Automa::IsStopped() { return m_is_stopped; }
+
+Censimento Automa::GetCensimento() { return m_censimento; }
+
+void Automa::Aggiorna_senza_avanzare() {
+  m_censimento = {0, 0, 0, 0};
+  for (int i = 0; i < m_numero_lato; i++) {
+    for (int j = 0; j < m_numero_lato; j++) {
+      Cellula& cell = m_grid[i][j];
+      censimento(cell, m_censimento);
+      cell.m_counter = 0;
+      cell.Aggiorna_colore();
+    }
+  }
+}

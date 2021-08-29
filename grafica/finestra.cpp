@@ -3,10 +3,6 @@
 #include <SFML/Window.hpp>
 #include <iostream>
 
-#include "animazione.hpp"
-#include "automa.hpp"
-#include "gui.hpp"
-
 sf::Vector2f converti(sf::Vector2u vettore) { return sf::Vector2f(vettore.x, vettore.y); }
 sf::Vector2f converti(sf::Vector2i vettore) { return sf::Vector2f(vettore.x, vettore.y); }
 
@@ -68,7 +64,7 @@ void Finestra::Update() {
       }
       v_dimensioni = dimensioni_nuove;
 
-      vista_animazione.setSize(converti(dimensioni_nuove));  // le dimensioni si devono aggiornare per entrambe le viste ad ogni resize
+      vista_animazione.setSize(converti(dimensioni_nuove));
       vista_automa.setSize(converti(dimensioni_nuove));
       switch (v_vista) {
         case Vista::Animazione:
@@ -85,7 +81,6 @@ void Finestra::Update() {
       }
 
       upd_vista();
-      /* sf::View view2(sf::Vector2f(400, 300), converti(dimensioni_nuove)); */
       m_statico->AzzeraOrologio();
       m_dinamico->AzzeraOrologio();  // evitiamo che si perdano pezzi di animazione durante il resize
     }
@@ -97,26 +92,23 @@ void Finestra::Update() {
       v_overlay->IsOut();
       mouse_in = false;
     }
-    if (mouse_in /* && evento.type == sf::Event::MouseMoved */) {
+    if (mouse_in) {
       posizione_mouse = punto_alto_sx + (converti(v_mouse.getPosition(v_mainfinestra)));
 
-      v_overlay->CheckMousePosition(posizione_mouse);  // vedere se funziona
-      /* std::cout << posizione_mouse.x << " " << posizione_mouse.y << '\n'; */
+      v_overlay->CheckMousePosition(posizione_mouse);
       v_overlay->CheckColor(sf::Color::Yellow);
 
-      v_overlay->AggiornaPosizioneRettangoliPaletta(posizione_mouse);
+      v_overlay->AggiornaPosizioneRettangoliPennello(posizione_mouse);
 
       if (evento.type == sf::Event::MouseButtonPressed && evento.mouseButton.button == sf::Mouse::Left) {
         if (v_overlay->IsInserimentoAttivo()) {
           std::pair<int, int> coppia = m_statico->CheckMousePosition(posizione_mouse);
           std::cout << coppia.first << coppia.second << '\n';
           if (coppia != std::pair<int, int>(-1, -1)) {
-            m_statico->ChangeStatus(coppia, v_overlay->GetPointerPaletta()->RitornaStatoRettangoloInserendo());
-            m_statico->AggiornaSenzaAvanzare();
-            /* v_overlay->GetPointerRiquadro()->AzzeraAutoma(); */
-
+            m_statico->ChangeStatus(coppia, v_overlay->GetPointerPennello()->RitornaStatoRettangoloInserendo());
+            m_statico->Aggiorna_senza_avanzare();
             v_overlay->GetPointerRiquadro()->AggiornaScritte();
-            v_overlay->GetPointerPaletta()->DisattivaInserimento();
+            v_overlay->GetPointerPennello()->DisattivaInserimento();
           }
         }
         
@@ -230,7 +222,7 @@ void Finestra::specifiche_viste(Vista t_vista, sf::FloatRect t_limite) {  // met
 void Finestra::SetVista(sf::View vista) { v_mainfinestra.setView(vista); }
 
 void Finestra::Pulisci() { v_mainfinestra.clear(sf::Color::Black); }
-void Finestra::Disegna(sf::Drawable& cosadadisegnare) { v_mainfinestra.draw(cosadadisegnare); }  // capire come funziona sta roba
+void Finestra::Disegna(sf::Drawable& cosadadisegnare) { v_mainfinestra.draw(cosadadisegnare); }
 void Finestra::Mostra() { v_mainfinestra.display(); }
 
 sf::Vector2u Finestra::Getdimensions() { return v_dimensioni; }

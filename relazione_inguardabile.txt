@@ -51,8 +51,8 @@ In alto a destra è poi disponibile un piccolo grafico che dà un'idea dell'anda
 vedere in tempo reale i numeri di persone in ogni stato (Suscettibile, infetto, guarito, morto). 
 Per compilare è possibilizzare utilizzare CMake oppure i comandi "g++ -c main.cpp classe.cpp gui.cpp finestra.cpp animazione.cpp automa.cpp", 
 "g++ main.o classe.o gui.o finestro animazione.o automa.o -lsfml-graphics -lsfml-window -lsfml-system". Compilando con i comandi -Wall -Wextra -fsanitize=address
-appaiono warnings dovuti ad 'unused parameter' nella funzione draw di sfml. Alla chiusura della finestra grafica rimane un memory leak di 56 bytes (già comunicato).
-
+appaiono warnings dovuti ad 'unused parameter' nella funzione draw di sfml£___________241151. Alla chiusura della finestra grafica rimane un memory leak di 56 bytes (già comunicato).
+/&/£$&(£$"("$&("$("$(&"$()"$&Q)))))
 
 Simulazione I
 
@@ -69,13 +69,44 @@ All'interno della classe Animazione abbiamo un vertexArray che ospita tutte le c
 Ogni persona è definita quindi sulla finestra da 3 coordinate.
 Tutte le persone sono raggruppate in una std::map, membro della classe Animazione. I diversi colori delle persone sono dati da diverse texture, tutte
 nello stesso file "uomini.png". Per assegnare ai membri con lo stesso stato il medesimo colore, una funzione (SetAllTextures) ritaglia il png ed incolla la texture
-
+La regione delimitata dal rettangolo viene riempita uniformemente all'interno del costruttore attraverso un 'for loop' che cicla per il numero totale 
+di persone inserito in input dall'utente. Il numero di infetti iniziale viene qui gestito da un altro ciclo 'for'.
 La funzione membro Collisione() gestisce l'infettività, mentre Conteggio_contatti() e Morte_persona() controllano l'uscita dall'infezione.
-
+I movimenti delle persone sono permessi dalle funzioni Aggiorna_lista(), Aggiorna_griglia() e Check_borders(). Attraverso la funzione Aggiorna_Generale()
+si passa da un istante all'altro.
 
 
 
 Simulazione II 
 
-La seconda simulazione consiste in un automa cellulare costituito da una griglia 
+La seconda simulazione consiste in un automa cellulare costituito da una griglia 'n x n'. Gli stati e i colori delle celle sono gli stessi della 
+simulazione 1 (stessa enum Class "Stato"). La situazione della griglia avanza autonomamente ad intervalli discreti. Le celle suscettibili se 
+circondate da almeno una cella infetta, hanno una certa probabilita' di infettarsi (parametro 'beta'). Ogni giorno la cella infetta va incontro a 3 opzioni: 
+guarire, morire (influenzate rispettivamente dai parametri 'gamma' ed 'eta' forniti dall'utente), oppure restare infetta; le celle guarite e morte sono paragonabili a celle vuote. 
+Al contrario della prima simulazione, in questo caso e' possibile intervenire sullo stato delle celle direttamente sulla finestra grafica grazie alla GUI.
+
+L'ambiente completo e' un oggetto della classe Automa. Le singole celle sono invece rappresentate dalla classe Cellula, ereditata dalla classe Bordi.
+La funzione Aggiorna_colore() assegna a ogni stato il rispettivo colore. Genera() si occupa di posizionare in maniera casuale le celle infette
+e suscettibili richieste all'interno della griglia. Attraverso la funzione Aggiorna() le celle cambiano stato in base alle regole previste e   
+con Avanza() ogni 3 secondi la griglia immette le modifiche.
+La funzione Aggiorna_senza_avanzare() permette di gestire il cambiamento degli stati delle cellette quando la simulazione è in pausa.
+
+
+Header Files - breve descrizione degli header scritti per l'intera parte II
+
+Oltre ai due file con i rispettivi header 'animazione.cpp' e 'automa.cpp' già descritti, nella parte grafica ne sono presenti anche altri.
+
+- struct_enum.hpp : contiene classi e funzioni che vengono sfruttate da entrambe le simulazioni quali Casuale(), la funzione template Censimento(),
+ la enum class Stato e altre classi/struct
+
+- riquadro_informazioni.hpp : contiene le classi che si occupano del riquadro in alto a destra della finestra grafica con valori per ogni stato 
+ e grafico mostrante lo storico della simulazione
+
+- gui.hpp : ospita la classe GUI dell'interfaccia utente
+
+- bordi.hpp : ospita la classe bordi
+
+- finestra.hpp :
+
+- classe.hpp : 
 

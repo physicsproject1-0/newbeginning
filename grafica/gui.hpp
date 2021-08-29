@@ -1,18 +1,16 @@
-
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
 
 #include <SFML/Graphics.hpp>
-
 #include <cassert>
 #include <cstdlib>
 #include <string>
 
-#include "struct_enum.hpp"
 #include "bordi.hpp"
+#include "pennello.hpp"
 #include "riquadro_informazioni.hpp"
-#include "paletta.hpp"
+#include "struct_enum.hpp"
 
 #ifndef GUI_HPP
 #define GUI_HPP
@@ -20,7 +18,7 @@
 class GUI : public sf::Drawable {
   sf::Font m_font;
 
-  sf::RectangleShape m_sfondo_grigio;  // non uso nè bordi nè checkbox perchè non adatti
+  sf::RectangleShape m_sfondo_grigio;
   Bordi m_limiti_sfondo_grigio;
 
   Textbox m_testo_animazione;
@@ -32,7 +30,7 @@ class GUI : public sf::Drawable {
   Pulsante m_pulsante_play;
   Pulsante m_pulsante_pausa;
 
-  Paletta m_paletta_colori;
+  Pennello m_pennello_colori;
 
   Informazioni m_riquadro_informazioni;
 
@@ -40,20 +38,20 @@ class GUI : public sf::Drawable {
 
  public:
   GUI(sf::Vector2f dimensione);
-  
-  virtual void draw(sf::RenderTarget& target, sf::RenderStates ) const;
-  
+
+  virtual void draw(sf::RenderTarget& target, sf::RenderStates) const;
+
   void AggiornaPosizione(sf::Vector2f punto_in_altodx, sf::Vector2f dimensioni_finestra);
 
-  void AggiornaPosizioneRettangoliPaletta(sf::Vector2f t_coordinate_mouse) {
-    if (m_paletta_colori.IsInserimentoAttivo()) {
-      m_paletta_colori.AggiornaPosizioneRettangoliDaInserire(t_coordinate_mouse);
+  void AggiornaPosizioneRettangoliPennello(sf::Vector2f t_coordinate_mouse) {
+    if (m_pennello_colori.IsInserimentoAttivo()) {
+      m_pennello_colori.AggiornaPosizioneRettangoliDaInserire(t_coordinate_mouse);
     }
   }
 
-  void AttivaInserimento() { m_paletta_colori.Attiva(); }
+  void AttivaInserimento() { m_pennello_colori.Attiva(); }
 
-  void DisattivaInserimento() { m_paletta_colori.Disattiva(); }
+  void DisattivaInserimento() { m_pennello_colori.Disattiva(); }
 
   void CheckMousePosition(sf::Vector2f t_coordinate_mouse);
 
@@ -65,10 +63,10 @@ class GUI : public sf::Drawable {
   
   void IsOut() { CheckColor(sf::Color(128, 128, 128)); }
 
-  Paletta* GetPointerPaletta() { return &m_paletta_colori; }
+  Pennello* GetPointerPennello() { return &m_pennello_colori; }
   Informazioni* GetPointerRiquadro() { return &m_riquadro_informazioni; }
 
-  bool IsInserimentoAttivo() { return m_paletta_colori.IsInserimentoAttivo(); }
+  bool IsInserimentoAttivo() { return m_pennello_colori.IsInserimentoAttivo(); }
 };
 
 #endif

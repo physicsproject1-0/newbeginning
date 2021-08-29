@@ -1,22 +1,18 @@
-#include <SFML/Graphics.hpp>
-
-#include "struct_enum.hpp"
-/* #include "classe.hpp" */
-/* #include "finestra.hpp" */
 #include "animazione.hpp"
 #include "gui.hpp"
 
+#include <SFML/Graphics.hpp>
+
+// Controlla le collisioni e cambia lo stato
 void Animazione::Collisione() {
-  popolazione = {0, 0, 0, 0};
+  m_censimento = {0, 0, 0, 0};
   for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
-
-    censimento(PallinaA, popolazione);
+    censimento(PallinaA, m_censimento);
     if (PallinaA.m_S == Stato::VULNERABILE) {
       for (int j = 0; j < m_popolazione.size(); j++) {
         Persona& PallinaB = m_popolazione[j];
-
-        // Contagiosita' del 40%
+        // Contagiosita' dipende dal parametro beta
         if ((i != j) && (PallinaB.m_S == Stato::INFETTO)) {
           if (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.5 * PallinaB.m_raggio) {
             if (Casuale() * m_d_parametro_beta < 40) {
@@ -86,6 +82,16 @@ void Animazione::Morte_persona() {  // al 30 % la persona muore, al 70% guarisce
             PallinaA.m_numero_contatti++;
           }
         }
+          float estrazione = Casuale() / 100.f;
+          std::cout << estrazione << '\n';
+
+          if (estrazione < m_d_parametro_gamma) {
+            PallinaA.m_numero_contatti++;
+            std::cout << "pallina numero" << i << " "
+                      << "aumento contatti\n";
+          }
+        }
+        std::cout << "pallina numero" << i << " " << PallinaA.m_numero_contatti << '\n';
 
       } else {
         continue;
@@ -94,7 +100,8 @@ void Animazione::Morte_persona() {  // al 30 % la persona muore, al 70% guarisce
   }
 }
 
-void Animazione::Morte_persona() {                                //al 30 % la persona muore, al 70% guarisce
+// Al 30 % la persona muore, al 70% guarisce
+void Animazione::Morte_persona() {
   for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
     if ((PallinaA.m_S == Stato::INFETTO) && (PallinaA.m_numero_contatti >= 35)) {
@@ -109,6 +116,8 @@ void Animazione::Morte_persona() {                                //al 30 % la p
 }
  */
 
+
+// Assegna la texture corretta ad ogni stato
 void Animazione::SetAllTextures() {
   for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
@@ -145,29 +154,27 @@ void Animazione::SetAllTextures() {
 
 Bordi Animazione::get_bordi() { return m_limiti; }
 
-void Animazione::Aggiorna_griglia() {
-  for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
-    sf::Vertex* iter = &m_struttura[i * 3];
-    iter[0].position = sf::Vector2f(m_popolazione[i].m_centro.x, m_popolazione[i].m_centro.y - m_popolazione[i].m_raggio);  // strane coord
-    iter[1].position = sf::Vector2f(m_popolazione[i].m_centro.x - m_popolazione[i].m_raggio * (1.7f / 2),
-                                    m_popolazione[i].m_centro.y + (m_popolazione[i].m_raggio / 2));
-    iter[2].position = sf::Vector2f(m_popolazione[i].m_centro.x + m_popolazione[i].m_raggio * (1.7f / 2),
-                                    m_popolazione[i].m_centro.y + (m_popolazione[i].m_raggio / 2));
-    // bisognerà cancellare il puntatore?
-  }
-}
-
+// Assegna una nuova coordinata ad ogni persona
 void Animazione::Aggiorna_lista() {
-  // metto qua perchè se lo chiamo in punti diversi magari sono leggemente diversi
   float deltat2 = m_orologio2.restart().asSeconds();
-
-  // std::cout << "tempo1 " << deltat << '\n';
-  // std::cout << "tempo2 " << deltat2 << '\n';
   for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     m_popolazione[i].m_centro += m_popolazione[i].m_vel * deltat2;
   }
 }
 
+// Implementa le nuove coordinate sulla finestra grafica
+void Animazione::Aggiorna_griglia() {
+  for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
+    sf::Vertex* iter = &m_struttura[i * 3];
+    iter[0].position = sf::Vector2f(m_popolazione[i].m_centro.x, m_popolazione[i].m_centro.y - m_popolazione[i].m_raggio);
+    iter[1].position = sf::Vector2f(m_popolazione[i].m_centro.x - m_popolazione[i].m_raggio * (1.7f / 2),
+                                    m_popolazione[i].m_centro.y + (m_popolazione[i].m_raggio / 2));
+    iter[2].position = sf::Vector2f(m_popolazione[i].m_centro.x + m_popolazione[i].m_raggio * (1.7f / 2),
+                                    m_popolazione[i].m_centro.y + (m_popolazione[i].m_raggio / 2));
+  }
+}
+
+// Controlla le collisioni con i bordi e inverte le velocita'
 void Animazione::Check_borders() {
   for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     if (m_popolazione[i].m_centro.x < m_limiti.getlimiti().left + m_popolazione[i].m_raggio ||
@@ -180,6 +187,7 @@ void Animazione::Check_borders() {
     }
   }
 }
+
 void Animazione::AzzeraOrologio() { m_orologio2.restart(); }
 
 void Animazione::StartOrologi() {
@@ -233,7 +241,9 @@ void Animazione::StartAnimazione() {
 }
 
 bool Animazione::IsStopped() { return m_is_stopped; }
+Censimento Animazione::GetCensimento() { return m_censimento; }
 
+// Chiama tutte le funzioni precedenti
 void Animazione::Aggiorna_Generale() {
   Check_borders();
 
