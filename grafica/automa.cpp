@@ -137,7 +137,7 @@ void Automa::Avanza() {
 std::pair<int, int> Automa::CheckMousePosition(sf::Vector2f t_coordinate_mouse) {
   for (int i = 0; i < m_numero_lato; i++) {
     for (int j = 0; j < m_numero_lato; j++) {
-      if (m_grid[i][j].getlimiti().contains(t_coordinate_mouse)) {
+      if (m_grid[i][j].GetLimiti().contains(t_coordinate_mouse)) {
         return std::pair<int, int>{i, j};
       }
     }

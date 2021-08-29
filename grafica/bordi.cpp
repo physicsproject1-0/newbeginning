@@ -41,7 +41,7 @@ void Bordi::ridimensiona(sf::Vector2f dimensione) {
 
 void Bordi::set_color(sf::Color Colore) { m_rettangolo.setOutlineColor(Colore); }
 
-sf::FloatRect Bordi::getlimiti() const { return m_rettangolo_esterno; };
+sf::FloatRect Bordi::GetLimiti() const { return m_rettangolo_esterno; };
 
 // Checkbox
 

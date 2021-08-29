@@ -28,7 +28,8 @@ struct Censimento {
 
 enum class TipoPulsante { Play, Pausa };
 
-template <typename C>
+//aggiorna le struct con i dati riguardo le simulazioni in real time
+template <typename C>     
 void censimento(C const& cell, Censimento& popolazione) {
   switch (cell.m_S) {
     case (Stato::VULNERABILE):
@@ -48,7 +49,8 @@ void censimento(C const& cell, Censimento& popolazione) {
   }
 }
 
-inline int Casuale() {
+//estrae numero tra 1 e 100 compresi
+inline int Casuale() {   
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_int_distribution<> dist(1, 100);

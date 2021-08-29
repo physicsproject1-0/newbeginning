@@ -80,8 +80,8 @@ class Animazione : public sf::Drawable {
     for (int i = 0; i < m_d_numero_persone; i++) {
       m_prova.m_raggio = 13.f;
       m_prova.m_centro =
-          sf::Vector2f((Casuale() / 100.f) * (m_limiti.getlimiti().width - 2 * m_prova.m_raggio) + m_limiti.getlimiti().left + m_prova.m_raggio,
-                       (Casuale() / 100.f) * (m_limiti.getlimiti().height - 2 * m_prova.m_raggio) + m_limiti.getlimiti().top + m_prova.m_raggio);
+          sf::Vector2f((Casuale() / 100.f) * (m_limiti.GetLimiti().width - 2 * m_prova.m_raggio) + m_limiti.GetLimiti().left + m_prova.m_raggio,
+                       (Casuale() / 100.f) * (m_limiti.GetLimiti().height - 2 * m_prova.m_raggio) + m_limiti.GetLimiti().top + m_prova.m_raggio);
       m_prova.m_vel = sf::Vector2f(Casuale() % 50 - 25.f, Casuale() % 50 - 25.f);
 
       m_prova.m_valore_casuale = (Casuale() / 100.f) * 20;

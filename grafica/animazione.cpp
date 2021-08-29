@@ -175,12 +175,12 @@ void Animazione::Aggiorna_griglia() {
 // Controlla le collisioni con i bordi e inverte le velocita'
 void Animazione::Check_borders() {
   for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
-    if (m_popolazione[i].m_centro.x < m_limiti.getlimiti().left + m_popolazione[i].m_raggio ||
-        m_popolazione[i].m_centro.x > m_limiti.getlimiti().left + m_limiti.getlimiti().width - m_popolazione[i].m_raggio) {
+    if (m_popolazione[i].m_centro.x < m_limiti.GetLimiti().left + m_popolazione[i].m_raggio ||
+        m_popolazione[i].m_centro.x > m_limiti.GetLimiti().left + m_limiti.GetLimiti().width - m_popolazione[i].m_raggio) {
       m_popolazione[i].m_vel.x = -m_popolazione[i].m_vel.x;
     }
-    if (m_popolazione[i].m_centro.y < m_limiti.getlimiti().top + m_popolazione[i].m_raggio ||
-        m_popolazione[i].m_centro.y > m_limiti.getlimiti().top + m_limiti.getlimiti().height - m_popolazione[i].m_raggio) {
+    if (m_popolazione[i].m_centro.y < m_limiti.GetLimiti().top + m_popolazione[i].m_raggio ||
+        m_popolazione[i].m_centro.y > m_limiti.GetLimiti().top + m_limiti.GetLimiti().height - m_popolazione[i].m_raggio) {
       m_popolazione[i].m_vel.y = -m_popolazione[i].m_vel.y;
     }
   }

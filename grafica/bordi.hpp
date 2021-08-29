@@ -5,20 +5,25 @@
 #ifndef BORDI_HPP
 #define BORDI_HPP
 
+// classe per avere rettangolo e floatrect preciso sopra di lui(non accade con GetGlobalBounds ad esempio)
 class Bordi : public sf::Drawable {
  protected:
   sf::RectangleShape m_rettangolo;
   sf::FloatRect m_rettangolo_esterno;
 
  public:
-  virtual void draw(sf::RenderTarget& target, sf::RenderStates) const;
   Bordi(sf::Vector2f dimensione, sf::Vector2f posizione);
   Bordi(sf::Vector2f dimensione);
+
+  virtual void draw(sf::RenderTarget& target, sf::RenderStates) const;
   virtual void set_posizione(sf::Vector2f posizione);
+
   void ridimensiona(sf::Vector2f dimensione);
   void set_color(sf::Color Colore);
-  sf::FloatRect getlimiti() const;
+
+  sf::FloatRect GetLimiti() const;
 };
+
 
 class Checkbox : public Bordi {
  protected:
