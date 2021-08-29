@@ -44,17 +44,14 @@ class Animazione : public sf::Drawable {
   int m_d_rimossi_iniziali;  // numero iniziale di rimossi
   bool m_is_stopped;
   Censimento m_censimento;
-  float m_d_parametro_beta;   // influenza contagio
+  float m_d_parametro_beta;   // influenza il contagio
   float m_d_parametro_gamma;  // influenza le morti
 
   bool m_orologi_stanno_andando;
-  // Nel momento in cui collidono due persone, se una era infetta, cambia lo stato anche dell' altra
+
   void Collisione();
   void Conteggio_contatti();
   void Morte_persona();
-
-  // Ho immaginato che al 30% muoiano e al 70% guariscono, si possono cambiare le probabilita' of course
-  // Funzione in cui carico sullo stato MORTO al 30% la texture grigia e al 70% quella azzurra
   void SetAllTextures();
 
   virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {

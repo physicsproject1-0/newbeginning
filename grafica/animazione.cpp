@@ -1,7 +1,8 @@
 #include "animazione.hpp"
-#include "gui.hpp"
 
 #include <SFML/Graphics.hpp>
+
+#include "gui.hpp"
 
 // Controlla le collisioni e cambia lo stato
 void Animazione::Collisione() {
@@ -40,22 +41,20 @@ void Animazione::Conteggio_contatti() {
     } else {
       /* PallinaA.m_tempo_trascorso += PallinaA.m_orologio_personale.restart();
       std::cout << "infetto " << PallinaA.m_tempo_trascorso.asSeconds() << '\n'; */
-
       continue;
     }
   }
 }
-void Animazione::Morte_persona() {  // al 30 % la persona muore, al 70% guarisce
+
+// Al 30 % la persona muore, al 70% guarisce
+void Animazione::Morte_persona() {
   for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
-
     if ((PallinaA.m_S == Stato::INFETTO)) {
       /* PallinaA.m_tempo_trascorso+=PallinaA.m_orologio_personale.getElapsedTime(); */
 
       if (PallinaA.m_tempo_trascorso.asSeconds() + PallinaA.m_orologio_personale.getElapsedTime().asSeconds() >
           4 / m_d_parametro_gamma + PallinaA.m_valore_casuale) {
-        std::cout << "infetto " << PallinaA.m_tempo_trascorso.asSeconds() + PallinaA.m_orologio_personale.getElapsedTime().asSeconds() << '\n';
-
         PallinaA.m_S = Stato::MORTO;
         if (Casuale() > 30) {
           PallinaA.m_S = Stato::GUARITO;
@@ -115,7 +114,6 @@ void Animazione::Morte_persona() {
   }
 }
  */
-
 
 // Assegna la texture corretta ad ogni stato
 void Animazione::SetAllTextures() {
@@ -200,12 +198,12 @@ void Animazione::StartOrologi() {
       std::cout << "tempo trascorso" << PallinaA.m_tempo_trascorso.asSeconds() << '\n';
     }
   }
-  m_orologi_stanno_andando =true;
+  m_orologi_stanno_andando = true;
 }
 void Animazione::StopOrologi() {
   std::cout << "stop animazione'\n";
   ImmagazzinaTempo();
-  m_orologi_stanno_andando =false;
+  m_orologi_stanno_andando = false;
 }
 void Animazione::AzzeraOrologiPersone() {
   for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
@@ -215,10 +213,7 @@ void Animazione::AzzeraOrologiPersone() {
   }
 }
 
-
-bool Animazione::GetStatusOrologi(){
-  return m_orologi_stanno_andando;
-}
+bool Animazione::GetStatusOrologi() { return m_orologi_stanno_andando; }
 double Animazione::Modulo(sf::Vector2f const& vettore) { return sqrt(pow(vettore.x, 2) + pow(vettore.y, 2)); }
 
 void Animazione::StopAnimazione() {

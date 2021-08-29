@@ -10,10 +10,10 @@ Ad ogni nuovo giorno la situazione si aggiorna secondo l’algoritmo che segue l
 
 Abbiamo creato una struct ‘State’ che contenesse i valori caratterizzanti un determinato istante della simulazione, ovvero il giorno 
 corrente ed i rispettivi valori di S, I, R. 
-La classe ‘SIR’ invece contiene i dati necessari al funzionamento del modello, ovvero uno State stato iniziale, i parametri beta e gamma, insieme alla durata della simulazione.
+La classe ‘SIR’ invece contiene i dati necessari al funzionamento del modello, ovvero uno State 'stato iniziale', i parametri 'beta' e 'gamma', insieme alla durata della simulazione.
 Tiene conto anche del valore (costante per tutta la durata della simulazione) dato dal totale delle persone presenti.
-‘Insert’ è la funzione che gestisce l’input e ritorna un oggetto della classe SIR: vengono richiesti quindi all’utente i valori dei parametri beta e gamma 
-(decimali tra 0 e 1), il numero di persone suscettibili, infette e rimosse; infine è necessario inserire la durata della simulazione.
+‘Insert()’ è la funzione che gestisce l’input e ritorna un oggetto della classe SIR: vengono richiesti quindi all’utente i valori dei parametri beta e gamma 
+(decimali tra 0 e 1), il numero di persone suscettibili, infette e rimosse (interi positivi); infine è necessario inserire la durata della simulazione in giorni (intero positivo).
 
 Le funzioni membro ‘riempimento’ e ‘convertitore’ sono chiamate per compiere la vera e propria simulazione dal punto di vista
 quantitativo: entrambe ritornano uno std::vector di ‘State’, il primo con dati grezzi, il secondo riporta approssimati all’unità i valori di S, I, R. 
@@ -60,19 +60,20 @@ Automa cellulare
 - parametro beta (probabilità di contagio) [decimale tra 0 e 1]
 - parametro gamma (probabilità di guarigione) [decimale tra 0 e 1]
 - parametro eta (probabilità di morte) [decimale tra 0 e 1] 
-- celle infette [intero < numero totale celle]
-- celle rimosse (guarite) [intero < numero totale celle]
+- celle infette [intero positivo]
+- celle rimosse (guarite) [intero positivo]
 
 La somma di gamma ed eta deve essere minore di 1
 La somma di celle infette e celle rimosse deve essere minore del totale
 
 Animazione 
-- numero di persone totale [intero]
+- numero di persone totale [intero positivo]
 - parametro beta (probabilità di contagio) [decimale tra 0 e 1]
 - parametro gamma (probabilità di guarigione) [decimale tra 0 e 1]
-- numero persone infette
-- numero persone rimosse (guarite)
+- numero persone infette [intero positivo]
+- numero persone rimosse (guarite) [intero positivo]
 
+La somma di persone infette e persone rimosse deve essere minore del totale
 
 
 Simulazione I
