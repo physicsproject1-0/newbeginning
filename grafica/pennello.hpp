@@ -6,7 +6,8 @@
 #ifndef PENNELLO_HPP
 #define PENNELLO_HPP
 
-class Pennello : public sf::Drawable {
+//Class per disegnare tavolozza per riempimento automa
+class Pennello : public sf::Drawable {  //disegna rispetto rispetto al centro
   Checkbox m_box_verde;
   Checkbox m_box_rosso;
   Checkbox m_box_blu;
@@ -26,63 +27,16 @@ class Pennello : public sf::Drawable {
   Textbox m_testo_blu;
   Textbox m_testo_bianco;
 
-  bool m_is_active;           // significa se e' possibile cliccare
-  bool m_inserimento_attivo;  // se hai preso il rettangolo
+  bool m_is_active;           // relativa a opacizzazione paletta
+  bool m_inserimento_attivo;  // relativa a inserimento rettangolo
+  
   bool m_verde_visibile;
   bool m_rosso_visibile;
   bool m_blu_visibile;
   bool m_bianco_visibile;
 
  public:
-  Pennello(sf::Vector2f t_dimensione_riquadro, sf::Font* t_font)
-      : m_box_verde(sf::Vector2f(t_dimensione_riquadro.x / 2, t_dimensione_riquadro.x / 2)),
-        m_box_rosso(sf::Vector2f(t_dimensione_riquadro.x / 2, t_dimensione_riquadro.x / 2)),
-        m_box_blu(sf::Vector2f(t_dimensione_riquadro.x / 2, t_dimensione_riquadro.x / 2)),
-        m_box_bianco(sf::Vector2f(t_dimensione_riquadro.x / 2, t_dimensione_riquadro.x / 2)),
-        m_riquadro_esterno(t_dimensione_riquadro),
-
-        m_testo_verde(9.5, t_font, sf::Color::Black),
-        m_testo_rosso(9.5, t_font, sf::Color::Black),
-        m_testo_blu(9.5, t_font, sf::Color::Black),
-        m_testo_bianco(9.5, t_font, sf::Color::Black),
-        m_is_active{true},
-        m_inserimento_attivo{false},
-        m_verde_visibile{false},
-        m_rosso_visibile{false},
-        m_blu_visibile{false},
-        m_bianco_visibile{false} {
-    m_rettangolo_opaco.setFillColor(sf::Color(128, 128, 128, 120));
-    m_rettangolo_opaco.setSize(t_dimensione_riquadro);
-    m_rettangolo_opaco.setOrigin(sf::Vector2f(t_dimensione_riquadro.x / 2, t_dimensione_riquadro.y / 2));
-
-    m_box_verde.setinterncolor(sf::Color::Green);
-    m_box_verde.ImpostaOrigine(sf::Vector2f(t_dimensione_riquadro.x / 4, t_dimensione_riquadro.x / 4));
-
-    m_box_rosso.setinterncolor(sf::Color::Red);
-    m_box_rosso.ImpostaOrigine(sf::Vector2f(t_dimensione_riquadro.x / 4, t_dimensione_riquadro.x / 4));
-
-    m_box_blu.setinterncolor(sf::Color::Cyan);
-    m_box_blu.ImpostaOrigine(sf::Vector2f(t_dimensione_riquadro.x / 4, t_dimensione_riquadro.x / 4));
-
-    m_box_bianco.setinterncolor(sf::Color::White);
-    m_box_bianco.ImpostaOrigine(sf::Vector2f(t_dimensione_riquadro.x / 4, t_dimensione_riquadro.x / 4));
-
-    m_dainserire_verde.setSize(sf::Vector2f(t_dimensione_riquadro.x / 6, t_dimensione_riquadro.x / 6));
-    m_dainserire_verde.setFillColor(sf::Color::Green);
-    m_dainserire_verde.setOrigin(sf::Vector2f(t_dimensione_riquadro.x / 12, t_dimensione_riquadro.x / 12));
-
-    m_dainserire_rosso.setSize(sf::Vector2f(t_dimensione_riquadro.x / 6, t_dimensione_riquadro.x / 6));
-    m_dainserire_rosso.setFillColor(sf::Color::Red);
-    m_dainserire_rosso.setOrigin(sf::Vector2f(t_dimensione_riquadro.x / 12, t_dimensione_riquadro.x / 12));
-
-    m_dainserire_blu.setSize(sf::Vector2f(t_dimensione_riquadro.x / 6, t_dimensione_riquadro.x / 6));
-    m_dainserire_blu.setFillColor(sf::Color::Cyan);
-    m_dainserire_blu.setOrigin(sf::Vector2f(t_dimensione_riquadro.x / 12, t_dimensione_riquadro.x / 12));
-
-    m_dainserire_bianco.setSize(sf::Vector2f(t_dimensione_riquadro.x / 6, t_dimensione_riquadro.x / 6));
-    m_dainserire_bianco.setFillColor(sf::Color::White);
-    m_dainserire_bianco.setOrigin(sf::Vector2f(t_dimensione_riquadro.x / 12, t_dimensione_riquadro.x / 12));
-  }
+  Pennello(sf::Vector2f t_dimensione_riquadro, sf::Font* t_font);
 
   void ImpostaPosizione(sf::Vector2f t_posizione_centro);
   void Scrivi();
@@ -90,10 +44,8 @@ class Pennello : public sf::Drawable {
 
   void AggiornaPosizioneRettangoliDaInserire(sf::Vector2f t_posizione_mouse);
 
-  bool IsActive();
-
+  bool IsActive();  //relative a opacizzazione paletta
   void Attiva();
-
   void Disattiva();
 
   Checkbox RitornaVerde();
@@ -101,7 +53,7 @@ class Pennello : public sf::Drawable {
   Checkbox RitornaBlu();
   Checkbox RitornaBianco();
 
-  bool IsInserimentoAttivo();
+  bool IsInserimentoAttivo();   //relative a inserimento rettangolo
   void AttivaInserimento();
   void DisattivaInserimento();
 

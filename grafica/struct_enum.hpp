@@ -30,21 +30,22 @@ enum class TipoPulsante { Play, Pausa };
 
 //aggiorna le struct con i dati riguardo le simulazioni in real time
 template <typename C>     
-void censimento(C const& cell, Censimento& popolazione) {
-  switch (cell.m_S) {
+void FaiCensimento(C const& t_cell, Censimento& t_popolazione) {
+  switch (t_cell.m_stato) {
     case (Stato::VULNERABILE):
-      popolazione.m_suscettibili++;
+      t_popolazione.m_suscettibili++;
       break;
 
     case (Stato::INFETTO):
-      popolazione.m_infetti++;
+      t_popolazione.m_infetti++;
       break;
 
     case (Stato::GUARITO):
-      popolazione.m_guariti++;
+      t_popolazione.m_guariti++;
       break;
+      
     case (Stato::MORTO):
-      popolazione.m_morti++;
+      t_popolazione.m_morti++;
       break;
   }
 }

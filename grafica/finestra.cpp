@@ -106,7 +106,7 @@ void Finestra::Update() {
           std::cout << coppia.first << coppia.second << '\n';
           if (coppia != std::pair<int, int>(-1, -1)) {
             m_statico->ChangeStatus(coppia, v_overlay->GetPointerPennello()->RitornaStatoRettangoloInserendo());
-            m_statico->Aggiorna_senza_avanzare();
+            m_statico->AggiornaSenzaAvanzare();
             v_overlay->GetPointerRiquadro()->AggiornaScritte();
             v_overlay->GetPointerPennello()->DisattivaInserimento();
           }

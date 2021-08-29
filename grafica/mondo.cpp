@@ -3,14 +3,7 @@
 #include <algorithm>
 #include <sstream>
 
-Mondo::Mondo(Inserimento t_inserimento)
-    : m_overlay(sf::Vector2f(70, 500)),
-      m_dinamica(t_inserimento.m_d_numero_persone, t_inserimento.m_d_infetti_iniziali, t_inserimento.m_d_rimossi_iniziali,
-                 t_inserimento.m_d_parametro_beta, t_inserimento.m_d_parametro_gamma),
-      m_statica(sf::Vector2f(1800, 1800), sf::Vector2f(500, 500), t_inserimento.m_s_dimensione_lato, t_inserimento.m_s_parametro_beta,
-                t_inserimento.m_s_parametro_gamma, t_inserimento.m_s_parametro_eta, t_inserimento.m_s_infetti_iniziali,
-                t_inserimento.m_s_rimossi_iniziali),
-      m_window("test", sf::Vector2u(900, 600), &m_overlay, &m_dinamica, &m_statica, m_dinamica.get_bordi(), m_statica.get_bordi()) {}
+//Funzione di controllo input
 
 
 template <class T>
@@ -26,6 +19,8 @@ bool IsInputGood(T& a) {
   }
   return false;
 }
+
+//Inserimento
 
 Inserimento::Inserimento() {
   std::cout << "Buongiorno, inserisca i parametri iniziali relativi alla simulazione \n";
@@ -99,6 +94,22 @@ Inserimento::Inserimento() {
         "Il numero di soggetti rimossi(guariti) deve essere un intero positivo e minore del numero massimo di persone ancora infettabili"};
   }
 }
+
+//Mondo
+
+Mondo::Mondo(Inserimento t_inserimento)
+    : m_overlay(sf::Vector2f(70, 500)),
+      m_dinamica(t_inserimento.m_d_numero_persone, t_inserimento.m_d_infetti_iniziali, t_inserimento.m_d_rimossi_iniziali,
+                 t_inserimento.m_d_parametro_beta, t_inserimento.m_d_parametro_gamma),
+      m_statica(sf::Vector2f(1800, 1800), sf::Vector2f(500, 500), t_inserimento.m_s_dimensione_lato, t_inserimento.m_s_parametro_beta,
+                t_inserimento.m_s_parametro_gamma, t_inserimento.m_s_parametro_eta, t_inserimento.m_s_infetti_iniziali,
+                t_inserimento.m_s_rimossi_iniziali),
+      m_window("test", sf::Vector2u(900, 600), &m_overlay, &m_dinamica, &m_statica, m_dinamica.GetBordi(), m_statica.GetBordi()) {}
+
+
+
+
+
 
 Finestra* Mondo::Prendi_finestra() { return &m_window; }
 

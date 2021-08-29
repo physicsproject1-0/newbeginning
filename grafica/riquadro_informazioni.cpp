@@ -1,6 +1,8 @@
 #include "riquadro_informazioni.hpp"
 
-Plot::Plot(sf::Vector2f t_dimensione_grafico, sf::Vector2f t_posizione_alto_destra) : m_max_value_y{0}, da_svuotare{false} {
+// Plot
+
+Plot::Plot(sf::Vector2f t_dimensione_grafico, sf::Vector2f t_posizione_alto_destra) : m_max_value_y{0} {
   m_sfondo.setFillColor(sf::Color(128, 128, 128));
   m_sfondo.setOutlineColor(sf::Color::White);
   m_sfondo.setOutlineThickness(3.f);
@@ -15,6 +17,7 @@ Plot::Plot(sf::Vector2f t_dimensione_grafico, sf::Vector2f t_posizione_alto_dest
   m_assi[1].color = sf::Color::White;
   m_assi[2].color = sf::Color::White;
 }
+
 Plot::Plot(sf::Vector2f t_dimensione_grafico) : m_max_value_y{0} {
   m_sfondo.setFillColor(sf::Color(128, 128, 128));
   m_sfondo.setOutlineColor(sf::Color::White);
@@ -27,6 +30,14 @@ Plot::Plot(sf::Vector2f t_dimensione_grafico) : m_max_value_y{0} {
   m_assi[0].color = sf::Color::White;
   m_assi[1].color = sf::Color::White;
   m_assi[2].color = sf::Color::White;
+}
+
+void Plot::draw(sf::RenderTarget& target, sf::RenderStates) const {
+  target.draw(m_sfondo);
+  for (long unsigned int i = 0; i < m_lista_linee.size(); i++) {
+    target.draw(m_lista_linee[i].first);
+  }
+  target.draw(m_assi);
 }
 
 void Plot::AggiornaPosizioni(sf::Vector2f t_punto_in_alto_destra) {
@@ -42,9 +53,9 @@ void Plot::AggiornaPosizioni(sf::Vector2f t_punto_in_alto_destra) {
   RiscalaPunti();
 }
 
-void Plot::NumeroLineee(int darmi_il_numero) {
-  m_lista_linee.resize(darmi_il_numero);
-  m_colori_linee.resize(darmi_il_numero);
+void Plot::NumeroLineee(int t_darmi_il_numero) {
+  m_lista_linee.resize(t_darmi_il_numero);
+  m_colori_linee.resize(t_darmi_il_numero);
   for (long unsigned int i = 0; i < m_lista_linee.size(); i++) {
     m_lista_linee[i].first.setPrimitiveType(sf::LineStrip);
   }
@@ -52,10 +63,10 @@ void Plot::NumeroLineee(int darmi_il_numero) {
 
 void Plot::DefinisciColoreLinea(int t_linea, sf::Color t_colore) { m_colori_linee[t_linea] = t_colore; }
 
-void Plot::AggiungiPunto(int numero_linea, float t_valore) {
-  m_lista_linee[numero_linea].first.append(
-      sf::Vertex(sf::Vector2f(m_lista_linee[numero_linea].second.size(), t_valore), m_colori_linee[numero_linea]));
-  m_lista_linee[numero_linea].second.push_back(t_valore);
+void Plot::AggiungiPunto(int t_numero_linea, float t_valore) {
+  m_lista_linee[t_numero_linea].first.append(
+      sf::Vertex(sf::Vector2f(m_lista_linee[t_numero_linea].second.size(), t_valore), m_colori_linee[t_numero_linea]));
+  m_lista_linee[t_numero_linea].second.push_back(t_valore);
   m_max_value_y = std::max(m_max_value_y, t_valore);
   RiscalaPunti();
 }
@@ -71,18 +82,7 @@ void Plot::RiscalaPunti() {
   }
 }
 
-void Plot::draw(sf::RenderTarget& target, sf::RenderStates) const {
-  target.draw(m_sfondo);
-  for (long unsigned int i = 0; i < m_lista_linee.size(); i++) {
-    target.draw(m_lista_linee[i].first);
-  }
-  target.draw(m_assi);
-}
-
-void Plot::Svuota() {
-  da_svuotare = true;
-  m_max_value_y = 0;
-}
+// Informazioni
 
 Informazioni::Informazioni(sf::Vector2f t_dimensioni, sf::Font* t_font)
     : m_grafico_automa{t_dimensioni},
@@ -127,6 +127,22 @@ Informazioni::Informazioni(sf::Vector2f t_dimensioni, sf::Font* t_font)
   m_grafico_automa.DefinisciColoreLinea(1, sf::Color::Red);
   m_grafico_automa.DefinisciColoreLinea(2, sf::Color::Cyan);
   m_grafico_automa.DefinisciColoreLinea(3, sf::Color::White);
+}
+
+void Informazioni::draw(sf::RenderTarget& target, sf::RenderStates) const {
+  target.draw(m_riquadro_esterno);
+
+  if (m_automa_attivo) {
+    target.draw(m_grafico_automa);
+
+  } else {
+    target.draw(m_grafico_animazione);
+  }
+
+  target.draw(m_testo_vulnerabili);
+  target.draw(m_testo_infetti);
+  target.draw(m_testo_guariti);
+  target.draw(m_testo_morti);
 }
 
 void Informazioni::AggiornaPosizione(sf::Vector2f t_posizione_in_alto_dx) {
@@ -192,30 +208,4 @@ void Informazioni::AggiornaScritte() {
       m_testo_morti.setString("Morti: " + std::to_string(m_successione_stati_animazione.back().m_morti));
     }
   }
-}
-void Informazioni::AzzeraAnimazione() {
-  m_grafico_animazione.Svuota();
-  m_successione_stati_animazione.clear();
-  m_appena_azzerato = true;
-}
-void Informazioni::AzzeraAutoma() {
-  m_grafico_automa.Svuota();
-  m_successione_stati_automa.clear();
-  m_appena_azzerato = true;
-}
-void Informazioni::draw(sf::RenderTarget& target, sf::RenderStates) const {
-  target.draw(m_riquadro_esterno);
-  if (m_automa_attivo) {
-    target.draw(m_grafico_automa);
-
-  } else {
-    target.draw(m_grafico_animazione);
-  }
-
-  target.draw(m_testo_vulnerabili);
-
-  target.draw(m_testo_infetti);
-
-  target.draw(m_testo_guariti);
-  target.draw(m_testo_morti);
 }

@@ -6,39 +6,36 @@
 #define RIQUADRO_INFORMAZIONI_HPP
 
 // Piccolo grafico in alto a destra. Segna l'andamento delle varie categorie
-class Plot : public sf::Drawable {
+class Plot : public sf::Drawable {  // rispetto a punto in alto a destra
   sf::RectangleShape m_sfondo;
+  sf::VertexArray m_assi;
   std::vector<std::pair<sf::VertexArray, std::vector<float>>> m_lista_linee;
   std::vector<sf::Color> m_colori_linee;
+
   float m_max_value_y;
-
-  bool da_svuotare;
-
-  sf::VertexArray m_assi;
 
  public:
   Plot(sf::Vector2f t_dimensione_grafico, sf::Vector2f t_posizione_alto_destra);
   Plot(sf::Vector2f t_dimensione_grafico);
 
+  void draw(sf::RenderTarget& target, sf::RenderStates) const;
+
   void AggiornaPosizioni(sf::Vector2f t_punto_in_alto_destra);
 
-  void NumeroLineee(int darmi_il_numero);
+  void NumeroLineee(int t_darmi_il_numero);
 
   void DefinisciColoreLinea(int t_linea, sf::Color t_colore);
 
-  void AggiungiPunto(int numero_linea, float t_valore);
+  void AggiungiPunto(int t_numero_linea, float t_valore);
 
   void RiscalaPunti();
-
-  void draw(sf::RenderTarget& target, sf::RenderStates) const;
-
-  void Svuota();
 };
 
-// Riporta i valori numerici per ogni categoria
-class Informazioni : public sf::Drawable {
+// Riporta i valori numerici per ogni categoria, contiene i grafici
+class Informazioni : public sf::Drawable {  //rispetto a punto in alto a destra
   Plot m_grafico_automa;
   Plot m_grafico_animazione;
+
   bool m_animazione_attiva;
   bool m_automa_attivo;
   bool m_appena_azzerato;
@@ -56,20 +53,19 @@ class Informazioni : public sf::Drawable {
  public:
   Informazioni(sf::Vector2f t_dimensioni, sf::Font* t_font);
 
+  void draw(sf::RenderTarget& target, sf::RenderStates) const;
+
   void AggiornaPosizione(sf::Vector2f t_posizione_in_alto_dx);
 
   void AggiungiStatoAutoma(Censimento t_stato_automa);
-
   void AggiungiStatoAnimazione(Censimento t_stato_animazione);
 
   void MostraDatiAutoma();
-
   void MostraDatiAnimazione();
 
   void AggiornaScritte();
-  void AzzeraAnimazione();
-  void AzzeraAutoma();
-  void draw(sf::RenderTarget& target, sf::RenderStates) const;
+ 
+
 };
 
 #endif
