@@ -21,7 +21,7 @@ void Animazione::Collisione() {
         // Contagiosita' del 40%
         if ((i != j) && (PallinaB.m_S == Stato::INFETTO)) {
           if (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.5 * PallinaB.m_raggio) {
-            if (Casuale() < 40) {
+            if (Casuale() * m_d_parametro_beta < 40) {
               PallinaA.m_S = Stato::INFETTO;
             } else {
               continue;

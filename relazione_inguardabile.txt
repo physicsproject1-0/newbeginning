@@ -1,8 +1,5 @@
-DISCLAIMER: questa non è il formato giusto, bisogna farlo bene (in lattice/pdf). 
-però intanto butto giù qualche riga altrimenti mi scordo le cose.
-
 Relazione progetto di programmazione per la fisica 20/21: simulazione di una pandemia 
-Autori: Simone Piraccini, Simone Garnero, kingdellaprogrammazione aka Edo 
+Autori: Simone Piraccini, Simone Garnero, Edoardo Frulla 
 
 Parte I: modello SIR
 
@@ -19,7 +16,7 @@ Tiene conto anche del valore (costante per tutta la durata della simulazione) da
 (decimali tra 0 e 1), il numero di persone suscettibili, infette e rimosse; infine è necessario inserire la durata della simulazione.
 
 Le funzioni membro ‘riempimento’ e ‘convertitore’ sono chiamate per compiere la vera e propria simulazione dal punto di vista
-quantitativo: entrambe ritornano uno standard vector di ‘State’, il primo con dati grezzi, il secondo riporta approssimati all’unità i valori di S, I, R. 
+quantitativo: entrambe ritornano uno std::vector di ‘State’, il primo con dati grezzi, il secondo riporta approssimati all’unità i valori di S, I, R. 
 Grazie ad un ciclo for, ‘riempimento’ inserisce i dati nell’algoritmo per generare la giornata successiva e con pushback() riempie il vettore.
 Sempre con un ciclo for, ‘convertitore’ (che ha come oggetto il vettore appena creato) approssima all’unità il numero di S, I, R  
 in modo da rispettare i seguenti criteri: 
@@ -32,8 +29,15 @@ Per verificare il corretto funzionamento di queste funzioni abbiamo scritto un f
 intuibili a priori. 
 L'output è rappresentato dalla storia della simulazione, stampata su standard output, e da un grafico gnuplot che riporta le curve di andamento della popolazione.
 Per visualizzare il grafico è necessario gnuplot installato abbinato ad un xserver per l'apertura della finestra grafica.
-
-
+Per la compilazione è possibile utilizzare CMake, oppure il comando "g++ main.cpp newSIR.cpp plot.cpp". Per verificare i test basta sostituire il file di test
+al posto del main.
+E' possibile ottenere output in formati diversi (implementati attraverso la libreria "Lyra"). Per scegliere formato bisogna bisogna aggiungere durante la compilazione
+"-f <opzione>" oppure "--formato <opzione>". I formati disponibili e le parole chiave da inserire in sede di compilazione sono:
+- "grafico"  , per ottenere in output solo grafico
+- "virgola" , per ottenere i valori separati da virgola
+- "spazio" , per ottenere i valori separati da spazio
+Nel caso in cui non venga inserita nessuna opzione l'output conterrà sial il grafico che una tabella per i valori.
+Compilando con -Wall -Wextra appaiono dei warnings dovuti all'utilizzo della libreria "lyra" (già comunicato).
 
 
 
@@ -41,26 +45,33 @@ Per visualizzare il grafico è necessario gnuplot installato abbinato ad un xser
 
 Parte II: Simulazione grafica
 
-Per la seconda parte del progetto abbiamo deciso di realizzare due simulazioni grafiche stilizzate di una pandemia.
+Per la seconda parte del progetto abbiamo deciso di realizzare due simulazioni grafiche stilizzate di una pandemia. Entrambe si trovano sulla stessa 
+finestra grafica in cui è presente una Graphic User Interface che permette di passare da una all'altra e di mettere in pausa l'animazione.
+In alto a destra è poi disponibile un piccolo grafico che dà un'idea dell'andamento totale della popolazione e un'interfaccia che permette di 
+vedere in tempo reale i numeri di persone in ogni stato (Suscettibile, infetto, guarito, morto). 
+Per compilare è possibilizzare utilizzare CMake oppure i comandi "g++ -c main.cpp classe.cpp gui.cpp finestra.cpp animazione.cpp automa.cpp", 
+"g++ main.o classe.o gui.o finestro animazione.o automa.o -lsfml-graphics -lsfml-window -lsfml-system". Compilando con i comandi -Wall -Wextra -fsanitize=address
+appaiono warnings dovuti ad 'unused parameter' nella funzione draw di sfml. Alla chiusura della finestra grafica rimane un memory leak di 56 bytes (già comunicato).
+
 
 Simulazione I
 
-La prima consiste in un campione di persone che si muovono all'interno di un territorio delimitato. Anche in questo caso abbiamo mantenuto l'idea 
-di distinguere soggetti suscettibili, inffetti e rimossi, con l'aggiunta che i rimossi si suddivideranno in deceduti e guariti. Lo stato dei soggetti si
-distingue grazie al loro colore: verde per i suscettibili, rosso per gli infetti, grigio per i deceduti e azzurro per i guariti.
-All'inizio di ogni simulazione uno a caso dei soggetti risulta positivo. Ogni persona si muove con una velocità casuale e nel momento in cui un infetto
-entra in contatto con un suscettibile ha una probabilità del 30% di infettarlo. Dopo che un soggetto infetto è entrato in contatto con 35 persone 
-diventa rimosso. A questo punto ha una probabilità del 30% di morire e una del 70% di guarire.
+La prima consiste in un campione di persone che si muovono all'interno di un territorio delimitato. In questo caso abbiamo deciso 
+di distinguere soggetti suscettibili, infetti, guariti e morti. Lo stato dei soggetti si
+distingue grazie al loro colore: verde per i suscettibili, rosso per gli infetti, grigio per i morti e azzurro per i guariti.
+Gli infetti vengono distribuiti randomicamente all'interno della regione. Ogni persona si muove con una velocità casuale e nel momento in cui un infetto
+entra in contatto con un suscettibile ha una certa probabilità di infettarlo. Dopo che un soggetto infetto è entrato in contatto con un elevato numero di 
+persone (influenzato dal parametro gamma) diventa morto o guarito. La percentuale di morte è 30%, quella di guarigione 70%.
 
-A livello più tecnico i soggetti sono definiti dalla classe "Persona". Gli stati del modello SIR sono forniti da una "enum class Status" e la colorazione dei soggetti è data da una serie di funzioni come
-"setGreenTexure" che in base allo stato assegna la texture corretta. Le texture colorate sono contenute nello stesso file .png e vengono ritagliate 
-da queste funzioni. Il movimento delle persone è invece descritto dalle funzioni "Aggiorna_griglia" e "Aggiorna_lista". C'è poi una funzione che assicura
-che le persone non escano dai bordi della nostra simulazione: "Check_borders". Per verificare l'effettivo contagio dei soggetti abbiamo la funzione "Collisione"
-che controlla quando due soggetti entrano a contatto e, se uno dei due è infetto, rende infetto anche l'altro. La probabilità di contagio è stata ottenuta grazie al metodo
-rand(). Per passare allo stato "RIMOSSO" ci sono invece le funzioni "Conteggio_contatti" e "Morte_persona". La prima conta appunto il numero di contatti 
-con le altre persone che un soggetto ha avuto dal momento in cui è diventato infetto; la seconda invece cambia lo stato di un soggetto da infetto a rimosso
-nel momento in cui ha raggiunto 35 contatti. Nella funzione "SetWhiteTextures" abbiamo distinto i deceduti dai guariti in base a una probabilità data Sempre
-dalla funzione rand(). Tutte queste funzioni sono metodi di una stessa classe, la classe "Animazione".
+Abbiamo costituito una classe "Animazione" che contiene tutto l'ambiente. Abbiamo creato una struct "Persona" che rappresenta ogni singolo omino sull'interfaccia grafico. 
+Una enum class "Stato" assegna a ogni persona uno dei 4 stati (Suscettibile, Infetto, Morto, Guarito).
+All'interno della classe Animazione abbiamo un vertexArray che ospita tutte le coordinate delle persone, i vertici consecutivi (unica persona) sono raggruppati a formare triangoli. 
+Ogni persona è definita quindi sulla finestra da 3 coordinate.
+Tutte le persone sono raggruppate in una std::map, membro della classe Animazione. I diversi colori delle persone sono dati da diverse texture, tutte
+nello stesso file "uomini.png". Per assegnare ai membri con lo stesso stato il medesimo colore, una funzione (SetAllTextures) ritaglia il png ed incolla la texture
+
+La funzione membro Collisione() gestisce l'infettività, mentre Conteggio_contatti() e Morte_persona() controllano l'uscita dall'infezione.
+
 
 
 

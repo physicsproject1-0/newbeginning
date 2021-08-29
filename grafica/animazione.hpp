@@ -60,10 +60,10 @@ class Animazione : public sf::Drawable {
   }
 
  public:
-  Animazione(int m_d_numero_persone, int m_d_infetti_iniziali, int c, float t_d_parametro_beta, float t_d_parametro_gamma)
+  Animazione(int m_d_numero_persone, int m_d_infetti_iniziali, int m_d_rimossi_iniziali, float t_d_parametro_beta, float t_d_parametro_gamma)
       : m_limiti(sf::Vector2f(600, 400), sf::Vector2f(100, 100)),
         m_is_stopped{true},
-        popolazione{m_d_numero_persone - m_d_infetti_iniziali - c, m_d_infetti_iniziali, c, 0},
+        popolazione{m_d_numero_persone - m_d_infetti_iniziali - m_d_rimossi_iniziali, m_d_infetti_iniziali, m_d_rimossi_iniziali, 0},
         m_d_parametro_beta{t_d_parametro_beta},
         m_d_parametro_gamma{t_d_parametro_gamma} {
     if (!m_ominoprova.loadFromFile("uomini.png")) {
