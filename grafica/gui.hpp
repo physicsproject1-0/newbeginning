@@ -43,30 +43,25 @@ class GUI : public sf::Drawable {
 
   void AggiornaPosizione(sf::Vector2f punto_in_altodx, sf::Vector2f dimensioni_finestra);
 
-  void AggiornaPosizioneRettangoliPennello(sf::Vector2f t_coordinate_mouse) {
-    if (m_pennello_colori.IsInserimentoAttivo()) {
-      m_pennello_colori.AggiornaPosizioneRettangoliDaInserire(t_coordinate_mouse);
-    }
-  }
+  void AggiornaPosizioneRettangoliPennello(sf::Vector2f t_coordinate_mouse);
 
-  void AttivaInserimento() { m_pennello_colori.Attiva(); }
+  void AttivaInserimento();
 
-  void DisattivaInserimento() { m_pennello_colori.Disattiva(); }
+  void DisattivaInserimento();
 
   void CheckMousePosition(sf::Vector2f t_coordinate_mouse);
 
   void CheckColor(sf::Color colore);
 
-  MousePos ClickOfMouse();
-
+  MousePos ClickOfMouse();  
   
+  void IsOut();
+
+  Pennello* GetPointerPennello();
   
-  void IsOut() { CheckColor(sf::Color(128, 128, 128)); }
+  Informazioni* GetPointerRiquadro();
 
-  Pennello* GetPointerPennello() { return &m_pennello_colori; }
-  Informazioni* GetPointerRiquadro() { return &m_riquadro_informazioni; }
-
-  bool IsInserimentoAttivo() { return m_pennello_colori.IsInserimentoAttivo(); }
+  bool IsInserimentoAttivo();
 };
 
 #endif

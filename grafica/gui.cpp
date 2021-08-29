@@ -3,9 +3,6 @@
 #include <SFML/Graphics.hpp>
 #include <stdexcept>
 
-#include "bordi.hpp"
-#include "pennello.hpp"
-
 GUI::GUI(sf::Vector2f dimensione)
     : m_limiti_sfondo_grigio(sf::Vector2f(dimensione)),
       m_testo_animazione(10, &m_font, sf::Color::Black),
@@ -21,7 +18,7 @@ GUI::GUI(sf::Vector2f dimensione)
     throw std::runtime_error("font non caricato");
   }
 
-  m_sfondo_grigio.setFillColor(sf::Color(128, 128, 128));  // Grey
+  m_sfondo_grigio.setFillColor(sf::Color(128, 128, 128));  // Grigio
   m_sfondo_grigio.setSize(dimensione);
 
   m_casella_animazione.change_status(true);
@@ -83,6 +80,16 @@ void GUI::AggiornaPosizione(sf::Vector2f punto_in_altosx, sf::Vector2f dimension
 
   m_riquadro_informazioni.AggiornaPosizione(sf::Vector2f(punto_in_altosx.x + dimensioni_finestra.x, punto_in_altosx.y));
 }
+
+void GUI::AggiornaPosizioneRettangoliPennello(sf::Vector2f t_coordinate_mouse) {
+  if (m_pennello_colori.IsInserimentoAttivo()) {
+    m_pennello_colori.AggiornaPosizioneRettangoliDaInserire(t_coordinate_mouse);
+  }
+}
+
+void GUI::AttivaInserimento() { m_pennello_colori.Attiva(); }
+
+void GUI::DisattivaInserimento() { m_pennello_colori.Disattiva(); }
 
 void GUI::CheckMousePosition(sf::Vector2f t_coordinate_mouse) {
   if (m_casella_animazione.getlimiti().contains(t_coordinate_mouse)) {
@@ -254,3 +261,11 @@ MousePos GUI::ClickOfMouse() {
     return m_posizione_mouse;
   }
 }
+
+void GUI::IsOut() { CheckColor(sf::Color(128, 128, 128)); }
+
+Pennello* GUI::GetPointerPennello() { return &m_pennello_colori; }
+
+Informazioni* GUI::GetPointerRiquadro() { return &m_riquadro_informazioni; }
+
+bool GUI::IsInserimentoAttivo() { return m_pennello_colori.IsInserimentoAttivo(); }
