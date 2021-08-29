@@ -87,9 +87,7 @@ void GUI::AggiornaPosizioneRettangoliPennello(sf::Vector2f t_coordinate_mouse) {
   }
 }
 
-void GUI::AttivaInserimento() { m_pennello_colori.Attiva(); }  // attiva l'opacità della tavolozza
 
-void GUI::DisattivaInserimento() { m_pennello_colori.Disattiva(); }
 
 void GUI::CheckMousePosition(
     sf::Vector2f t_coordinate_mouse) {  // funzione chiamata nel finestra.cpp, confronta le coordinate mouse con le cose sullo schermo

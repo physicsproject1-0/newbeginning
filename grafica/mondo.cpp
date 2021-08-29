@@ -3,8 +3,7 @@
 #include <algorithm>
 #include <sstream>
 
-//Funzione di controllo input
-
+// Funzione di controllo input
 
 template <class T>
 bool IsInputGood(T& a) {
@@ -13,14 +12,13 @@ bool IsInputGood(T& a) {
     std::stringstream ss(line);
 
     if ((ss >> a) && ss.eof()) {
-      std::cout << a << '\n';
       return true;
     }
   }
   return false;
 }
 
-//Inserimento
+// Inserimento
 
 Inserimento::Inserimento() {
   std::cout << "Buongiorno, inserisca i parametri iniziali relativi alla simulazione \n";
@@ -28,11 +26,9 @@ Inserimento::Inserimento() {
   std::cout << "Automa Cellulare: \n";
 
   std::cout << "Numero di cellule per ogni lato >> ";
-
   if (!IsInputGood(m_s_dimensione_lato) || m_s_dimensione_lato < 0 || m_s_dimensione_lato > 10) {
     throw std::runtime_error{"Il parametro dimensione lato deve essere un intero compreso tra 0 e 10"};
   }
-  std::cout << "dimensione lato" << m_s_dimensione_lato << '\n';
 
   std::cout << "Parametro beta(relativo alla probabilità di contagio) >> ";
   if (!IsInputGood(m_s_parametro_beta) || m_s_parametro_beta < 0 || m_s_parametro_beta > 1) {
@@ -49,7 +45,7 @@ Inserimento::Inserimento() {
     throw std::runtime_error{"Il parametro eta deve essere un decimale compreso tra 0 e 1"};
   }
 
-  if ( m_s_parametro_eta+m_s_parametro_gamma > 1 ){
+  if (m_s_parametro_eta + m_s_parametro_gamma > 1) {
     throw std::runtime_error{"La somma delle probabilità di morire e guarire deve essere compresa tra 0 e 1"};
   }
 
@@ -61,13 +57,12 @@ Inserimento::Inserimento() {
 
   std::cout << "Persone rimosse(guarite) >> ";
   if (!IsInputGood(m_s_rimossi_iniziali) || m_s_rimossi_iniziali < 0 ||
-      m_s_rimossi_iniziali > m_s_dimensione_lato * m_s_dimensione_lato - m_s_infetti_iniziali) {
+      m_s_rimossi_iniziali > (m_s_dimensione_lato * m_s_dimensione_lato) - m_s_infetti_iniziali) {
     throw std::runtime_error{
         "Il numero di soggetti rimossi(guariti) deve essere un intero positivo e minore del numero massimo di persone ancora infettabili"};
   }
 
   std::cout << "Animazione: \n";
-
   std::cout << "Numero di persone totali >> ";
   if (!IsInputGood(m_d_numero_persone) || m_d_numero_persone < 0 || m_d_numero_persone > 100) {
     throw std::runtime_error{"Il parametro numero persone deve essere un intero compreso tra 0 e 100"};
@@ -95,7 +90,7 @@ Inserimento::Inserimento() {
   }
 }
 
-//Mondo
+// Mondo
 
 Mondo::Mondo(Inserimento t_inserimento)
     : m_overlay(sf::Vector2f(70, 500)),
@@ -105,11 +100,6 @@ Mondo::Mondo(Inserimento t_inserimento)
                 t_inserimento.m_s_parametro_gamma, t_inserimento.m_s_parametro_eta, t_inserimento.m_s_infetti_iniziali,
                 t_inserimento.m_s_rimossi_iniziali),
       m_window("test", sf::Vector2u(900, 600), &m_overlay, &m_dinamica, &m_statica, m_dinamica.GetBordi(), m_statica.GetBordi()) {}
-
-
-
-
-
 
 Finestra* Mondo::Prendi_finestra() { return &m_window; }
 

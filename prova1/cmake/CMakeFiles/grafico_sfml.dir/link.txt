@@ -1,1 +1,0 @@
-/usr/bin/c++    -fsanitize=address CMakeFiles/grafico_sfml.dir/main.cpp.o CMakeFiles/grafico_sfml.dir/plot.cpp.o CMakeFiles/grafico_sfml.dir/newSIR.cpp.o  -o grafico_sfml  -lboost_system -lboost_filesystem -lboost_iostreams 

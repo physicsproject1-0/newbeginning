@@ -132,27 +132,27 @@ SIR Insert() {
     throw std::runtime_error{"Il parametro gamma deve essere un decimale compreso tra 0 e 1"};
   }
 
-  std::cout << "Ora inserisca il numero iniziale di persone m_suscettibili nel "
+  std::cout << "Ora inserisca il numero iniziale di persone suscettibili nel "
                "nostro campione \n";
   if (!(std::cin >> S_I) || S_I < 0) {
-    throw std::runtime_error{"Il numero di soggetti m_suscettibili deve essere un intero positivo"};
+    throw std::runtime_error{"Il numero di soggetti suscettibili deve essere un intero positivo"};
   }
 
-  std::cout << "Ora inserisca il numero iniziale di persone m_infetti nel nostro "
+  std::cout << "Ora inserisca il numero iniziale di persone infetti nel nostro "
                "campione \n";
   if (!(std::cin >> I_I) || I_I < 0) {
-    throw std::runtime_error{"Il numero di soggetti m_infetti deve essere un intero positivo"};
+    throw std::runtime_error{"Il numero di soggetti infetti deve essere un intero positivo"};
   }
 
-  std::cout << "Ora inserisca il numero iniziale di persone m_rimossi nel nostro "
+  std::cout << "Ora inserisca il numero iniziale di persone rimossi nel nostro "
                "campione \n";
   if (!(std::cin >> R_I) || R_I < 0) {
-    throw std::runtime_error{"Il numero di soggetti m_rimossi deve essere un intero positivo"};
+    throw std::runtime_error{"Il numero di soggetti rimossi deve essere un intero positivo"};
   }
 
   std::cout << "Ora inserisca la durata del nostro esperimento \n";
   if (!(std::cin >> giorni) || giorni < 0) {
-    throw std::runtime_error{"Il numero di soggetti m_suscettibili deve essere un intero positivo"};
+    throw std::runtime_error{"Il numero di giorni deve essere un intero positivo"};
   }
 
   State s0;

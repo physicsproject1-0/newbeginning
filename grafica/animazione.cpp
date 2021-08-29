@@ -8,7 +8,7 @@ Animazione::Animazione(int t_d_numero_persone, int t_d_infetti_iniziali, int t_d
                        float t_d_parametro_gamma)
     : m_limiti(sf::Vector2f(600, 400), sf::Vector2f(100, 100)),
       m_is_stopped{true},
-      m_orologi_stanno_andando{false},  // controllare!!!!
+      m_orologi_stanno_andando{false},
       m_d_numero_persone{t_d_numero_persone},
       m_d_infetti_iniziali{t_d_infetti_iniziali},
       m_d_rimossi_iniziali{t_d_rimossi_iniziali},
@@ -29,7 +29,7 @@ Animazione::Animazione(int t_d_numero_persone, int t_d_infetti_iniziali, int t_d
                      (Casuale() / 100.f) * (m_limiti.GetLimiti().height - 2 * m_prova.m_raggio) + m_limiti.GetLimiti().top + m_prova.m_raggio);
     m_prova.m_vel = sf::Vector2f(Casuale() % 50 - 25.f, Casuale() % 50 - 25.f);
 
-    m_prova.m_valore_casuale = (Casuale() / 100.f) * 20;
+    m_prova.m_valore_casuale = (Casuale() / 100.f) * 10 + 5;
 
     m_popolazione[i] = m_prova;
     m_popolazione[i].m_stato = Stato::VULNERABILE;
@@ -84,8 +84,6 @@ void Animazione::AzzeraOrologiVulnerabili() {
       PallinaA.m_orologio_personale.restart().asSeconds();
       PallinaA.m_tempo_trascorso = PallinaA.m_orologio_personale.getElapsedTime();
     } else {
-      /* PallinaA.m_tempo_trascorso += PallinaA.m_orologio_personale.restart();
-      std::cout << "infetto " << PallinaA.m_tempo_trascorso.asSeconds() << '\n'; */
       continue;
     }
   }
@@ -96,10 +94,8 @@ void Animazione::MortePersona() {
   for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
     if ((PallinaA.m_stato == Stato::INFETTO)) {
-      /* PallinaA.m_tempo_trascorso+=PallinaA.m_orologio_personale.getElapsedTime(); */
-
       if (PallinaA.m_tempo_trascorso.asSeconds() + PallinaA.m_orologio_personale.getElapsedTime().asSeconds() >
-          4 / m_d_parametro_gamma + PallinaA.m_valore_casuale) {
+          15 * (1 - m_d_parametro_gamma) + PallinaA.m_valore_casuale) {
         PallinaA.m_stato = Stato::MORTO;
         if (Casuale() > 30) {
           PallinaA.m_stato = Stato::GUARITO;
@@ -110,55 +106,6 @@ void Animazione::MortePersona() {
     }
   }
 }
-
-/* void Animazione::Conteggio_contatti() {
-  for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
-    Persona& PallinaA = m_popolazione[i];
-    for (long unsigned int j = 0; j < m_popolazione.size(); j++) {
-      Persona& PallinaB = m_popolazione[j];
-      if ((i != j) && (PallinaA.m_stato == Stato::INFETTO)) {
-        if ((Modulo(PallinaA.m_centro - PallinaB.m_centro) >= PallinaB.m_raggio) &&
-            (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.5f * PallinaB.m_raggio)) {
-
-          float estrazione = Casuale() / 100.f ;
-
-          if (estrazione < m_d_parametro_gamma) {
-            PallinaA.m_numero_contatti++;
-          }
-        }
-          float estrazione = Casuale() / 100.f;
-          std::cout << estrazione << '\n';
-
-          if (estrazione < m_d_parametro_gamma) {
-            PallinaA.m_numero_contatti++;
-            std::cout << "pallina numero" << i << " "
-                      << "aumento contatti\n";
-          }
-        }
-        std::cout << "pallina numero" << i << " " << PallinaA.m_numero_contatti << '\n';
-
-      } else {
-        continue;
-      }
-    }
-  }
-}
-
-// Al 30 % la persona muore, al 70% guarisce
-void Animazione::MortePersona() {
-  for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
-    Persona& PallinaA = m_popolazione[i];
-    if ((PallinaA.m_stato == Stato::INFETTO) && (PallinaA.m_numero_contatti >= 35)) {
-      PallinaA.m_stato = Stato::MORTO;
-      if (Casuale() > 30) {
-        PallinaA.m_stato = Stato::GUARITO;
-      }
-    } else {
-      continue;
-    }
-  }
-}
- */
 
 // Assegna la texture corretta ad ogni stato
 void Animazione::SetAllTextures() {
@@ -234,22 +181,18 @@ void Animazione::CheckBorders() {
 void Animazione::AzzeraOrologio() { m_orologio2.restart(); }
 
 void Animazione::StartOrologi() {
-  std::cout << "start animazione'\n";
-
   for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
     PallinaA.m_orologio_personale.restart();
-    if (PallinaA.m_stato == Stato::INFETTO) {
-      std::cout << "tempo trascorso" << PallinaA.m_tempo_trascorso.asSeconds() << '\n';
-    }
   }
   m_orologi_stanno_andando = true;
 }
+
 void Animazione::StopOrologi() {
-  std::cout << "stop animazione'\n";
   ImmagazzinaTempo();
   m_orologi_stanno_andando = false;
 }
+
 void Animazione::AzzeraOrologiPersone() {
   for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
@@ -261,12 +204,7 @@ void Animazione::AzzeraOrologiPersone() {
 bool Animazione::GetStatusOrologi() { return m_orologi_stanno_andando; }
 double Animazione::Modulo(sf::Vector2f const& vettore) { return sqrt(pow(vettore.x, 2) + pow(vettore.y, 2)); }
 
-void Animazione::StopAnimazione() {
-  /* std::cout << "stop animazione'\n"; */
-
-  /* ImmagazzinaTempo(); */
-  m_is_stopped = true;
-}
+void Animazione::StopAnimazione() { m_is_stopped = true; }
 
 void Animazione::ImmagazzinaTempo() {
   for (long unsigned int i = 0; i < m_popolazione.size(); i++) {

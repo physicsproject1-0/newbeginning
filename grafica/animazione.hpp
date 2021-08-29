@@ -25,7 +25,6 @@ struct Persona {
   sf::Vector2f m_vel;
   Stato m_stato;
 
-  /*   int m_numero_contatti = 0; */
   sf::Clock m_orologio_personale;
   sf::Time m_tempo_trascorso;
 

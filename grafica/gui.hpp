@@ -15,7 +15,7 @@
 #ifndef GUI_HPP
 #define GUI_HPP
 
-//Gestisce l'intera GUI
+// Gestisce l'intera GUI
 class GUI : public sf::Drawable {
   sf::Font m_font;
 
@@ -45,19 +45,16 @@ class GUI : public sf::Drawable {
   void AggiornaPosizione(sf::Vector2f t_punto_in_altodx, sf::Vector2f t_dimensioni_finestra);
   void AggiornaPosizioneRettangoliPennello(sf::Vector2f t_coordinate_mouse);
 
-  void AttivaInserimento();   //riguardano opacità paletta
-  void DisattivaInserimento();
-
   void CheckMousePosition(sf::Vector2f t_coordinate_mouse);
   void CheckColor(sf::Color t_colore);
-  MousePos ClickOfMouse();  
-  
+  MousePos ClickOfMouse();
+
   void IsOut();
 
   Pennello* GetPointerPennello();
   Informazioni* GetPointerRiquadro();
 
-  bool IsInserimentoAttivo();  //riguardano possibilità di inserire
+  bool IsInserimentoAttivo();  // riguardano possibilità di inserire
 };
 
 #endif

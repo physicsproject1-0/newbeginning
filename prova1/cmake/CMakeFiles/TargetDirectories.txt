@@ -1,3 +1,0 @@
-/home/edoardo/newbeginning/cmake/CMakeFiles/rebuild_cache.dir
-/home/edoardo/newbeginning/cmake/CMakeFiles/edit_cache.dir
-/home/edoardo/newbeginning/cmake/CMakeFiles/grafico_sfml.dir
