@@ -48,20 +48,19 @@ Finestra::Finestra(const std::string& titolo, const sf::Vector2u& dimensione, GU
 Finestra::~Finestra() { Destroy(); }
 
 void Finestra::Update() {
-  if (v_mainfinestra.getPosition() !=v_posizione){
-         m_statico->AzzeraOrologio();
-      m_dinamico->AzzeraOrologio();
-      v_posizione=v_mainfinestra.getPosition();
+  if (v_mainfinestra.getPosition() != v_posizione) {
+    m_statico->AzzeraOrologio();
+    m_dinamico->AzzeraOrologio();
+    v_posizione = v_mainfinestra.getPosition();
   }
-  
-  
+
   sf::Event evento;
   while (v_mainfinestra.pollEvent(evento)) {
     if (evento.type == sf::Event::Closed || (evento.type == sf::Event::KeyPressed && evento.key.code == sf::Keyboard::Escape)) {
       v_Isclosed = true;
     }
     if (evento.type == sf::Event::Resized) {
-      std::cout <<"esized"<<'\n';
+      std::cout << "esized" << '\n';
       sf::Vector2u dimensioni_nuove = v_mainfinestra.getSize();
       if (dimensioni_nuove.x < v_dimensioni_minime.x || dimensioni_nuove.y < v_dimensioni_minime.y) {
         dimensioni_nuove = v_dimensioni_minime;
@@ -120,38 +119,60 @@ void Finestra::Update() {
             v_overlay->GetPointerPaletta()->DisattivaInserimento();
           }
         }
-
-        switch (v_overlay->ClickOfMouse()) {
+        
+        switch ( v_overlay->ClickOfMouse()) {
           case MousePos::CheckboxAnimazione:
+
             v_vista = Vista::Animazione;
+
+            if (!(m_dinamico->GetStatusOrologi()) && !(m_dinamico->IsStopped()) ) {
+                m_dinamico->StartOrologi();
+              }
+
             punto_alto_sx.x = vista_animazione.getCenter().x - vista_animazione.getSize().x / 2;
             punto_alto_sx.y = vista_animazione.getCenter().y - vista_animazione.getSize().y / 2;
+
             break;
 
           case MousePos::CheckboxAutoma:
+
             v_vista = Vista::Automa;
+            
+            if ((m_dinamico->GetStatusOrologi())) {
+              m_dinamico->StopOrologi();
+            }
+
             punto_alto_sx.x = vista_automa.getCenter().x - vista_automa.getSize().x / 2;
             punto_alto_sx.y = vista_automa.getCenter().y - vista_automa.getSize().y / 2;
             break;
 
           case MousePos::PulsantePlay:
-
+            if (v_vista == Vista::Animazione) {
+              if (!(m_dinamico->GetStatusOrologi())) {
+                m_dinamico->StartOrologi();
+              }
+            }
             m_dinamico->StartAnimazione();
             m_statico->StartAutoma();
             v_overlay->DisattivaInserimento();
             break;
 
           case MousePos::PulsantePausa:
+            if (v_vista == Vista::Animazione) {
+              if ((m_dinamico->GetStatusOrologi())) {
+                m_dinamico->StopOrologi();
+              }
+            }
             m_dinamico->StopAnimazione();
             m_statico->StopAutoma();
             if (v_vista == Vista::Automa) {
               v_overlay->AttivaInserimento();  // chiarire meglio
-              //v_overlay->GetPointerPaletta()->AttivaInserimento();
+              // v_overlay->GetPointerPaletta()->AttivaInserimento();
             }
 
             break;
-
-         
+            default:
+            break;
         }
 
         upd_vista();
@@ -159,7 +180,6 @@ void Finestra::Update() {
     }
   }
   if (!m_statico->IsStopped() && v_vista == Vista::Automa) {
-    
     v_overlay->GetPointerRiquadro()->AggiungiStatoAutoma(m_statico->GetCensimento());
     v_overlay->GetPointerRiquadro()->AggiornaScritte();
   }
@@ -168,7 +188,6 @@ void Finestra::Update() {
     v_overlay->GetPointerRiquadro()->AggiungiStatoAnimazione(m_dinamico->GetCensimento());
     v_overlay->GetPointerRiquadro()->AggiornaScritte();
   }
- 
 }
 
 void Finestra::upd_vista() {
@@ -179,6 +198,7 @@ void Finestra::upd_vista() {
       v_overlay->GetPointerRiquadro()->MostraDatiAnimazione();
       v_overlay->GetPointerRiquadro()->AggiornaScritte();
       v_overlay->DisattivaInserimento();
+
       break;
 
     case Vista::Automa:
@@ -189,6 +209,7 @@ void Finestra::upd_vista() {
       if (m_statico->IsStopped()) {
         v_overlay->AttivaInserimento();
       }
+
       break;
   }
 }

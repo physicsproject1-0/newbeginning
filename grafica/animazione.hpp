@@ -13,8 +13,8 @@
 #include <stdexcept>
 #include <string>
 
-#include "struct_enum.hpp" 
 #include "gui.hpp"
+#include "struct_enum.hpp"
 
 #ifndef ANIMAZIONE_HPP
 #define ANIMAZIONE_HPP
@@ -27,6 +27,10 @@ struct Persona {
   Stato m_S;
   bool checked = false;
   int m_numero_contatti = 0;
+  sf::Clock m_orologio_personale;
+  sf::Time m_tempo_trascorso;
+
+  float m_valore_casuale;
 };
 
 class Animazione : public sf::Drawable {
@@ -44,11 +48,12 @@ class Animazione : public sf::Drawable {
   int m_d_infetti_iniziali;
   int m_d_rimossi_iniziali;
 
+
+bool m_orologi_stanno_andando;
   // Nel momento in cui collidono due persone, se una era infetta, cambia lo stato anche dell' altra
   void Collisione();
   void Conteggio_contatti();
   void Morte_persona();
-
 
   // Ho immaginato che al 30% muoiano e al 70% guariscono, si possono cambiare le probabilita' of course
   // Funzione in cui carico sullo stato MORTO al 30% la texture grigia e al 70% quella azzurra
@@ -76,9 +81,12 @@ class Animazione : public sf::Drawable {
     for (int i = 0; i < m_d_numero_persone; i++) {
       m_prova.m_raggio = 13.f;
       m_prova.m_centro =
-          sf::Vector2f((Casuale()/100.f) * (m_limiti.getlimiti().width - 2 * m_prova.m_raggio) + m_limiti.getlimiti().left + m_prova.m_raggio,
-                       (Casuale()/100.f) * (m_limiti.getlimiti().height - 2 * m_prova.m_raggio) + m_limiti.getlimiti().top + m_prova.m_raggio);
+          sf::Vector2f((Casuale() / 100.f) * (m_limiti.getlimiti().width - 2 * m_prova.m_raggio) + m_limiti.getlimiti().left + m_prova.m_raggio,
+                       (Casuale() / 100.f) * (m_limiti.getlimiti().height - 2 * m_prova.m_raggio) + m_limiti.getlimiti().top + m_prova.m_raggio);
       m_prova.m_vel = sf::Vector2f(Casuale() % 50 - 25.f, Casuale() % 50 - 25.f);
+
+      m_prova.m_valore_casuale =( Casuale() / 100.f )* 20;
+
       m_popolazione[i] = m_prova;
       m_popolazione[i].m_S = Stato::VULNERABILE;
     }
@@ -93,7 +101,12 @@ class Animazione : public sf::Drawable {
     SetAllTextures();
     Aggiorna_griglia();  // chiamarlo almeno una volta sennò no good;
   }
+  void ImmagazzinaTempo();
+  void AzzeraOrologiPersone();
+  void StartOrologi();
+  void StopOrologi();
 
+  bool GetStatusOrologi();
   Bordi get_bordi();
   void Aggiorna_griglia();
   void Aggiorna_lista();

@@ -189,6 +189,8 @@ void GUI::CheckColor(sf::Color colore) {
           m_pulsante_pausa.setinterncolor(sf::Color(128, 128, 128));
         }
         break;
+        default:
+        break;
     }
   }
 

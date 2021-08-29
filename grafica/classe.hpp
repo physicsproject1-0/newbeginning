@@ -36,7 +36,6 @@ struct Inserimento {
   int m_s_rimossi_iniziali;
 
   Inserimento();
-    
 };
 
 class Mondo {
@@ -69,9 +68,12 @@ class Mondo {
         m_dinamica.Aggiorna_Generale();
 
         m_statica.AzzeraOrologio();
-      }
+      } /* else {
+        m_dinamica.AzzeraOrologiPersone();
+      } */
 
     } else {
+      /* m_dinamica.AzzeraOrologiPersone(); */
       if (!m_statica.IsStopped()) {
         m_statica.Avanza();
 

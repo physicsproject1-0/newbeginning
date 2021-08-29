@@ -61,6 +61,8 @@ class GUI : public sf::Drawable {
 
   MousePos ClickOfMouse();
 
+  
+  
   void IsOut() { CheckColor(sf::Color(128, 128, 128)); }
 
   Paletta* GetPointerPaletta() { return &m_paletta_colori; }

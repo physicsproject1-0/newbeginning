@@ -3,10 +3,8 @@
 #include "struct_enum.hpp"
 /* #include "classe.hpp" */
 /* #include "finestra.hpp" */
-#include "gui.hpp"
-
-
 #include "animazione.hpp"
+#include "gui.hpp"
 
 void Animazione::Collisione() {
   popolazione = {0, 0, 0, 0};
@@ -40,22 +38,55 @@ void Animazione::Collisione() {
 void Animazione::Conteggio_contatti() {
   for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
+    if (PallinaA.m_S == Stato::VULNERABILE) {
+      PallinaA.m_orologio_personale.restart().asSeconds();
+      PallinaA.m_tempo_trascorso = PallinaA.m_orologio_personale.getElapsedTime();
+    } else {
+      /* PallinaA.m_tempo_trascorso += PallinaA.m_orologio_personale.restart();
+      std::cout << "infetto " << PallinaA.m_tempo_trascorso.asSeconds() << '\n'; */
+
+      continue;
+    }
+  }
+}
+void Animazione::Morte_persona() {  // al 30 % la persona muore, al 70% guarisce
+  for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
+    Persona& PallinaA = m_popolazione[i];
+
+    if ((PallinaA.m_S == Stato::INFETTO)) {
+      /* PallinaA.m_tempo_trascorso+=PallinaA.m_orologio_personale.getElapsedTime(); */
+
+      if (PallinaA.m_tempo_trascorso.asSeconds() + PallinaA.m_orologio_personale.getElapsedTime().asSeconds() >
+          4 / m_d_parametro_gamma + PallinaA.m_valore_casuale) {
+        std::cout << "infetto " << PallinaA.m_tempo_trascorso.asSeconds() + PallinaA.m_orologio_personale.getElapsedTime().asSeconds() << '\n';
+
+        PallinaA.m_S = Stato::MORTO;
+        if (Casuale() > 30) {
+          PallinaA.m_S = Stato::GUARITO;
+        }
+      } else {
+        continue;
+      }
+    }
+  }
+}
+
+/* void Animazione::Conteggio_contatti() {
+  for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
+    Persona& PallinaA = m_popolazione[i];
     for (long unsigned int j = 0; j < m_popolazione.size(); j++) {
       Persona& PallinaB = m_popolazione[j];
       if ((i != j) && (PallinaA.m_S == Stato::INFETTO)) {
         if ((Modulo(PallinaA.m_centro - PallinaB.m_centro) >= PallinaB.m_raggio) &&
             (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.5f * PallinaB.m_raggio)) {
-          
+
           float estrazione = Casuale() / 100.f ;
-          std::cout << estrazione <<'\n';
 
           if (estrazione < m_d_parametro_gamma) {
             PallinaA.m_numero_contatti++;
-            std::cout <<"pallina numero" << i<< " "<< "aumento contatti\n";
           }
         }
-        std::cout <<"pallina numero" << i<< " "<<PallinaA.m_numero_contatti<< '\n';
-        
+
       } else {
         continue;
       }
@@ -76,7 +107,7 @@ void Animazione::Morte_persona() {                                //al 30 % la p
     }
   }
 }
-
+ */
 
 void Animazione::SetAllTextures() {
   for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
@@ -150,8 +181,52 @@ void Animazione::Check_borders() {
   }
 }
 void Animazione::AzzeraOrologio() { m_orologio2.restart(); }
+
+void Animazione::StartOrologi() {
+  std::cout << "start animazione'\n";
+
+  for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
+    Persona& PallinaA = m_popolazione[i];
+    PallinaA.m_orologio_personale.restart();
+    if (PallinaA.m_S == Stato::INFETTO) {
+      std::cout << "tempo trascorso" << PallinaA.m_tempo_trascorso.asSeconds() << '\n';
+    }
+  }
+  m_orologi_stanno_andando =true;
+}
+void Animazione::StopOrologi() {
+  std::cout << "stop animazione'\n";
+  ImmagazzinaTempo();
+  m_orologi_stanno_andando =false;
+}
+void Animazione::AzzeraOrologiPersone() {
+  for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
+    Persona& PallinaA = m_popolazione[i];
+    PallinaA.m_orologio_personale.restart();
+    PallinaA.m_tempo_trascorso = PallinaA.m_tempo_trascorso + PallinaA.m_orologio_personale.restart();
+  }
+}
+
+
+bool Animazione::GetStatusOrologi(){
+  return m_orologi_stanno_andando;
+}
 double Animazione::Modulo(sf::Vector2f const& vettore) { return sqrt(pow(vettore.x, 2) + pow(vettore.y, 2)); }
-void Animazione::StopAnimazione() { m_is_stopped = true; }
+
+void Animazione::StopAnimazione() {
+  /* std::cout << "stop animazione'\n"; */
+
+  /* ImmagazzinaTempo(); */
+  m_is_stopped = true;
+}
+
+void Animazione::ImmagazzinaTempo() {
+  for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
+    Persona& PallinaA = m_popolazione[i];
+    PallinaA.m_tempo_trascorso = PallinaA.m_tempo_trascorso + PallinaA.m_orologio_personale.restart();
+  }
+}
+
 void Animazione::StartAnimazione() {
   m_is_stopped = false;
   m_orologio2.restart();
