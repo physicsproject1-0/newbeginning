@@ -1,10 +1,9 @@
-//#include <vector>   /// perchè avevamo inserito anche vector? senza funziona ugualmente
 #include "gnuplot-iostream.h"
 #include "newSIR.hpp"
 
 namespace epidemia {
 
-void grafico(std::vector<double> x, std::vector<double> y, std::vector<double> z) {
+void Grafico(std::vector<double> x, std::vector<double> y, std::vector<double> z) {
   Gnuplot g1;
 
   g1 << "set title 'Modello SIR'\n";
@@ -15,17 +14,16 @@ void grafico(std::vector<double> x, std::vector<double> y, std::vector<double> z
      << "with lines title 'Rimossi' linecolor rgb 'dark-red' linewidth 2" << std::endl;
 }
 
-void SIR::print_grafico(std::vector<State> vettore) {
+void SIR::PrintGrafico(std::vector<State> vettore) {
   std::vector<double> x;
   std::vector<double> y;
   std::vector<double> z;
 
   for (auto const& i : vettore) {
-    x.push_back(i.suscettibili);
-    y.push_back(i.infetti);
-    z.push_back(i.rimossi);
+    x.push_back(i.m_suscettibili);
+    y.push_back(i.m_infetti);
+    z.push_back(i.m_rimossi);
   }
-  grafico(x, y, z);
+  Grafico(x, y, z);
 }
-
 }  // namespace epidemia
