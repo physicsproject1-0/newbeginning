@@ -111,6 +111,19 @@ void SIR::PrintSempliceSpazio(std::vector<State> vettore) {
   }
 }
 
+template <class T>
+bool IsInputGood(T& a) {
+  std::string line;
+  if (std::getline(std::cin, line)) {
+    std::stringstream ss(line);
+
+    if ((ss >> a) && ss.eof()) {
+      return true;
+    }
+  }
+  return false;
+}
+
 // Funzione per stampare input e output
 SIR Insert() {
   double beta;
@@ -123,35 +136,35 @@ SIR Insert() {
   std::cout << "Buongiorno, inserisca i parametri beta e gamma del modello SIR \n";
 
   std::cout << "beta >> ";
-  if (!(std::cin >> beta) || beta < 0 || beta > 1) {
-    throw std::runtime_error{"Il parametro gamma deve essere un decimale compreso tra 0 e 1"};
+  if (!IsInputGood(beta) || beta < 0 || beta > 1) {
+    throw std::runtime_error{"Il parametro beta deve essere un decimale compreso tra 0 e 1"};
   }
 
   std::cout << "gamma >> ";
-  if (!(std::cin >> gamma) || gamma < 0 || gamma > 1) {
+  if (!IsInputGood(gamma) || gamma < 0 || gamma > 1) {
     throw std::runtime_error{"Il parametro gamma deve essere un decimale compreso tra 0 e 1"};
   }
 
   std::cout << "Ora inserisca il numero iniziale di persone suscettibili nel "
                "nostro campione \n";
-  if (!(std::cin >> S_I) || S_I < 0) {
+  if (!IsInputGood(S_I) || S_I < 0) {
     throw std::runtime_error{"Il numero di soggetti suscettibili deve essere un intero positivo"};
   }
 
   std::cout << "Ora inserisca il numero iniziale di persone infetti nel nostro "
                "campione \n";
-  if (!(std::cin >> I_I) || I_I < 0) {
+  if (!IsInputGood(I_I) || I_I < 0) {
     throw std::runtime_error{"Il numero di soggetti infetti deve essere un intero positivo"};
   }
 
   std::cout << "Ora inserisca il numero iniziale di persone rimossi nel nostro "
                "campione \n";
-  if (!(std::cin >> R_I) || R_I < 0) {
+  if (!IsInputGood(R_I) || R_I < 0) {
     throw std::runtime_error{"Il numero di soggetti rimossi deve essere un intero positivo"};
   }
 
   std::cout << "Ora inserisca la durata del nostro esperimento \n";
-  if (!(std::cin >> giorni) || giorni < 0) {
+  if (!IsInputGood(giorni) || giorni < 0) {
     throw std::runtime_error{"Il numero di giorni deve essere un intero positivo"};
   }
 
