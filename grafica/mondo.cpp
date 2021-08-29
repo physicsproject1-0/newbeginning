@@ -54,7 +54,7 @@ Inserimento::Inserimento() {
     throw std::runtime_error{"Il parametro eta deve essere un decimale compreso tra 0 e 1"};
   }
 
-  if ( m_s_parametro_eta+m_s_parametro_gamma < 1 ){
+  if ( m_s_parametro_eta+m_s_parametro_gamma > 1 ){
     throw std::runtime_error{"La somma delle probabilità di morire e guarire deve essere compresa tra 0 e 1"};
   }
 
