@@ -49,10 +49,31 @@ Per la seconda parte del progetto abbiamo deciso di realizzare due simulazioni g
 finestra grafica in cui è presente una Graphic User Interface che permette di passare da una all'altra e di mettere in pausa l'animazione.
 In alto a destra è poi disponibile un piccolo grafico che dà un'idea dell'andamento totale della popolazione e un'interfaccia che permette di 
 vedere in tempo reale i numeri di persone in ogni stato (Suscettibile, infetto, guarito, morto). 
-Per compilare è possibilizzare utilizzare CMake oppure i comandi "g++ -c main.cpp classe.cpp gui.cpp finestra.cpp animazione.cpp automa.cpp", 
-"g++ main.o classe.o gui.o finestro animazione.o automa.o -lsfml-graphics -lsfml-window -lsfml-system". Compilando con i comandi -Wall -Wextra -fsanitize=address
-appaiono warnings dovuti ad 'unused parameter' nella funzione draw di sfml£___________241151. Alla chiusura della finestra grafica rimane un memory leak di 56 bytes (già comunicato).
-/&/£$&(£$"("$&("$("$(&"$()"$&Q)))))
+Per compilare è possibilizzare utilizzare CMake oppure i comandi 
+"g++ -c main.cpp mondo.cpp gui.cpp finestra.cpp bordi.cpp pennello.cpp riquadro_informazioni.cpp animazione.cpp automa.cpp", 
+"g++ main.o mondo.o gui.o finestra.o bordi.o pennello.o riquadro_informazioni.o animazione.o automa.o -lsfml-graphics -lsfml-window -lsfml-system". Compilando con i comandi -Wall -Wextra -fsanitize=address
+, alla chiusura della finestra grafica rimane un memory leak di 56 bytes (già comunicato). 
+Il programma richiede l'inserimento in imput dei seguenti valori:
+
+Automa cellulare
+- numero celle per lato [intero fra 1 e 10]
+- parametro beta (probabilità di contagio) [decimale tra 0 e 1]
+- parametro gamma (probabilità di guarigione) [decimale tra 0 e 1]
+- parametro eta (probabilità di morte) [decimale tra 0 e 1] 
+- celle infette [intero < numero totale celle]
+- celle rimosse (guarite) [intero < numero totale celle]
+
+La somma di gamma ed eta deve essere minore di 1
+La somma di celle infette e celle rimosse deve essere minore del totale
+
+Animazione 
+- numero di persone totale [intero]
+- parametro beta (probabilità di contagio) [decimale tra 0 e 1]
+- parametro gamma (probabilità di guarigione) [decimale tra 0 e 1]
+- numero persone infette
+- numero persone rimosse (guarite)
+
+
 
 Simulazione I
 
@@ -104,9 +125,13 @@ Oltre ai due file con i rispettivi header 'animazione.cpp' e 'automa.cpp' già d
 
 - gui.hpp : ospita la classe GUI dell'interfaccia utente
 
-- bordi.hpp : ospita la classe bordi
+- bordi.hpp : ospita la classe bordi e altre classi per l'implementazione dell'interfaccia grafica come Pulsante e CheckBox
 
-- finestra.hpp :
+- finestra.hpp : contiene la classe finestra che rappresenta la vera e propria finestra grafica, con le funzioni create e destroy (distruttore)
 
-- classe.hpp : 
+- mondo.hpp : contiene la classe Mondo che ha come membri un oggetto della classe Finestra, uno di Automa, uno di Animazione e uno di GUI. 
+ Nel rispettivo codice sorgente è presente la funzione Inserimento() responsabile dell' Input/Output.
+ La funzione Aggiorna() permette di avanzare solamente nella simulazione che si sta guardando.
+
+- pennello.hpp : contiene la classe che permette di cambiare gli stati delle cellette sulla griglia. 
 

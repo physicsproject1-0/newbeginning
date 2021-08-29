@@ -47,8 +47,7 @@ class Animazione : public sf::Drawable {
   float m_d_parametro_beta;   // influenza contagio
   float m_d_parametro_gamma;  // influenza le morti
 
-
-bool m_orologi_stanno_andando;
+  bool m_orologi_stanno_andando;
   // Nel momento in cui collidono due persone, se una era infetta, cambia lo stato anche dell' altra
   void Collisione();
   void Conteggio_contatti();
@@ -88,7 +87,7 @@ bool m_orologi_stanno_andando;
                        (Casuale() / 100.f) * (m_limiti.getlimiti().height - 2 * m_prova.m_raggio) + m_limiti.getlimiti().top + m_prova.m_raggio);
       m_prova.m_vel = sf::Vector2f(Casuale() % 50 - 25.f, Casuale() % 50 - 25.f);
 
-      m_prova.m_valore_casuale =( Casuale() / 100.f )* 20;
+      m_prova.m_valore_casuale = (Casuale() / 100.f) * 20;
 
       m_popolazione[i] = m_prova;
       m_popolazione[i].m_S = Stato::VULNERABILE;
@@ -96,8 +95,11 @@ bool m_orologi_stanno_andando;
     for (int i = 0; i < m_d_infetti_iniziali; i++) {
       m_popolazione[static_cast<int>((Casuale() / 100.f) * m_popolazione.size())].m_S = Stato::INFETTO;
     }
+    for (int i = 0; i < m_d_rimossi_iniziali; i++) {
+      m_popolazione[static_cast<int>((Casuale() / 100.f) * m_popolazione.size())].m_S = Stato::GUARITO;
+    }
 
-    // Ogni persona è rappresentata da tre vertici 
+    // Ogni persona è rappresentata da tre vertici
     m_struttura.resize(m_popolazione.size() * 3);
     m_struttura.setPrimitiveType(sf::Triangles);
 
