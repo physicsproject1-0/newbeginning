@@ -5,8 +5,8 @@
 
 # roba
 .vscode
-/cmake
-/build
+cmake/
+build/
 
 # Prerequisites
 *.d
