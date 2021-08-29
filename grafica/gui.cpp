@@ -1,67 +1,8 @@
+#include <stdexcept>
+#include <SFML/Graphics.hpp>
+
+#include "struct_enum.hpp"
 #include "gui.hpp"
-
-// Bordi
-
-void Bordi::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-  target.draw(m_rettangolo);
-}  // metterci anche states altrimenti rompe il casso
-
-Bordi::Bordi(sf::Vector2f dimensione, sf::Vector2f posizione) {
-  m_rettangolo.setSize(dimensione);
-  m_rettangolo.setFillColor(sf::Color::Transparent);
-  m_rettangolo.setOutlineColor(sf::Color::White);
-  m_rettangolo.setOutlineThickness(3);
-  m_rettangolo.setPosition(posizione);
-
-  m_rettangolo_esterno.left = posizione.x;
-  m_rettangolo_esterno.top = posizione.y;
-  m_rettangolo_esterno.width = dimensione.x;
-  m_rettangolo_esterno.height = dimensione.y;
-}
-
-Bordi::Bordi(sf::Vector2f dimensione) {
-  m_rettangolo.setSize(dimensione);
-  m_rettangolo.setFillColor(sf::Color::Transparent);
-  m_rettangolo.setOutlineColor(sf::Color::White);
-  m_rettangolo.setOutlineThickness(3);
-  m_rettangolo_esterno.width = dimensione.x;
-  m_rettangolo_esterno.height = dimensione.y;
-}
-
-void Bordi::set_posizione(sf::Vector2f posizione) {
-  m_rettangolo.setPosition(posizione);
-
-  m_rettangolo_esterno.left = posizione.x;
-  m_rettangolo_esterno.top = posizione.y;
-}
-
-void Bordi::set_color(sf::Color Colore) { m_rettangolo.setOutlineColor(Colore); }
-
-sf::FloatRect Bordi::getlimiti() const { return m_rettangolo_esterno; };
-
-// Checkbox
-
-Checkbox::Checkbox(sf::Vector2f dimensione) : Bordi(dimensione) {
-  m_rettangolo.setOrigin(sf::Vector2f(dimensione.x / 2, dimensione.y / 2));
-  m_rettangolo.setFillColor(sf::Color(128, 128, 128));
-};
-
-void Checkbox::setinterncolor(sf::Color colore) { m_rettangolo.setFillColor(colore); }
-
-// GUI
-
-void GUI::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-  target.draw(m_sfondo_grigio);
-  target.draw(m_limiti_sfondo_grigio);
-  target.draw(m_casella_animazione);
-  target.draw(m_casella_automa);
-  target.draw(m_testo_animazione);
-  target.draw(m_testo_automa);
-  target.draw(m_pulsante_play);
-  target.draw(m_pulsante_pausa);
-  target.draw(m_paletta_colori);
-  target.draw(m_riquadro_informazioni);
-}
 
 GUI::GUI(sf::Vector2f dimensione)
     : m_limiti_sfondo_grigio(sf::Vector2f(dimensione)),
@@ -81,7 +22,7 @@ GUI::GUI(sf::Vector2f dimensione)
   m_sfondo_grigio.setFillColor(sf::Color(128, 128, 128));  // Grey
   m_sfondo_grigio.setSize(dimensione);
 
-  // la prima vista è animazione, all'inizio la simulazione è ferma?
+  
   m_casella_animazione.change_status(true);
   m_casella_animazione.setinterncolor(sf::Color::Red);
   m_pulsante_pausa.change_status(true);
@@ -98,7 +39,22 @@ GUI::GUI(sf::Vector2f dimensione)
   }
 }
 
-void GUI::aggiorna_posizione(sf::Vector2f punto_in_altosx, sf::Vector2f dimensioni_finestra) {  // da usare nel resize
+void GUI::draw(sf::RenderTarget& target, sf::RenderStates ) const {
+  target.draw(m_sfondo_grigio);
+  target.draw(m_limiti_sfondo_grigio);
+  target.draw(m_casella_animazione);
+  target.draw(m_casella_automa);
+  target.draw(m_testo_animazione);
+  target.draw(m_testo_automa);
+  target.draw(m_pulsante_play);
+  target.draw(m_pulsante_pausa);
+  target.draw(m_paletta_colori);
+  target.draw(m_riquadro_informazioni);
+}
+
+
+
+void GUI::AggiornaPosizione(sf::Vector2f punto_in_altosx, sf::Vector2f dimensioni_finestra) {  // da usare nel resize
   sf::Vector2f t_posizione_aggancio_alto_sx(
       punto_in_altosx.x,
       punto_in_altosx.y + dimensioni_finestra.y / 2 - m_limiti_sfondo_grigio.getlimiti().height / 2);  // punta al vertice alto sx dello sfondo grigio
@@ -129,23 +85,170 @@ void GUI::aggiorna_posizione(sf::Vector2f punto_in_altosx, sf::Vector2f dimensio
 
 }
 
+void GUI::CheckMousePosition(sf::Vector2f t_coordinate_mouse) {
+    if (m_casella_animazione.getlimiti().contains(t_coordinate_mouse)) {
+      m_posizione_mouse = MousePos::CheckboxAnimazione;
 
-int Casuale() {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> dist(1, 100);
+    } else if (m_casella_automa.getlimiti().contains(t_coordinate_mouse)) {
+      m_posizione_mouse = MousePos::CheckboxAutoma;
 
-  return dist(gen);
-}
+    } else if (m_pulsante_play.getlimiti().contains(t_coordinate_mouse)) {
+      m_posizione_mouse = MousePos::PulsantePlay;
 
-/*
-
-int Animazione::Check_occur(Persona const& persona, int raggio) {  // decidere un raggio accettabile
-  int occur = 0;
-  for (int i = 0; i < m_popolazione.size(); i++) {
-    if (Modulo(persona.m_centro - m_popolazione[i].m_centro) <= raggio) {
-      occur++;
+    } else if (m_pulsante_pausa.getlimiti().contains(t_coordinate_mouse)) {
+      m_posizione_mouse = MousePos::PulsantePausa;
+    } else if (m_paletta_colori.RitornaVerde().getlimiti().contains(t_coordinate_mouse)) {
+      m_posizione_mouse = MousePos::PalettaVulnerabile;
+    } else if (m_paletta_colori.RitornaRosso().getlimiti().contains(t_coordinate_mouse)) {
+      m_posizione_mouse = MousePos::PalettaInfetto;
+    } else if (m_paletta_colori.RitornaBlu().getlimiti().contains(t_coordinate_mouse)) {
+      m_posizione_mouse = MousePos::PalettaGuariti;
+    } else if (m_paletta_colori.RitornaBianco().getlimiti().contains(t_coordinate_mouse)) {
+      m_posizione_mouse = MousePos::PalettaMorti;
+    } else {
+      m_posizione_mouse = MousePos::None;
     }
   }
-  return occur;
-} */
+
+void GUI::CheckColor(sf::Color colore) {
+    switch (m_posizione_mouse) {
+      case MousePos::CheckboxAnimazione:
+        if (!m_casella_animazione.return_status()) {
+          m_casella_animazione.setinterncolor(colore);
+        }
+        if (!m_casella_automa.return_status()) {
+          m_casella_automa.setinterncolor(sf::Color(128, 128, 128));
+        }
+
+        if (!m_pulsante_play.return_status()) {
+          m_pulsante_play.setinterncolor(sf::Color(128, 128, 128));
+        }
+        if (!m_pulsante_pausa.return_status()) {
+          m_pulsante_pausa.setinterncolor(sf::Color(128, 128, 128));
+        }
+
+        break;
+
+      case MousePos::CheckboxAutoma:
+        if (!m_casella_automa.return_status()) {
+          m_casella_automa.setinterncolor(colore);
+        }
+        if (!m_casella_animazione.return_status()) {
+          m_casella_animazione.setinterncolor(sf::Color(128, 128, 128));
+        }
+        if (!m_pulsante_play.return_status()) {
+          m_pulsante_play.setinterncolor(sf::Color(128, 128, 128));
+        }
+        if (!m_pulsante_pausa.return_status()) {
+          m_pulsante_pausa.setinterncolor(sf::Color(128, 128, 128));
+        }
+
+        break;
+      case MousePos::PulsantePlay:
+        if (!m_pulsante_play.return_status()) {
+          m_pulsante_play.setinterncolor(colore);
+        }
+        if (!m_casella_automa.return_status()) {
+          m_casella_automa.setinterncolor(sf::Color(128, 128, 128));
+        }
+        if (!m_casella_animazione.return_status()) {
+          m_casella_animazione.setinterncolor(sf::Color(128, 128, 128));
+        }
+        if (!m_pulsante_pausa.return_status()) {
+          m_pulsante_pausa.setinterncolor(sf::Color(128, 128, 128));
+        }
+
+        break;
+      case MousePos::PulsantePausa:
+        if (!m_pulsante_pausa.return_status()) {
+          m_pulsante_pausa.setinterncolor(colore);
+        }
+        if (!m_casella_automa.return_status()) {
+          m_casella_automa.setinterncolor(sf::Color(128, 128, 128));
+        }
+        if (!m_casella_animazione.return_status()) {
+          m_casella_animazione.setinterncolor(sf::Color(128, 128, 128));
+        }
+        if (!m_pulsante_play.return_status()) {
+          m_pulsante_play.setinterncolor(sf::Color(128, 128, 128));
+        }
+
+        break;
+
+      case MousePos::None:
+        if (!m_casella_automa.return_status()) {
+          m_casella_automa.setinterncolor(sf::Color(128, 128, 128));
+        }
+        if (!m_casella_animazione.return_status()) {
+          m_casella_animazione.setinterncolor(sf::Color(128, 128, 128));
+        }
+        if (!m_pulsante_play.return_status()) {
+          m_pulsante_play.setinterncolor(sf::Color(128, 128, 128));
+        }
+        if (!m_pulsante_pausa.return_status()) {
+          m_pulsante_pausa.setinterncolor(sf::Color(128, 128, 128));
+        }
+        break;
+    }
+  }
+
+MousePos GUI::ClickOfMouse() {
+    if (m_posizione_mouse == MousePos::CheckboxAnimazione) {
+      m_casella_animazione.setinterncolor(sf::Color::Red);
+      m_casella_animazione.change_status(true);
+      m_casella_automa.setinterncolor(sf::Color(128, 128, 128));
+      m_casella_automa.change_status(false);
+
+      m_paletta_colori.DisattivaInserimento();
+
+      return m_posizione_mouse;
+    } else if (m_posizione_mouse == MousePos::CheckboxAutoma) {
+      m_casella_animazione.setinterncolor(sf::Color(128, 128, 128));
+      m_casella_animazione.change_status(false);
+      m_casella_automa.setinterncolor(sf::Color::Red);
+      m_casella_automa.change_status(true);
+
+      m_paletta_colori.DisattivaInserimento();
+
+      return m_posizione_mouse;
+    } else if (m_posizione_mouse == MousePos::PulsantePlay) {
+      m_pulsante_play.setinterncolor(sf::Color::Red);
+      m_pulsante_play.change_status(true);
+      m_pulsante_pausa.setinterncolor(sf::Color(128, 128, 128));
+      m_pulsante_pausa.change_status(false);
+
+      m_paletta_colori.DisattivaInserimento();
+
+      return m_posizione_mouse;
+    } else if (m_posizione_mouse == MousePos::PulsantePausa) {
+      m_pulsante_play.setinterncolor(sf::Color(128, 128, 128));
+      m_pulsante_play.change_status(false);
+      m_pulsante_pausa.setinterncolor(sf::Color::Red);
+      m_pulsante_pausa.change_status(true);
+
+      m_paletta_colori.DisattivaInserimento();
+
+      return m_posizione_mouse;
+    } else if (m_posizione_mouse == MousePos::PalettaVulnerabile && m_paletta_colori.IsActive()) {
+      m_paletta_colori.AttivaInserimento();
+      m_paletta_colori.AttivaVerde();
+
+      return m_posizione_mouse;
+    } else if (m_posizione_mouse == MousePos::PalettaInfetto && m_paletta_colori.IsActive()) {
+      m_paletta_colori.AttivaInserimento();
+      m_paletta_colori.AttivaRosso();
+      return m_posizione_mouse;
+    } else if (m_posizione_mouse == MousePos::PalettaGuariti && m_paletta_colori.IsActive()) {
+      m_paletta_colori.AttivaInserimento();
+      m_paletta_colori.AttivaBlu();
+      return m_posizione_mouse;
+    } else if (m_posizione_mouse == MousePos::PalettaMorti && m_paletta_colori.IsActive()) {
+      m_paletta_colori.AttivaInserimento();
+      m_paletta_colori.AttivaBianco();
+      return m_posizione_mouse;
+
+    } else {
+      m_paletta_colori.DisattivaInserimento();
+      return m_posizione_mouse;
+    }
+  }

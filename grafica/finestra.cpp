@@ -95,15 +95,15 @@ void Finestra::Update() {
       mouse_in = true;
     }
     if (evento.type == sf::Event::MouseLeft) {
-      v_overlay->is_out();
+      v_overlay->IsOut();
       mouse_in = false;
     }
     if (mouse_in /* && evento.type == sf::Event::MouseMoved */) {
       posizione_mouse = punto_alto_sx + (converti(v_mouse.getPosition(v_mainfinestra)));
 
-      v_overlay->check_mouse_position(posizione_mouse);  // vedere se funziona
+      v_overlay->CheckMousePosition(posizione_mouse);  // vedere se funziona
       /* std::cout << posizione_mouse.x << " " << posizione_mouse.y << '\n'; */
-      v_overlay->check_color(sf::Color::Yellow);
+      v_overlay->CheckColor(sf::Color::Yellow);
 
       v_overlay->AggiornaPosizioneRettangoliPaletta(posizione_mouse);
 
@@ -121,7 +121,7 @@ void Finestra::Update() {
           }
         }
 
-        switch (v_overlay->mouse_clicked()) {
+        switch (v_overlay->ClickOfMouse()) {
           case MousePos::CheckboxAnimazione:
             v_vista = Vista::Animazione;
             punto_alto_sx.x = vista_animazione.getCenter().x - vista_animazione.getSize().x / 2;
@@ -150,6 +150,8 @@ void Finestra::Update() {
             }
 
             break;
+
+         
         }
 
         upd_vista();
@@ -166,18 +168,14 @@ void Finestra::Update() {
     v_overlay->GetPointerRiquadro()->AggiungiStatoAnimazione(m_dinamico->GetCensimento());
     v_overlay->GetPointerRiquadro()->AggiornaScritte();
   }
-  /* */
-  /*
-    if (v_overlay->cliccabile()){
-      v_mouse.
-    } */
+ 
 }
 
 void Finestra::upd_vista() {
   switch (v_vista) {
     case Vista::Animazione:
       SetVista(vista_animazione);
-      v_overlay->aggiorna_posizione(punto_alto_sx, vista_animazione.getSize());
+      v_overlay->AggiornaPosizione(punto_alto_sx, vista_animazione.getSize());
       v_overlay->GetPointerRiquadro()->MostraDatiAnimazione();
       v_overlay->GetPointerRiquadro()->AggiornaScritte();
       v_overlay->DisattivaInserimento();
@@ -185,7 +183,7 @@ void Finestra::upd_vista() {
 
     case Vista::Automa:
       SetVista(vista_automa);
-      v_overlay->aggiorna_posizione(punto_alto_sx, vista_automa.getSize());
+      v_overlay->AggiornaPosizione(punto_alto_sx, vista_automa.getSize());
       v_overlay->GetPointerRiquadro()->MostraDatiAutoma();
       v_overlay->GetPointerRiquadro()->AggiornaScritte();
       if (m_statico->IsStopped()) {

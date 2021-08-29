@@ -1,3 +1,0 @@
-/home/simo-garne/ProgettoProgrammazione2021/newbeginning/grafica/CMakeFiles/rebuild_cache.dir
-/home/simo-garne/ProgettoProgrammazione2021/newbeginning/grafica/CMakeFiles/edit_cache.dir
-/home/simo-garne/ProgettoProgrammazione2021/newbeginning/grafica/CMakeFiles/grafico_sfml.dir

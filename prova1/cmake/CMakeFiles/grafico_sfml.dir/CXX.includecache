@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/simo-garne/ProgettoProgrammazione2021/newbeginning/gnuplot-iostream.h
+/home/edoardo/newbeginning/gnuplot-iostream.h
 cstdio
 -
 termios.h
@@ -62,7 +62,7 @@ blitz/array.h
 windows.h
 -
 
-/home/simo-garne/ProgettoProgrammazione2021/newbeginning/lyra.hpp
+/home/edoardo/newbeginning/lyra.hpp
 initializer_list
 -
 string
@@ -134,21 +134,21 @@ memory
 iostream
 -
 
-/home/simo-garne/ProgettoProgrammazione2021/newbeginning/main.cpp
+/home/edoardo/newbeginning/main.cpp
 iostream
 -
 lyra.hpp
-/home/simo-garne/ProgettoProgrammazione2021/newbeginning/lyra.hpp
+/home/edoardo/newbeginning/lyra.hpp
 newSIR.hpp
-/home/simo-garne/ProgettoProgrammazione2021/newbeginning/newSIR.hpp
+/home/edoardo/newbeginning/newSIR.hpp
 
-/home/simo-garne/ProgettoProgrammazione2021/newbeginning/newSIR.cpp
+/home/edoardo/newbeginning/newSIR.cpp
 newSIR.hpp
-/home/simo-garne/ProgettoProgrammazione2021/newbeginning/newSIR.hpp
+/home/edoardo/newbeginning/newSIR.hpp
 cmath
 -
 
-/home/simo-garne/ProgettoProgrammazione2021/newbeginning/newSIR.hpp
+/home/edoardo/newbeginning/newSIR.hpp
 iomanip
 -
 iostream
@@ -156,11 +156,11 @@ iostream
 vector
 -
 
-/home/simo-garne/ProgettoProgrammazione2021/newbeginning/plot.cpp
+/home/edoardo/newbeginning/plot.cpp
 vector
 -
 gnuplot-iostream.h
-/home/simo-garne/ProgettoProgrammazione2021/newbeginning/gnuplot-iostream.h
+/home/edoardo/newbeginning/gnuplot-iostream.h
 newSIR.hpp
-/home/simo-garne/ProgettoProgrammazione2021/newbeginning/newSIR.hpp
+/home/edoardo/newbeginning/newSIR.hpp
 

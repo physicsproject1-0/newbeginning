@@ -1,8 +1,10 @@
-#include "automa.hpp"
+/* #include "classe.hpp"
+#include "finestra.hpp" */
 
-#include "classe.hpp"
-#include "finestra.hpp"
 #include "gui.hpp"
+
+
+#include "automa.hpp"
 
 void Cellula::Aggiorna_colore() {
   switch (m_S) {
@@ -123,7 +125,7 @@ void Automa::Aggiorna() {
       }
 
       censimento(cell, popolazione);
-      std::cout<< popolazione.m_suscettibili<< popolazione.m_infetti<<popolazione.m_morti<<popolazione.m_guariti<<"\n";
+
       cell.m_counter = 0;
     }
 

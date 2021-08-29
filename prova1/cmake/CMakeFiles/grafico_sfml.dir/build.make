@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/simo-garne/ProgettoProgrammazione2021/newbeginning
+CMAKE_SOURCE_DIR = /home/edoardo/newbeginning
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/simo-garne/ProgettoProgrammazione2021/newbeginning/grafica
+CMAKE_BINARY_DIR = /home/edoardo/newbeginning/cmake
 
 # Include any dependencies generated for this target.
 include CMakeFiles/grafico_sfml.dir/depend.make
@@ -59,42 +59,42 @@ include CMakeFiles/grafico_sfml.dir/flags.make
 
 CMakeFiles/grafico_sfml.dir/main.cpp.o: CMakeFiles/grafico_sfml.dir/flags.make
 CMakeFiles/grafico_sfml.dir/main.cpp.o: ../main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/simo-garne/ProgettoProgrammazione2021/newbeginning/grafica/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/grafico_sfml.dir/main.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/grafico_sfml.dir/main.cpp.o -c /home/simo-garne/ProgettoProgrammazione2021/newbeginning/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/edoardo/newbeginning/cmake/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/grafico_sfml.dir/main.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/grafico_sfml.dir/main.cpp.o -c /home/edoardo/newbeginning/main.cpp
 
 CMakeFiles/grafico_sfml.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/grafico_sfml.dir/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/simo-garne/ProgettoProgrammazione2021/newbeginning/main.cpp > CMakeFiles/grafico_sfml.dir/main.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/edoardo/newbeginning/main.cpp > CMakeFiles/grafico_sfml.dir/main.cpp.i
 
 CMakeFiles/grafico_sfml.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/grafico_sfml.dir/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/simo-garne/ProgettoProgrammazione2021/newbeginning/main.cpp -o CMakeFiles/grafico_sfml.dir/main.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/edoardo/newbeginning/main.cpp -o CMakeFiles/grafico_sfml.dir/main.cpp.s
 
 CMakeFiles/grafico_sfml.dir/plot.cpp.o: CMakeFiles/grafico_sfml.dir/flags.make
 CMakeFiles/grafico_sfml.dir/plot.cpp.o: ../plot.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/simo-garne/ProgettoProgrammazione2021/newbeginning/grafica/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/grafico_sfml.dir/plot.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/grafico_sfml.dir/plot.cpp.o -c /home/simo-garne/ProgettoProgrammazione2021/newbeginning/plot.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/edoardo/newbeginning/cmake/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/grafico_sfml.dir/plot.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/grafico_sfml.dir/plot.cpp.o -c /home/edoardo/newbeginning/plot.cpp
 
 CMakeFiles/grafico_sfml.dir/plot.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/grafico_sfml.dir/plot.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/simo-garne/ProgettoProgrammazione2021/newbeginning/plot.cpp > CMakeFiles/grafico_sfml.dir/plot.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/edoardo/newbeginning/plot.cpp > CMakeFiles/grafico_sfml.dir/plot.cpp.i
 
 CMakeFiles/grafico_sfml.dir/plot.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/grafico_sfml.dir/plot.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/simo-garne/ProgettoProgrammazione2021/newbeginning/plot.cpp -o CMakeFiles/grafico_sfml.dir/plot.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/edoardo/newbeginning/plot.cpp -o CMakeFiles/grafico_sfml.dir/plot.cpp.s
 
 CMakeFiles/grafico_sfml.dir/newSIR.cpp.o: CMakeFiles/grafico_sfml.dir/flags.make
 CMakeFiles/grafico_sfml.dir/newSIR.cpp.o: ../newSIR.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/simo-garne/ProgettoProgrammazione2021/newbeginning/grafica/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/grafico_sfml.dir/newSIR.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/grafico_sfml.dir/newSIR.cpp.o -c /home/simo-garne/ProgettoProgrammazione2021/newbeginning/newSIR.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/edoardo/newbeginning/cmake/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/grafico_sfml.dir/newSIR.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/grafico_sfml.dir/newSIR.cpp.o -c /home/edoardo/newbeginning/newSIR.cpp
 
 CMakeFiles/grafico_sfml.dir/newSIR.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/grafico_sfml.dir/newSIR.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/simo-garne/ProgettoProgrammazione2021/newbeginning/newSIR.cpp > CMakeFiles/grafico_sfml.dir/newSIR.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/edoardo/newbeginning/newSIR.cpp > CMakeFiles/grafico_sfml.dir/newSIR.cpp.i
 
 CMakeFiles/grafico_sfml.dir/newSIR.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/grafico_sfml.dir/newSIR.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/simo-garne/ProgettoProgrammazione2021/newbeginning/newSIR.cpp -o CMakeFiles/grafico_sfml.dir/newSIR.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/edoardo/newbeginning/newSIR.cpp -o CMakeFiles/grafico_sfml.dir/newSIR.cpp.s
 
 # Object files for target grafico_sfml
 grafico_sfml_OBJECTS = \
@@ -110,7 +110,7 @@ grafico_sfml: CMakeFiles/grafico_sfml.dir/plot.cpp.o
 grafico_sfml: CMakeFiles/grafico_sfml.dir/newSIR.cpp.o
 grafico_sfml: CMakeFiles/grafico_sfml.dir/build.make
 grafico_sfml: CMakeFiles/grafico_sfml.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/simo-garne/ProgettoProgrammazione2021/newbeginning/grafica/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable grafico_sfml"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/edoardo/newbeginning/cmake/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable grafico_sfml"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/grafico_sfml.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -123,6 +123,6 @@ CMakeFiles/grafico_sfml.dir/clean:
 .PHONY : CMakeFiles/grafico_sfml.dir/clean
 
 CMakeFiles/grafico_sfml.dir/depend:
-	cd /home/simo-garne/ProgettoProgrammazione2021/newbeginning/grafica && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/simo-garne/ProgettoProgrammazione2021/newbeginning /home/simo-garne/ProgettoProgrammazione2021/newbeginning /home/simo-garne/ProgettoProgrammazione2021/newbeginning/grafica /home/simo-garne/ProgettoProgrammazione2021/newbeginning/grafica /home/simo-garne/ProgettoProgrammazione2021/newbeginning/grafica/CMakeFiles/grafico_sfml.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/edoardo/newbeginning/cmake && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/edoardo/newbeginning /home/edoardo/newbeginning /home/edoardo/newbeginning/cmake /home/edoardo/newbeginning/cmake /home/edoardo/newbeginning/cmake/CMakeFiles/grafico_sfml.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/grafico_sfml.dir/depend
 

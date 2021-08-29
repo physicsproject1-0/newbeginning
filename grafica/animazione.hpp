@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include <string>
 
+#include "struct_enum.hpp" 
 #include "gui.hpp"
 
 #ifndef ANIMAZIONE_HPP

@@ -57,7 +57,7 @@ class Automa : public sf::Drawable {  // ESTRARRE LE CLASSI NESTATE E DISTINGUER
   int m_giorni = 0;
   sf::Clock m_orologio;
 
-  virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const {
+  virtual void draw(sf::RenderTarget& target, sf::RenderStates ) const {
     for (int i = 0; i < m_numero_lato; i++) {
       for (int j = 0; j < m_numero_lato; j++) {
         target.draw(m_grid[i][j]);

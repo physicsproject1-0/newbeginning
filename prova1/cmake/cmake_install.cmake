@@ -1,4 +1,4 @@
-# Install script for directory: /home/simo-garne/ProgettoProgrammazione2021/newbeginning
+# Install script for directory: /home/edoardo/newbeginning
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/simo-garne/ProgettoProgrammazione2021/newbeginning/grafica/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/edoardo/newbeginning/cmake/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

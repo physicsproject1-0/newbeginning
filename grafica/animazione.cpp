@@ -1,8 +1,12 @@
-#include "animazione.hpp"
+#include <SFML/Graphics.hpp>
 
-#include "classe.hpp"
-#include "finestra.hpp"
+#include "struct_enum.hpp"
+/* #include "classe.hpp" */
+/* #include "finestra.hpp" */
 #include "gui.hpp"
+
+
+#include "animazione.hpp"
 
 void Animazione::Collisione() {
   popolazione = {0, 0, 0, 0};
@@ -41,10 +45,17 @@ void Animazione::Conteggio_contatti() {
       if ((i != j) && (PallinaA.m_S == Stato::INFETTO)) {
         if ((Modulo(PallinaA.m_centro - PallinaB.m_centro) >= PallinaB.m_raggio) &&
             (Modulo(PallinaA.m_centro - PallinaB.m_centro) <= 1.5f * PallinaB.m_raggio)) {
-          if (Casuale() / 100 < m_d_parametro_gamma) {
+          
+          float estrazione = Casuale() / 100.f ;
+          std::cout << estrazione <<'\n';
+
+          if (estrazione < m_d_parametro_gamma) {
             PallinaA.m_numero_contatti++;
+            std::cout <<"pallina numero" << i<< " "<< "aumento contatti\n";
           }
         }
+        std::cout <<"pallina numero" << i<< " "<<PallinaA.m_numero_contatti<< '\n';
+        
       } else {
         continue;
       }
@@ -55,7 +66,7 @@ void Animazione::Conteggio_contatti() {
 void Animazione::Morte_persona() {                                //al 30 % la persona muore, al 70% guarisce
   for (long unsigned int i = 0; i < m_popolazione.size(); i++) {
     Persona& PallinaA = m_popolazione[i];
-    if ((PallinaA.m_S == Stato::INFETTO) && (PallinaA.m_numero_contatti == 35)) {
+    if ((PallinaA.m_S == Stato::INFETTO) && (PallinaA.m_numero_contatti >= 35)) {
       PallinaA.m_S = Stato::MORTO;
       if (Casuale() > 30) {
         PallinaA.m_S = Stato::GUARITO;
