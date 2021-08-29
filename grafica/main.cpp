@@ -1,7 +1,6 @@
 #include <iostream>
 
-#include "classe.hpp"
-//#include <SFML/OpenGL.hpp>
+#include "mondo.hpp"
 
 int main() {
   try {
@@ -9,14 +8,12 @@ int main() {
 
     Mondo map(inserimento_dati);
 
-    while (!map.Prendi_finestra()->Isclosed()) {
-      // handle events
+    while (!map.Prendi_finestra()->IsClosed()) {
 
-      map.Gestisci_input();
+      map.GestisciInput();
       map.Aggiorna();
       map.Disegna();
-      // map.azzera();
-      // glFinish();
+
     }
   } catch (std::runtime_error const& e) {
     std::cerr << "ERRORE: " << e.what() << '\n';

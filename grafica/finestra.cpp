@@ -227,5 +227,5 @@ void Finestra::Mostra() { v_mainfinestra.display(); }
 
 sf::Vector2u Finestra::Getdimensions() { return v_dimensioni; }
 
-bool Finestra::Isclosed() { return v_Isclosed; }
+bool Finestra::IsClosed() { return v_Isclosed; }
 bool Finestra::Isfullscreen() { return v_Isfullscreen; }

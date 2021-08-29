@@ -18,8 +18,8 @@
 #include "finestra.hpp"
 #include "gui.hpp"
 
-#ifndef CLASSE_HPP
-#define CLASSE_HPP
+#ifndef MONDO_HPP
+#define MONDO_HPP
 
 struct Inserimento {
   // dinamica
@@ -54,7 +54,7 @@ class Mondo {
   Mondo(Inserimento t_inserimento);
 
   Finestra* Prendi_finestra();
-  void Gestisci_input();
+  void GestisciInput();
   void Aggiorna();
   void Disegna();
 };

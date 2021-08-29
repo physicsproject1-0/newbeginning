@@ -57,7 +57,7 @@ class Finestra {
 
   sf::Vector2u Getoriginaldimensions();
 
-  bool Isclosed();
+  bool IsClosed();
   bool Isfullscreen();
 
   void SetVista(sf::View vista);

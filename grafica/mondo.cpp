@@ -1,4 +1,4 @@
-#include "classe.hpp"
+#include "mondo.hpp"
 
 #include <algorithm>
 #include <sstream>
@@ -11,6 +11,7 @@ Mondo::Mondo(Inserimento t_inserimento)
                 t_inserimento.m_s_parametro_gamma, t_inserimento.m_s_parametro_eta, t_inserimento.m_s_infetti_iniziali,
                 t_inserimento.m_s_rimossi_iniziali),
       m_window("test", sf::Vector2u(900, 600), &m_overlay, &m_dinamica, &m_statica, m_dinamica.get_bordi(), m_statica.get_bordi()) {}
+
 
 template <class T>
 bool IsInputGood(T& a) {
@@ -50,6 +51,10 @@ Inserimento::Inserimento() {
 
   std::cout << "Parametro eta(relativo alla probabilità di morte) >> ";
   if (!IsInputGood(m_s_parametro_eta) || m_s_parametro_eta < 0 || m_s_parametro_eta > 1) {
+    throw std::runtime_error{"Il parametro eta deve essere un decimale compreso tra 0 e 1"};
+  }
+
+  if ( m_s_parametro_eta+m_s_parametro_gamma < 1 ){
     throw std::runtime_error{"La somma delle probabilità di morire e guarire deve essere compresa tra 0 e 1"};
   }
 
@@ -97,9 +102,9 @@ Inserimento::Inserimento() {
 
 Finestra* Mondo::Prendi_finestra() { return &m_window; }
 
-void Mondo::Gestisci_input() {
+void Mondo::GestisciInput() {
   m_window.Update();  // gestisce gli eventi
-  if (m_window.Isclosed()) {
+  if (m_window.IsClosed()) {
     m_window.~Finestra();
   }
 }
