@@ -19,22 +19,22 @@ int main(int argc, const char** argv) {
 
     if (mostra_aiuto) {
       std::cout << list << "\n";
-      return 0;  // va bene qua?
+      return 0;  
     }
 
     if (opzione == "virgola") {
-      epidemia::SIR mondo = epidemia::insert();
-      mondo.print_semplice_virgola(mondo.convertitore(mondo.riempimento()));
+      epidemia::SIR mondo = epidemia::Insert();
+      mondo.PrintSempliceVirgola(mondo.Convertitore(mondo.Riempimento()));
     } else if (opzione == "spazio") {
-      epidemia::SIR mondo = epidemia::insert();
-      mondo.print_semplice_spazio(mondo.convertitore(mondo.riempimento()));
+      epidemia::SIR mondo = epidemia::Insert();
+      mondo.PrintSempliceSpazio(mondo.Convertitore(mondo.Riempimento()));
     } else if (opzione == "grafico") {
-      epidemia::SIR mondo = epidemia::insert();
-      mondo.print_grafico(mondo.convertitore(mondo.riempimento()));
+      epidemia::SIR mondo = epidemia::Insert();
+      mondo.PrintGrafico(mondo.Convertitore(mondo.Riempimento()));
     } else if (opzione.empty()) {
-      epidemia::SIR mondo = epidemia::insert();
-      mondo.print(mondo.convertitore(mondo.riempimento()));
-      mondo.print_grafico(mondo.convertitore(mondo.riempimento()));
+      epidemia::SIR mondo = epidemia::Insert();
+      mondo.Print(mondo.Convertitore(mondo.Riempimento()));
+      mondo.PrintGrafico(mondo.Convertitore(mondo.Riempimento()));
     } else {
       throw std::runtime_error{"inserisci un'opzione valida"};
     }

@@ -33,11 +33,12 @@ struct Persona {
 };
 
 class Animazione : public sf::Drawable {
-  Bordi m_limiti;
   sf::Clock m_orologio2;
   sf::Texture m_ominoprova;
   sf::VertexArray m_struttura;
   std::map<int, Persona> m_popolazione;
+
+  Bordi m_limiti;
 
   bool m_is_stopped;
   bool m_orologi_stanno_andando;
