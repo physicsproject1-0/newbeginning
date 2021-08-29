@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED On)
 
 project(Progettoinfografica)
 
-add_executable(grafica.out mainfake.cpp finestra.cpp classe.cpp gui.cpp automa.cpp animazione.cpp paletta.cpp riquadro_informazioni.cpp bordi.cpp)
+add_executable(grafica.out mainfake.cpp finestra.cpp classe.cpp gui.cpp automa.cpp animazione.cpp pennello.cpp riquadro_informazioni.cpp bordi.cpp)
 set (EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 find_package(SFML 2.5 COMPONENTS graphics system window REQUIRED)
 

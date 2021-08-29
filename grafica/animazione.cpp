@@ -2,9 +2,6 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "gui.hpp"
-#include "struct_enum.hpp"
-
 // Controlla le collisioni e cambia lo stato
 void Animazione::Collisione() {
   m_censimento = {0, 0, 0, 0};

@@ -104,7 +104,7 @@ class Automa : public sf::Drawable {
   void StartAutoma();
   bool IsStopped();
   Censimento GetCensimento();
-  void AggiornaSenzaAvanzare();
+  void Aggiorna_senza_avanzare();
 };
 
 #endif

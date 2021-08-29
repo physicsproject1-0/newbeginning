@@ -70,7 +70,7 @@ class Animazione : public sf::Drawable {
 
     Persona m_prova;
 
-    // Riempio la mappa (m_popolazione) di persone
+    // Riempio la mappa (m_popolazione) di persone in posizioni e velocità casuali
     for (int i = 0; i < m_d_numero_persone; i++) {
       m_prova.m_raggio = 13.f;
       m_prova.m_centro =
@@ -84,8 +84,8 @@ class Animazione : public sf::Drawable {
       m_popolazione[static_cast<int>((Casuale() / 100.f) * m_popolazione.size())].m_S = Stato::INFETTO;
     }
 
+    // Ogni persona è rappresentata da tre vertici 
     m_struttura.resize(m_popolazione.size() * 3);
-
     m_struttura.setPrimitiveType(sf::Triangles);
 
     SetAllTextures();

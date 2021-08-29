@@ -1,7 +1,5 @@
 #include "automa.hpp"
 
-#include "gui.hpp"
-
 void Cellula::Aggiorna_colore() {
   switch (m_S) {
     case (Stato::INFETTO):  // Carichiamo la red texture
@@ -163,7 +161,7 @@ bool Automa::IsStopped() { return m_is_stopped; }
 
 Censimento Automa::GetCensimento() { return m_censimento; }
 
-void Automa::AggiornaSenzaAvanzare() {
+void Automa::Aggiorna_senza_avanzare() {
   m_censimento = {0, 0, 0, 0};
   for (int i = 0; i < m_numero_lato; i++) {
     for (int j = 0; j < m_numero_lato; j++) {

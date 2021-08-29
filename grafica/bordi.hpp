@@ -11,7 +11,7 @@ class Bordi : public sf::Drawable {
   sf::FloatRect m_rettangolo_esterno;
 
  public:
-  virtual void draw(sf::RenderTarget& target, sf::RenderStates ) const;
+  virtual void draw(sf::RenderTarget& target, sf::RenderStates) const;
   Bordi(sf::Vector2f dimensione, sf::Vector2f posizione);
   Bordi(sf::Vector2f dimensione);
   virtual void set_posizione(sf::Vector2f posizione);
@@ -20,7 +20,7 @@ class Bordi : public sf::Drawable {
   sf::FloatRect getlimiti() const;
 };
 
-class Checkbox : public Bordi {  // origine al centro
+class Checkbox : public Bordi {
  protected:
   bool m_clicked = false;
 
@@ -33,7 +33,7 @@ class Checkbox : public Bordi {  // origine al centro
   void ImpostaOrigine(sf::Vector2f t_nuova_origine);
 };
 
-class Textbox : public Bordi {  // origine al centro //chiamare pprima scrivi e poi set posizione
+class Textbox : public Bordi {
   sf::Font* m_font;
   sf::Text m_testo;
   float m_fattore_conversione;  // dimensioni lettera testo lungo asse x rispetto ad asse y
@@ -45,12 +45,10 @@ class Textbox : public Bordi {  // origine al centro //chiamare pprima scrivi e 
 
   void scrivi(std::string stringa);
 
-  virtual void draw(sf::RenderTarget& target, sf::RenderStates ) const;
+  virtual void draw(sf::RenderTarget& target, sf::RenderStates) const;
 };
 
-
-
-class Pulsante : public Checkbox {  // origine al centro
+class Pulsante : public Checkbox {
   TipoPulsante m_tipo_pulsante;
   sf::CircleShape m_simbolo;
 
@@ -59,11 +57,7 @@ class Pulsante : public Checkbox {  // origine al centro
 
   void set_posizione(sf::Vector2f posizione);
 
-  void AggiornaStato();
-
-  virtual void draw(sf::RenderTarget& target, sf::RenderStates ) const;
-  
+  virtual void draw(sf::RenderTarget& target, sf::RenderStates) const;
 };
-
 
 #endif

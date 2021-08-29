@@ -11,10 +11,10 @@ enum class MousePos {
   CheckboxAutoma,
   PulsantePlay,
   PulsantePausa,
-  PalettaVulnerabile,
-  PalettaInfetto,
-  PalettaGuariti,
-  PalettaMorti
+  PennelloVulnerabile,
+  PennelloInfetto,
+  PennelloGuariti,
+  PennelloMorti
 };
 
 enum class Stato { VULNERABILE, INFETTO, MORTO, GUARITO };
