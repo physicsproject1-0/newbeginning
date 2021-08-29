@@ -33,7 +33,6 @@ struct Persona {
 };
 
 class Animazione : public sf::Drawable {
-  Bordi m_limiti;
   sf::Clock m_orologio2;
   sf::Texture m_ominoprova;
   sf::VertexArray m_struttura;
@@ -42,6 +41,7 @@ class Animazione : public sf::Drawable {
   int m_d_numero_persone;    // numero totale di persone
   int m_d_infetti_iniziali;  // numero iniziale di infetti
   int m_d_rimossi_iniziali;  // numero iniziale di rimossi
+  Bordi m_limiti;
   bool m_is_stopped;
   Censimento m_censimento;
   float m_d_parametro_beta;   // influenza il contagio

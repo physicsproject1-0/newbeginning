@@ -11,7 +11,7 @@ void Animazione::Collisione() {
     Persona& PallinaA = m_popolazione[i];
     censimento(PallinaA, m_censimento);
     if (PallinaA.m_S == Stato::VULNERABILE) {
-      for (int j = 0; j < m_popolazione.size(); j++) {
+      for (long unsigned int j = 0; j < m_popolazione.size(); j++) {
         Persona& PallinaB = m_popolazione[j];
         // Contagiosita' dipende dal parametro beta
         if ((i != j) && (PallinaB.m_S == Stato::INFETTO)) {
