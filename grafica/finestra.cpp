@@ -30,8 +30,8 @@ Finestra::Finestra(const std::string& titolo, const sf::Vector2u& dimensione, GU
                    const Bordi& t_bordo_animazione, const Bordi& t_bordo_automa)
     : v_dimensioni_minime{dimensione}, v_vista(Vista::Animazione), v_overlay{overlay}, m_dinamico{t_dinamico}, m_statico{t_statico} {
   Setup(titolo, dimensione);
-  specifiche_viste(Vista::Animazione, t_bordo_animazione.getlimiti());
-  specifiche_viste(Vista::Automa, t_bordo_automa.getlimiti());
+  specifiche_viste(Vista::Animazione, t_bordo_animazione.GetLimiti());
+  specifiche_viste(Vista::Automa, t_bordo_automa.GetLimiti());
   punto_alto_sx.x = 0;
   punto_alto_sx.y = 0;
   v_overlay->GetPointerRiquadro()->AggiungiStatoAutoma(m_statico->GetCensimento());

@@ -31,8 +31,8 @@ GUI::GUI(sf::Vector2f dimensione)
 
   m_pennello_colori.Scrivi();
 
-  if (m_testo_animazione.getlimiti().width > m_limiti_sfondo_grigio.getlimiti().width ||
-      m_testo_automa.getlimiti().width > m_limiti_sfondo_grigio.getlimiti().width) {
+  if (m_testo_animazione.GetLimiti().width > m_limiti_sfondo_grigio.GetLimiti().width ||
+      m_testo_automa.GetLimiti().width > m_limiti_sfondo_grigio.GetLimiti().width) {
     throw std::runtime_error("la larghezza della GUI non è sufficiente ad ospitare le caselle di testo");
   }
 }
@@ -53,10 +53,10 @@ void GUI::draw(sf::RenderTarget& target, sf::RenderStates) const {
 void GUI::AggiornaPosizione(sf::Vector2f punto_in_altosx, sf::Vector2f dimensioni_finestra) {  // da usare nel resize
   sf::Vector2f t_posizione_aggancio_alto_sx(
       punto_in_altosx.x,
-      punto_in_altosx.y + dimensioni_finestra.y / 2 - m_limiti_sfondo_grigio.getlimiti().height / 2);  // punta al vertice alto sx dello sfondo grigio
+      punto_in_altosx.y + dimensioni_finestra.y / 2 - m_limiti_sfondo_grigio.GetLimiti().height / 2);  // punta al vertice alto sx dello sfondo grigio
 
-  float t_altezza_sfondo_grigio = m_limiti_sfondo_grigio.getlimiti().height;
-  float t_larghezza_sfondo_grigio = m_limiti_sfondo_grigio.getlimiti().width;
+  float t_altezza_sfondo_grigio = m_limiti_sfondo_grigio.GetLimiti().height;
+  float t_larghezza_sfondo_grigio = m_limiti_sfondo_grigio.GetLimiti().width;
 
   m_sfondo_grigio.setPosition(t_posizione_aggancio_alto_sx);
   m_limiti_sfondo_grigio.set_posizione(t_posizione_aggancio_alto_sx);
@@ -67,8 +67,8 @@ void GUI::AggiornaPosizione(sf::Vector2f punto_in_altosx, sf::Vector2f dimension
       sf::Vector2f(punto_in_altosx.x + t_larghezza_sfondo_grigio / 2, t_posizione_aggancio_alto_sx.y + t_altezza_sfondo_grigio / 3));
 
   m_testo_animazione.set_posizione(
-      sf::Vector2f(punto_in_altosx.x + t_larghezza_sfondo_grigio / 2, m_casella_animazione.getlimiti().top - 10));  // riferiti alle checkbox
-  m_testo_automa.set_posizione(sf::Vector2f(punto_in_altosx.x + t_larghezza_sfondo_grigio / 2, m_casella_automa.getlimiti().top - 10));
+      sf::Vector2f(punto_in_altosx.x + t_larghezza_sfondo_grigio / 2, m_casella_animazione.GetLimiti().top - 10));  // riferiti alle checkbox
+  m_testo_automa.set_posizione(sf::Vector2f(punto_in_altosx.x + t_larghezza_sfondo_grigio / 2, m_casella_automa.GetLimiti().top - 10));
 
   m_pulsante_play.set_posizione(
       sf::Vector2f(t_posizione_aggancio_alto_sx.x + t_larghezza_sfondo_grigio / 4, t_posizione_aggancio_alto_sx.y + t_altezza_sfondo_grigio / 2));
@@ -92,24 +92,24 @@ void GUI::AttivaInserimento() { m_pennello_colori.Attiva(); }
 void GUI::DisattivaInserimento() { m_pennello_colori.Disattiva(); }
 
 void GUI::CheckMousePosition(sf::Vector2f t_coordinate_mouse) {
-  if (m_casella_animazione.getlimiti().contains(t_coordinate_mouse)) {
+  if (m_casella_animazione.GetLimiti().contains(t_coordinate_mouse)) {
     m_posizione_mouse = MousePos::CheckboxAnimazione;
 
-  } else if (m_casella_automa.getlimiti().contains(t_coordinate_mouse)) {
+  } else if (m_casella_automa.GetLimiti().contains(t_coordinate_mouse)) {
     m_posizione_mouse = MousePos::CheckboxAutoma;
 
-  } else if (m_pulsante_play.getlimiti().contains(t_coordinate_mouse)) {
+  } else if (m_pulsante_play.GetLimiti().contains(t_coordinate_mouse)) {
     m_posizione_mouse = MousePos::PulsantePlay;
 
-  } else if (m_pulsante_pausa.getlimiti().contains(t_coordinate_mouse)) {
+  } else if (m_pulsante_pausa.GetLimiti().contains(t_coordinate_mouse)) {
     m_posizione_mouse = MousePos::PulsantePausa;
-  } else if (m_pennello_colori.RitornaVerde().getlimiti().contains(t_coordinate_mouse)) {
+  } else if (m_pennello_colori.RitornaVerde().GetLimiti().contains(t_coordinate_mouse)) {
     m_posizione_mouse = MousePos::PennelloVulnerabile;
-  } else if (m_pennello_colori.RitornaRosso().getlimiti().contains(t_coordinate_mouse)) {
+  } else if (m_pennello_colori.RitornaRosso().GetLimiti().contains(t_coordinate_mouse)) {
     m_posizione_mouse = MousePos::PennelloInfetto;
-  } else if (m_pennello_colori.RitornaBlu().getlimiti().contains(t_coordinate_mouse)) {
+  } else if (m_pennello_colori.RitornaBlu().GetLimiti().contains(t_coordinate_mouse)) {
     m_posizione_mouse = MousePos::PennelloGuariti;
-  } else if (m_pennello_colori.RitornaBianco().getlimiti().contains(t_coordinate_mouse)) {
+  } else if (m_pennello_colori.RitornaBianco().GetLimiti().contains(t_coordinate_mouse)) {
     m_posizione_mouse = MousePos::PennelloMorti;
   } else {
     m_posizione_mouse = MousePos::None;

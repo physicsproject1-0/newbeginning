@@ -2,20 +2,20 @@
 
 void Pennello::ImpostaPosizione(sf::Vector2f t_posizione_centro) {  // la consideriamo rispetto al centro
   m_riquadro_esterno.set_posizione(t_posizione_centro -
-                                   sf::Vector2f(m_riquadro_esterno.getlimiti().width / 2, m_riquadro_esterno.getlimiti().height / 2));
+                                   sf::Vector2f(m_riquadro_esterno.GetLimiti().width / 2, m_riquadro_esterno.GetLimiti().height / 2));
 
   m_rettangolo_opaco.setPosition(t_posizione_centro);
 
-  m_box_verde.set_posizione(sf::Vector2f(t_posizione_centro.x, m_riquadro_esterno.getlimiti().top + (m_riquadro_esterno.getlimiti().height / 5) * 1));
-  m_box_rosso.set_posizione(sf::Vector2f(t_posizione_centro.x, m_riquadro_esterno.getlimiti().top + (m_riquadro_esterno.getlimiti().height / 5) * 2));
-  m_box_blu.set_posizione(sf::Vector2f(t_posizione_centro.x, m_riquadro_esterno.getlimiti().top + (m_riquadro_esterno.getlimiti().height / 5) * 3));
+  m_box_verde.set_posizione(sf::Vector2f(t_posizione_centro.x, m_riquadro_esterno.GetLimiti().top + (m_riquadro_esterno.GetLimiti().height / 5) * 1));
+  m_box_rosso.set_posizione(sf::Vector2f(t_posizione_centro.x, m_riquadro_esterno.GetLimiti().top + (m_riquadro_esterno.GetLimiti().height / 5) * 2));
+  m_box_blu.set_posizione(sf::Vector2f(t_posizione_centro.x, m_riquadro_esterno.GetLimiti().top + (m_riquadro_esterno.GetLimiti().height / 5) * 3));
   m_box_bianco.set_posizione(
-      sf::Vector2f(t_posizione_centro.x, m_riquadro_esterno.getlimiti().top + (m_riquadro_esterno.getlimiti().height / 5) * 4));
+      sf::Vector2f(t_posizione_centro.x, m_riquadro_esterno.GetLimiti().top + (m_riquadro_esterno.GetLimiti().height / 5) * 4));
 
-  m_testo_verde.set_posizione(sf::Vector2f(t_posizione_centro.x, m_box_verde.getlimiti().top - 10));
-  m_testo_rosso.set_posizione(sf::Vector2f(t_posizione_centro.x, m_box_rosso.getlimiti().top - 10));
-  m_testo_blu.set_posizione(sf::Vector2f(t_posizione_centro.x, m_box_blu.getlimiti().top - 10));
-  m_testo_bianco.set_posizione(sf::Vector2f(t_posizione_centro.x, m_box_bianco.getlimiti().top - 10));
+  m_testo_verde.set_posizione(sf::Vector2f(t_posizione_centro.x, m_box_verde.GetLimiti().top - 10));
+  m_testo_rosso.set_posizione(sf::Vector2f(t_posizione_centro.x, m_box_rosso.GetLimiti().top - 10));
+  m_testo_blu.set_posizione(sf::Vector2f(t_posizione_centro.x, m_box_blu.GetLimiti().top - 10));
+  m_testo_bianco.set_posizione(sf::Vector2f(t_posizione_centro.x, m_box_bianco.GetLimiti().top - 10));
 }
 
 void Pennello::Scrivi() {  // funzione presente altrimenti scrive prima di caricare il font e mi restituisce 0 di larghezza , il loading del font
@@ -26,10 +26,10 @@ void Pennello::Scrivi() {  // funzione presente altrimenti scrive prima di caric
   m_testo_blu.scrivi("Guarito");
   m_testo_bianco.scrivi("Morto");
 
-  if (m_testo_verde.getlimiti().width > m_riquadro_esterno.getlimiti().width ||
-      m_testo_rosso.getlimiti().width > m_riquadro_esterno.getlimiti().width ||
-      m_testo_blu.getlimiti().width > m_riquadro_esterno.getlimiti().width ||
-      m_testo_bianco.getlimiti().width > m_riquadro_esterno.getlimiti().width) {
+  if (m_testo_verde.GetLimiti().width > m_riquadro_esterno.GetLimiti().width ||
+      m_testo_rosso.GetLimiti().width > m_riquadro_esterno.GetLimiti().width ||
+      m_testo_blu.GetLimiti().width > m_riquadro_esterno.GetLimiti().width ||
+      m_testo_bianco.GetLimiti().width > m_riquadro_esterno.GetLimiti().width) {
     throw std::runtime_error("dimensione pennello non sufficiente per ospitare testo");
   }
 }
