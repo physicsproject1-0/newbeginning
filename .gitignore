@@ -4,6 +4,8 @@
 .vscode
 cmake/
 build/
+CMakeFiles/
+*.pdf
 
 # Compiled Object files
 *.slo
