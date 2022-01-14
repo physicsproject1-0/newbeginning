@@ -61,12 +61,13 @@ Automa::Automa(sf::Vector2f t_posizione, sf::Vector2f t_dimensione, int t_numero
   }
   Genera(t_infetti, t_rimossi);
 }
+#include<algorithm>
 
 void Automa::draw(sf::RenderTarget& target, sf::RenderStates) const {
-  for (int i = 0; i < m_numero_lato; i++) {
-    for (int j = 0; j < m_numero_lato; j++) {
-      target.draw(m_grid[i][j]);
-    }
+  for (auto& riga : m_grid) {
+    std::for_each (riga.begin(), riga.end(), [](auto& cell) { 
+      target.draw(cell);
+    });
   }
   target.draw(m_limite);
 }
