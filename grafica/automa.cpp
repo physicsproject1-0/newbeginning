@@ -1,4 +1,5 @@
 #include "automa.hpp"
+#include <algorithm>
 
 // Cellula
 
@@ -61,7 +62,6 @@ Automa::Automa(sf::Vector2f t_posizione, sf::Vector2f t_dimensione, int t_numero
   }
   Genera(t_infetti, t_rimossi);
 }
-#include<algorithm>
 
 void Automa::draw(sf::RenderTarget& target, sf::RenderStates) const {
   for (auto& riga : m_grid) {
