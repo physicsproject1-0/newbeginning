@@ -65,7 +65,7 @@ Automa::Automa(sf::Vector2f t_posizione, sf::Vector2f t_dimensione, int t_numero
 
 void Automa::draw(sf::RenderTarget& target, sf::RenderStates) const {
   for (auto& riga : m_grid) {
-    std::for_each (riga.begin(), riga.end(), [](auto& cell) { 
+    std::for_each (riga.begin(), riga.end(), [&target](auto& cell) { 
       target.draw(cell);
     });
   }
